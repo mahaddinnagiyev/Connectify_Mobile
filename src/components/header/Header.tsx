@@ -25,13 +25,9 @@ const Header = () => {
       <View style={style.header}>
         <TouchableOpacity onPress={() => navigation.navigate("Messenger")}>
           {route.name === "Messenger" ? (
-            <MaterialIcons
-              name="messenger"
-              size={30}
-              color={color.primaryColor}
-            />
+            <MaterialIcons name="chat" size={30} color={color.primaryColor} />
           ) : (
-            <MaterialIcons name="messenger-outline" size={30} color="black" />
+            <MaterialIcons name="chat-bubble-outline" size={30} color="black" />
           )}
         </TouchableOpacity>
         <MaterialCommunityIcons

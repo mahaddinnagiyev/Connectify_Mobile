@@ -13,6 +13,7 @@ export const style = StyleSheet.create({
     zIndex: 50,
     borderTopColor: "#ccc",
     borderTopWidth: 1,
+    backgroundColor: "#fff",
   },
   profileIcon: {
     width: 40,
