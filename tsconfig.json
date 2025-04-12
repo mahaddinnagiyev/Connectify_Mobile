@@ -9,7 +9,9 @@
       ],
       "@components/*": ["src/components/*"],
       "@screens/*": ["src/screens/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@redux/*": ["src/redux/*"],
     }
   },
   "include": [
