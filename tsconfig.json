@@ -12,6 +12,7 @@
       "@utils/*": ["src/utils/*"],
       "@navigation/*": ["src/navigation/*"],
       "@redux/*": ["src/redux/*"],
+      "@color": ["./colors.ts"],
     }
   },
   "include": [
