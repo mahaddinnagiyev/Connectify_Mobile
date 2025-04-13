@@ -69,7 +69,7 @@ const ChatHeader = () => {
       <View style={styles.leftHeader}>
         {/* Back Icon */}
         <View>
-          <Pressable onPress={() => navigate.navigate("Messenger")}>
+          <Pressable onPress={() => navigate.goBack()}>
             <MaterialIcons name="arrow-back-ios" size={18} color="black" />
           </Pressable>
         </View>

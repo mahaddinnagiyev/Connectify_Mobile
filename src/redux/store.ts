@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import headerReducer from "./header/headerSlice";
 import chatReducer from "./chat/chatSilce";
+import myFriendsReducer from "./friend/myFriendsSlice";
 
 export const store = configureStore({
   reducer: {
     header: headerReducer,
     chat: chatReducer,
+    myFriends: myFriendsReducer,
   },
 });
 
