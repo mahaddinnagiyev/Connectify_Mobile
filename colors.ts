@@ -9,6 +9,7 @@ export const color = {
     receiverBgColor: "#f5f5f5",
     chatRoomBgColor: "#00ff00",
     textColor: "#000000",
+    borderColor: "#c1c1c1",
     
     // <----- ----->
     inputBgColor: "#f7f7f7",

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isMenuVisible: false,
+  inputHeight: 35,
 };
 
 export const chatSlice = createSlice({
@@ -11,8 +12,11 @@ export const chatSlice = createSlice({
     toggleMenu: (state) => {
       state.isMenuVisible = !state.isMenuVisible;
     },
+    setInputHeight: (state, action) => {
+      state.inputHeight = action.payload;
+    },
   },
 });
 
-export const { toggleMenu } = chatSlice.actions;
+export const { toggleMenu, setInputHeight } = chatSlice.actions;
 export default chatSlice.reducer;
