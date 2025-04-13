@@ -12,8 +12,10 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { color } from "@/colors";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
+import Alert from "../modals/error/Alert";
 
 const Header = () => {
+  const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const { isModalVisible } = useSelector((state: RootState) => state.header);
   const dispatch = useDispatch();
 
@@ -34,7 +36,7 @@ const Header = () => {
           name="account-group-outline"
           size={30}
           color="black"
-          onPress={() => alert("Project in development phase")}
+          onPress={() => setIsAlertVisible(true)}
         />
         <Feather name="users" size={30} color="black" />
         <TouchableOpacity onPress={() => dispatch(toggleModal())}>
@@ -83,6 +85,18 @@ const Header = () => {
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {isAlertVisible && (
+        <Alert
+          title="Project in Development Phase"
+          message="Groups feature is currently under development. We're working hard to bring you this functionality as soon as possible!"
+          buttonText="Got It!"
+          footerNote="Stay tuned for updates!"
+          visible={isAlertVisible}
+          iconName="construct"
+          onClose={() => setIsAlertVisible(false)}
+        />
+      )}
     </>
   );
 };
