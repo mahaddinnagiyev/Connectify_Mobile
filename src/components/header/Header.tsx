@@ -39,7 +39,7 @@ const Header = () => {
         <Feather name="users" size={30} color="black" />
         <TouchableOpacity onPress={() => dispatch(toggleModal())}>
           <Image
-            source={require("../../../assets/images/no-profile-photo.png")}
+            source={require("@assets/images/no-profile-photo.png")}
             style={style.profileIcon}
           />
         </TouchableOpacity>
@@ -59,7 +59,7 @@ const Header = () => {
           <View style={style.modalContent}>
             <TouchableOpacity style={style.menuItem}>
               <Image
-                source={require("../../../assets/images/no-profile-photo.png")}
+                source={require("@assets/images/no-profile-photo.png")}
                 style={style.menuImage}
               />
               <Text style={style.menuText}>My Profile</Text>

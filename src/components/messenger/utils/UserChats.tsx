@@ -9,19 +9,28 @@ import {
 } from "react-native";
 import React from "react";
 import { color } from "@/colors";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@navigation/Navigator";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
 const UserChats = () => {
+  const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {Array.from({ length: 10 }).map((_, index) => (
-          <TouchableOpacity key={index} style={styles.chat}>
+          <TouchableOpacity
+            key={index}
+            style={styles.chat}
+            onPress={() => navigate.navigate("Chat")}
+          >
             {/* <Text>{index + 1}</Text> */}
             <Image
-              source={require("../../../../assets/images/no-profile-photo.png")}
+              source={require("@assets/images/no-profile-photo.png")}
               style={styles.profilePhoto}
             />
             <View style={styles.chatDetail}>
@@ -29,7 +38,7 @@ const UserChats = () => {
                 John Doe | @johndoe
               </Text>
               <View style={styles.lastMessage}>
-                <Text>last message</Text>
+                <Text>Whats's Up Man</Text>
                 <Text style={{ fontSize: 9 }}>12:00</Text>
               </View>
             </View>
@@ -65,6 +74,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 50,
+    borderWidth: 2,
+    borderColor: color.primaryColor,
   },
 
   chatDetail: {
