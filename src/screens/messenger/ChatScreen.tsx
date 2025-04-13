@@ -1,14 +1,17 @@
-import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import ChatHeader from "@/src/components/chat/ChatHeader";
-import SendMessage from "@/src/components/chat/SendMessage";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import ChatHeader from "@components/chat/ChatHeader";
+import Messages from "@components/chat/Messages";
+import SendMessage from "@components/chat/SendMessage";
 
 const ChatScreen = () => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ChatHeader />
+      <Messages />
       <SendMessage />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -17,12 +20,6 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "white",
-  },
-  text: {
-    fontSize: 20,
-    color: "black",
   },
 });

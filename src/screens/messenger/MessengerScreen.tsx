@@ -1,5 +1,5 @@
-import Header from "@/src/components/header/Header";
-import Messenger from "@/src/components/messenger/Messenger";
+import Header from "@components/header/Header";
+import Messenger from "@components/messenger/Messenger";
 import React from "react";
 import { View } from "react-native";
 
