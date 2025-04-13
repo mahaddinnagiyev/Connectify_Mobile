@@ -12,6 +12,7 @@ import {
   Easing,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { color } from "@/colors";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/src/redux/store";
@@ -105,12 +106,15 @@ const ChatHeader = () => {
           >
             <Animated.View style={[styles.dropdownMenu, animatedStyle]}>
               <TouchableOpacity style={styles.menuItem}>
+                <MaterialIcons name="person" size={24} color="black" />
                 <Text style={styles.menuText}>User Profile</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuItem}>
+                <MaterialIcons name="image" size={24} color="black" />
                 <Text style={styles.menuText}>Media</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuItem}>
+                <FontAwesome6 name="address-card" size={24} color="black" />
                 <Text style={styles.menuText}>Room Name</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -180,15 +184,21 @@ const styles = StyleSheet.create({
   },
 
   menuItem: {
+    width: 150,
+    height: 50,
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderBottomColor: "#eee",
     borderBottomWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 
   menuText: {
-    fontSize: 14,
+    fontSize: 15,
     color: "black",
+    fontWeight: 600,
   },
 
   modalOverlay: {
