@@ -10,7 +10,7 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -50,8 +50,18 @@ const MyFriendsScreen = () => {
       </View>
 
       {/* Serach Bar */}
-      <View style={{ height: 60 }}>
-        <TextInput placeholder="Search friends" style={styles.searchBar} />
+      <View style={styles.searchContainer}>
+        <Ionicons
+          name="search"
+          size={20}
+          color="#888"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          placeholderTextColor="#888"
+        />
       </View>
 
       {/* Friend List */}
@@ -105,6 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 15,
     height: 50,
+    marginBottom: 10,
     position: "relative",
   },
 
@@ -127,13 +138,25 @@ const styles = StyleSheet.create({
     color: color.primaryColor,
   },
 
-  searchBar: {
-    width: screenWidth * 0.94,
-    borderWidth: 1,
-    borderRadius: 10,
+  searchContainer: {
+    width: "94%",
+    height: 40,
     margin: "auto",
-    paddingLeft: 10,
-    marginTop: 10,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: "#333",
   },
 
   chat: {

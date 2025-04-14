@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,11 +12,13 @@ import { color } from "@/colors";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
+import { Ionicons } from "@expo/vector-icons";
 
 const screenWidth = Dimensions.get("window").width;
 
 const MessengerHeader = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <View style={styles.header}>
@@ -40,8 +42,20 @@ const MessengerHeader = () => {
         </Pressable>
       </View>
 
-      <View>
-        <TextInput placeholder="Search" style={styles.searchBar} />
+      <View style={styles.searchContainer}>
+        <Ionicons
+          name="search"
+          size={20}
+          color="#888"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          placeholderTextColor="#888"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
       </View>
     </View>
   );
@@ -63,11 +77,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  searchBar: {
+  searchContainer: {
     width: "94%",
-    borderWidth: 1,
-    borderRadius: 10,
     margin: "auto",
-    paddingLeft: 10,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: "#333",
   },
 });

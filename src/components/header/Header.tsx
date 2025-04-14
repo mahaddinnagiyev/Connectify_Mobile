@@ -3,7 +3,6 @@ import { View, Text, Image, Modal, TouchableOpacity } from "react-native";
 import { style } from "./style/header-style";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "@/src/redux/header/headerSlice";
@@ -38,7 +37,13 @@ const Header = () => {
           color="black"
           onPress={() => setIsAlertVisible(true)}
         />
-        <Feather name="users" size={30} color="black" />
+        <TouchableOpacity onPress={() => navigation.navigate("Users")}>
+          {route.name === "Users" ? (
+            <MaterialIcons name="people" size={30} color={color.primaryColor} />
+          ) : (
+            <MaterialIcons name="people-outline" size={30} color="black" />
+          )}
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => dispatch(toggleModal())}>
           <Image
             source={require("@assets/images/no-profile-photo.png")}
