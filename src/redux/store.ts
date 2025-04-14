@@ -3,6 +3,7 @@ import headerReducer from "./header/headerSlice";
 import chatReducer from "./chat/chatSilce";
 import myFriendsReducer from "./friend/myFriendsSlice";
 import usersReducer from "./users/usersSlice";
+import myProfileReducer from "./profile/myProfileSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     chat: chatReducer,
     myFriends: myFriendsReducer,
     users: usersReducer,
+    myProfile: myProfileReducer,
   },
 });
 

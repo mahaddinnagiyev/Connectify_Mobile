@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, Image, Modal, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Modal,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { style } from "./style/header-style";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -64,13 +71,19 @@ const Header = () => {
           onPress={() => dispatch(toggleModal())}
         >
           <View style={style.modalContent}>
-            <TouchableOpacity style={style.menuItem}>
+            <Pressable
+              style={style.menuItem}
+              onPress={() => {
+                dispatch(toggleModal());
+                navigation.navigate("MyProfile");
+              }}
+            >
               <Image
                 source={require("@assets/images/no-profile-photo.png")}
                 style={style.menuImage}
               />
               <Text style={style.menuText}>My Profile</Text>
-            </TouchableOpacity>
+            </Pressable>
             <TouchableOpacity style={style.menuItem}>
               <MaterialIcons name="settings" size={24} color="black" />
               <Text style={style.menuText}>Settings</Text>

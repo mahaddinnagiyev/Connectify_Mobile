@@ -4,6 +4,7 @@ import MessengerScreen from "@screens/messenger/MessengerScreen";
 import ChatScreen from "@screens/messenger/ChatScreen";
 import MyFriendsScreen from "@screens/friend/MyFriendsScreen";
 import UsersScreen from "@screens/users/UsersScreen";
+import MyProfileScreen from "@screens/profile/MyProfileScreen";
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -12,6 +13,7 @@ export type StackParamList = {
   Chat: undefined;
   MyFriends: undefined;
   Users: undefined;
+  MyProfile: undefined;
 };
 
 export default function Navigator() {
@@ -21,6 +23,7 @@ export default function Navigator() {
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="MyFriends" component={MyFriendsScreen} />
       <Stack.Screen name="Users" component={UsersScreen} />
+      <Stack.Screen name="MyProfile" component={MyProfileScreen} />
     </Stack.Navigator>
   );
 }
