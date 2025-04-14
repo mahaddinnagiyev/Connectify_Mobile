@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import ProfilePage from "@components/profile/ProfilePage";
 import ProfileHeader from "@components/profile/ProfileHeader";
+import MyFriends from "@components/friends/MyFriends";
 
 const MyProfileScreen = () => {
   const activeIndex = useSelector(
@@ -24,6 +25,7 @@ const MyProfileScreen = () => {
 
         {/* Personal Information */}
         {activeIndex === 0 && <ProfilePage />}
+        {activeIndex === 1 && <MyFriends />}
       </ScrollView>
     </View>
   );
