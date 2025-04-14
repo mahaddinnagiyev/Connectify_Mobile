@@ -7,6 +7,7 @@ import ProfilePage from "@components/profile/ProfilePage";
 import ProfileHeader from "@components/profile/ProfileHeader";
 import MyFriends from "@components/friends/MyFriends";
 import FriendRequests from "@components/friends/FriendRequests";
+import BlockList from "@components/block/BlockList";
 
 const MyProfileScreen = () => {
   const activeIndex = useSelector(
@@ -28,6 +29,7 @@ const MyProfileScreen = () => {
         {activeIndex === 0 && <ProfilePage />}
         {activeIndex === 1 && <MyFriends />}
         {activeIndex === 2 && <FriendRequests />}
+        {activeIndex === 3 && <BlockList />}
       </ScrollView>
     </View>
   );
