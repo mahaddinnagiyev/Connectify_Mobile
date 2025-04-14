@@ -48,7 +48,7 @@ const MyFriends = () => {
   return (
     <View style={styles.container}>
       {/* Title */}
-      <Text style={styles.headerText}>All Users</Text>
+      <Text style={styles.headerText}>My Friends</Text>
 
       {/* Search bar */}
       <View style={styles.searchContainer}>
