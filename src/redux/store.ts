@@ -4,6 +4,7 @@ import chatReducer from "./chat/chatSilce";
 import myFriendsReducer from "./friend/myFriendsSlice";
 import usersReducer from "./users/usersSlice";
 import myProfileReducer from "./profile/myProfileSlice";
+import settingsReducer from "./settings/settingsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     myFriends: myFriendsReducer,
     users: usersReducer,
     myProfile: myProfileReducer,
+    settings: settingsReducer,
   },
 });
 

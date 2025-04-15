@@ -84,14 +84,26 @@ const Header = () => {
               />
               <Text style={style.menuText}>My Profile</Text>
             </Pressable>
-            <TouchableOpacity style={style.menuItem}>
+            <Pressable
+              style={style.menuItem}
+              onPress={() => {
+                dispatch(toggleModal());
+                navigation.navigate("Settings");
+              }}
+            >
               <MaterialIcons name="settings" size={24} color="black" />
               <Text style={style.menuText}>Settings</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={style.menuItem}>
+            </Pressable>
+            <Pressable
+              style={style.menuItem}
+              onPress={() => {
+                dispatch(toggleModal());
+                navigation.navigate("FAQ");
+              }}
+            >
               <FontAwesome name="question-circle" size={24} color="black" />
               <Text style={style.menuText}>FAQ</Text>
-            </TouchableOpacity>
+            </Pressable>
             <TouchableOpacity style={style.menuItem}>
               <MaterialIcons name="contact-phone" size={24} color="black" />
               <Text style={style.menuText}>Contact Us</Text>
