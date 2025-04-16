@@ -1,23 +1,15 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import Header from "@/src/components/header/Header"; // Sizin mövcud Header komponentiniz
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import Header from "@components/header/Header";
 import { color } from "@/colors";
+import MyFriends from "@components/friends/MyFriends";
+import FriendRequests from "@components/friends/FriendRequests";
+import AllUsers from "@components/users/AllUsers";
 
 const UsersScreen = () => {
   const [activeTab, setActiveTab] = useState<
     "ALL_USERS" | "MY_FRIENDS" | "REQUESTS"
   >("ALL_USERS");
-  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <View style={styles.container}>
@@ -79,22 +71,10 @@ const UsersScreen = () => {
         </Pressable>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons
-          name="search"
-          size={20}
-          color="#888"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          placeholderTextColor="#888"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
+      {/* Content */}
+      {activeTab === "ALL_USERS" && <AllUsers />}
+      {activeTab === "MY_FRIENDS" && <MyFriends />}
+      {activeTab === "REQUESTS" && <FriendRequests />}
     </View>
   );
 };
@@ -102,14 +82,15 @@ const UsersScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
 
   titleContainer: {
     width: "95%",
-    marginLeft: "auto",
+    marginTop: 75,
     marginBottom: 10,
+    marginLeft: "auto",
     justifyContent: "flex-start",
   },
 

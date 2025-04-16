@@ -74,6 +74,9 @@ const FriendRequests = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
+      <Text style={styles.headerText}>Friendship Requests</Text>
+
       {/* Tab Bar */}
       <View style={styles.tabBar}>
         <Pressable
@@ -111,8 +114,15 @@ const FriendRequests = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
     padding: 16,
     backgroundColor: "#fff",
+  },
+  headerText: {
+    fontSize: 24,
+    margin: "auto",
+    fontWeight: "700",
+    marginBottom: 20,
   },
   tabBar: {
     flexDirection: "row",

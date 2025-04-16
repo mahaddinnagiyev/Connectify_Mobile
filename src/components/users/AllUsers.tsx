@@ -8,10 +8,10 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 
-const MyFriends = () => {
+const AllUsers = () => {
   const friends = [
     {
       id: 1,
@@ -48,14 +48,14 @@ const MyFriends = () => {
   return (
     <View style={styles.container}>
       {/* Title */}
-      <Text style={styles.headerText}>My Friends</Text>
+      <Text style={styles.headerText}>All Users</Text>
 
       {/* Search bar */}
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#666" />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search friends..."
+          placeholder="Search users..."
           placeholderTextColor="#888"
         />
       </View>
@@ -77,7 +77,22 @@ const MyFriends = () => {
             {/* Actions */}
             <View style={styles.actions}>
               <View style={styles.statusIndicator}>
-                <Text style={styles.statusText}>G</Text>
+                <Text>
+                  <MaterialIcons
+                    name="chat"
+                    size={22}
+                    color={color.primaryColor}
+                  />
+                </Text>
+              </View>
+              <View style={styles.statusIndicator}>
+                <Text>
+                  <MaterialIcons
+                    name="person-add"
+                    size={24}
+                    color={color.primaryColor}
+                  />
+                </Text>
               </View>
             </View>
           </Pressable>
@@ -163,15 +178,9 @@ const styles = StyleSheet.create({
   statusIndicator: {
     width: 30,
     height: 30,
-    borderRadius: 15,
-    backgroundColor: "#E8F5E9",
     justifyContent: "center",
     alignItems: "center",
   },
-  statusText: {
-    color: color.primaryColor,
-    fontWeight: "700",
-  },
 });
 
-export default MyFriends;
+export default AllUsers;
