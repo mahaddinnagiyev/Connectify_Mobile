@@ -7,6 +7,7 @@ import UsersScreen from "@screens/users/UsersScreen";
 import MyProfileScreen from "@screens/profile/MyProfileScreen";
 import SettingsScreen from "@screens/settings/SettingsScreen";
 import ContactUsScreen from "@screens/contact/ContactUsScreen";
+import AuthScreen from "@screens/auth/AuthScreen";
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -18,11 +19,16 @@ export type StackParamList = {
   MyProfile: undefined;
   Settings: undefined;
   ContactUs: undefined;
+  Auth: undefined;
 };
 
 export default function Navigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* Auth */}
+      <Stack.Screen name="Auth" component={AuthScreen} />
+
+      {/* Other Screens */}
       <Stack.Screen name="Messenger" component={MessengerScreen} />
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="MyFriends" component={MyFriendsScreen} />

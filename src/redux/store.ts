@@ -5,6 +5,7 @@ import myFriendsReducer from "./friend/myFriendsSlice";
 import usersReducer from "./users/usersSlice";
 import myProfileReducer from "./profile/myProfileSlice";
 import settingsReducer from "./settings/settingsSlice";
+import loginReucer from "./auth/loginSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,9 @@ export const store = configureStore({
     users: usersReducer,
     myProfile: myProfileReducer,
     settings: settingsReducer,
+
+    // Auth
+    login: loginReucer,
   },
 });
 

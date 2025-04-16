@@ -13,7 +13,8 @@
       "@navigation/*": ["src/navigation/*"],
       "@redux/*": ["src/redux/*"],
       "@color": ["./colors.ts"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@enums/*": ["./src/enums/*"]
     }
   },
   "include": [

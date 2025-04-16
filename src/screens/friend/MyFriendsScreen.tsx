@@ -14,11 +14,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import type { StackParamList } from "@/src/navigation/Navigator";
+import type { StackParamList } from "@navigation/Navigator";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const MyFriendsScreen = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();

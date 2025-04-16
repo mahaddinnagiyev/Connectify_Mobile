@@ -10,10 +10,9 @@ import {
 import { style } from "./style/header-style";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleModal } from "@/src/redux/header/headerSlice";
-import { RootState } from "@/src/redux/store";
+import { toggleModal } from "@redux/header/headerSlice";
+import { RootState } from "@redux/store";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { color } from "@/colors";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";

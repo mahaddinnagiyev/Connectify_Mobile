@@ -15,7 +15,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { color } from "@/colors";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
 import { toggleMenu } from "@redux/chat/chatSilce";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
