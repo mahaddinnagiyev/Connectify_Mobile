@@ -94,7 +94,7 @@ const Header = () => {
               <MaterialIcons name="settings" size={24} color="black" />
               <Text style={style.menuText}>Settings</Text>
             </Pressable>
-            <Pressable
+            {/* <Pressable
               style={style.menuItem}
               onPress={() => {
                 dispatch(toggleModal());
@@ -103,11 +103,17 @@ const Header = () => {
             >
               <FontAwesome name="question-circle" size={24} color="black" />
               <Text style={style.menuText}>FAQ</Text>
-            </Pressable>
-            <TouchableOpacity style={style.menuItem}>
+            </Pressable> */}
+            <Pressable
+              style={style.menuItem}
+              onPress={() => {
+                dispatch(toggleModal());
+                navigation.navigate("ContactUs");
+              }}
+            >
               <MaterialIcons name="contact-phone" size={24} color="black" />
               <Text style={style.menuText}>Contact Us</Text>
-            </TouchableOpacity>
+            </Pressable>
             <TouchableOpacity style={style.menuItem}>
               <MaterialIcons name="logout" size={24} color="red" />
               <Text style={[style.menuText, { color: "red" }]}>Logout</Text>
