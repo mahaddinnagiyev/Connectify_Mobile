@@ -10,7 +10,7 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -32,11 +32,6 @@ const MyFriendsScreen = () => {
           style={styles.headerButton}
           onPress={() => navigate.goBack()}
         >
-          <MaterialIcons
-            name="chevron-left"
-            size={20}
-            color={color.primaryColor}
-          />
           <Text
             style={{
               fontSize: 16,
@@ -106,6 +101,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 10,
+    backgroundColor: "#fff",
   },
 
   header: {
@@ -120,16 +116,13 @@ const styles = StyleSheet.create({
   },
 
   headerButton: {
-    width: 80,
-    height: 40,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 10,
-    paddingRight: 20,
-    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: 800,
+    color: color.primaryColor,
+    backgroundColor: color.inputBgColor,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 18,
   },
 
   title: {
