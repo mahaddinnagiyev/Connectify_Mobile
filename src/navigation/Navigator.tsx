@@ -1,15 +1,13 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MessengerScreen from "@screens/messenger/MessengerScreen";
-import ChatScreen from "@screens/messenger/ChatScreen";
-import MyFriendsScreen from "@screens/friend/MyFriendsScreen";
-import UsersScreen from "@screens/users/UsersScreen";
-import MyProfileScreen from "@screens/profile/MyProfileScreen";
-import SettingsScreen from "@screens/settings/SettingsScreen";
-import ContactUsScreen from "@screens/contact/ContactUsScreen";
-import AuthScreen from "@screens/auth/AuthScreen";
-
-const Stack = createNativeStackNavigator<StackParamList>();
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { ActivityIndicator, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import AuthStack from "./AuthStack";
+import UserStack from "./UserStack";
+import { getTokenFromSession } from "@services/auth/token.service";
+import { setIsAuthenticated } from "@redux/auth/authSlice";
+import type { RootState } from "@redux/store";
+import { color } from "@/colors";
 
 export type StackParamList = {
   Messenger: undefined;
@@ -22,20 +20,32 @@ export type StackParamList = {
   Auth: undefined;
 };
 
-export default function Navigator() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Auth */}
-      <Stack.Screen name="Auth" component={AuthScreen} />
+export default function RootNavigator() {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const [loading, setLoading] = useState(true);
 
-      {/* Other Screens */}
-      <Stack.Screen name="Messenger" component={MessengerScreen} />
-      <Stack.Screen name="Chat" component={ChatScreen} />
-      <Stack.Screen name="MyFriends" component={MyFriendsScreen} />
-      <Stack.Screen name="Users" component={UsersScreen} />
-      <Stack.Screen name="MyProfile" component={MyProfileScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="ContactUs" component={ContactUsScreen} />
-    </Stack.Navigator>
+  useEffect(() => {
+    (async () => {
+      const tokenObj = await getTokenFromSession();
+      dispatch(setIsAuthenticated(!!tokenObj));
+      setLoading(false);
+    })();
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={color.primaryColor} />
+      </View>
+    );
+  }
+
+  return (
+    <NavigationContainer>
+      {isAuthenticated ? <UserStack /> : <AuthStack />}
+    </NavigationContainer>
   );
 }
