@@ -15,14 +15,12 @@ import AuthFooter from "@components/auth/AuthFooter";
 import { color } from "@/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthPage, AuthType } from "@enums/auth.enum";
-import { setAuthType } from "@redux/auth/loginSlice";
+import { setAuthType } from "@redux/auth/authSlice";
 import FaceIDForm from "@components/form/auth/FaceIDForm";
 import SignupForm from "@components/form/auth/SignupForm";
 
 const AuthScreen = () => {
-  const { activeTab, authType } = useSelector(
-    (state: RootState) => state.login
-  );
+  const { activeTab, authType } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   return (

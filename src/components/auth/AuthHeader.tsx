@@ -11,12 +11,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { color } from "@/colors";
-import { setActiveTab } from "@redux/auth/loginSlice";
+import { setActiveTab } from "@redux/auth/authSlice";
 import { AuthPage } from "@enums/auth.enum";
 
 const AuthHeader = () => {
   const dispatch = useDispatch();
-  const { activeTab } = useSelector((s: RootState) => s.login);
+  const { activeTab } = useSelector((s: RootState) => s.auth);
+
   const [tabWidth, setTabWidth] = useState(0);
 
   const anim = useRef(

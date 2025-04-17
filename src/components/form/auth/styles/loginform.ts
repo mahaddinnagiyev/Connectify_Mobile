@@ -6,6 +6,17 @@ export const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 20,
   },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  loadingIndicator: {
+    transform: [{ scale: 1.5 }],
+  },
   inputContainer: {
     marginBottom: 15,
   },
@@ -30,6 +41,11 @@ export const styles = StyleSheet.create({
   forgotPasswordText: {
     color: "#666",
     fontSize: 14,
+  },
+  forgotPasswordLink: {
+    color: color.primaryColor,
+    fontSize: 14,
+    fontWeight: "600",
   },
   loginButton: {
     backgroundColor: color.primaryColor,

@@ -3,11 +3,11 @@ import React from "react";
 import { color } from "@/colors";
 import { RootState } from "@redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setActiveTab } from "@redux/auth/loginSlice";
+import { setActiveTab } from "@redux/auth/authSlice";
 import { AuthPage } from "@enums/auth.enum";
 
 const AuthFooter = () => {
-  const { activeTab } = useSelector((state: RootState) => state.login);
+  const { activeTab } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   return (
