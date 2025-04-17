@@ -14,7 +14,8 @@
       "@redux/*": ["src/redux/*"],
       "@color": ["./colors.ts"],
       "@assets/*": ["./assets/*"],
-      "@enums/*": ["./src/enums/*"]
+      "@enums/*": ["./src/enums/*"],
+      "@services/*": ["./src/services/*"]
     }
   },
   "include": [
