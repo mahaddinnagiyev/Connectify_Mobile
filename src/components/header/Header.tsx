@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { style } from "./style/header-style";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -18,17 +19,86 @@ import { color } from "@/colors";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
 import Alert from "../modals/error/Alert";
+import { logout } from "@services/auth/auth.service";
+import {
+  clearErrorMessage,
+  clearSuccessMessage,
+  setErrorMessage,
+  setSuccessMessage,
+} from "@redux/messages/messageSlice";
+import { setIsAuthenticated } from "@redux/auth/authSlice";
+import ErrorMessage from "../messages/ErrorMessage";
+import SuccessMessage from "../messages/SuccessMessage";
 
 const Header = () => {
-  const [isAlertVisible, setIsAlertVisible] = React.useState(false);
-  const { isModalVisible } = useSelector((state: RootState) => state.header);
   const dispatch = useDispatch();
+
+  const { isModalVisible } = useSelector((state: RootState) => state.header);
+  const { errorMessage, successMessage } = useSelector(
+    (state: RootState) => state.messages
+  );
+
+  const [isAlertVisible, setIsAlertVisible] = React.useState(false);
+  const [isLogoutLoading, setIsLogoutLoading] = React.useState(false);
 
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const route = useRoute();
 
+  const handleLogout = async () => {
+    try {
+      setIsLogoutLoading(true);
+      const response = await logout();
+
+      if (response.success) {
+        dispatch(setSuccessMessage(response.message ?? "Logout successful"));
+        dispatch(setIsAuthenticated(false));
+      } else {
+        dispatch(
+          setErrorMessage(
+            response.response?.message ??
+              response.response?.error ??
+              response.message ??
+              response.error ??
+              "Something went wrong while logging out"
+          )
+        );
+      }
+    } catch (error) {
+      dispatch(
+        setErrorMessage(
+          (error as Error).message ?? "Something went wrong while logging out"
+        )
+      );
+    } finally {
+      setIsLogoutLoading(false);
+    }
+  };
+
   return (
     <>
+      {errorMessage && (
+        <ErrorMessage
+          message={errorMessage}
+          onClose={() => dispatch(clearErrorMessage())}
+        />
+      )}
+
+      {successMessage && (
+        <SuccessMessage
+          message={successMessage}
+          onClose={() => dispatch(clearSuccessMessage())}
+        />
+      )}
+
+      {isLogoutLoading && (
+        <View style={style.loadingOverlay}>
+          <ActivityIndicator
+            size="large"
+            color={color.primaryColor}
+            style={style.loadingIndicator}
+          />
+        </View>
+      )}
       <View style={style.header}>
         <TouchableOpacity onPress={() => navigation.navigate("Messenger")}>
           {route.name === "Messenger" ? (
@@ -113,7 +183,13 @@ const Header = () => {
               <MaterialIcons name="contact-phone" size={24} color="black" />
               <Text style={style.menuText}>Contact Us</Text>
             </Pressable>
-            <TouchableOpacity style={style.menuItem}>
+            <TouchableOpacity
+              style={style.menuItem}
+              onPress={() => {
+                dispatch(toggleModal());
+                handleLogout();
+              }}
+            >
               <MaterialIcons name="logout" size={24} color="red" />
               <Text style={[style.menuText, { color: "red" }]}>Logout</Text>
             </TouchableOpacity>

@@ -15,6 +15,17 @@ export const style = StyleSheet.create({
     borderTopWidth: 1,
     backgroundColor: "#fff",
   },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  loadingIndicator: {
+    transform: [{ scale: 1.5 }],
+  },
   profileIcon: {
     width: 40,
     height: 40,
