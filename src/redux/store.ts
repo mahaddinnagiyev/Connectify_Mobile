@@ -5,7 +5,8 @@ import myFriendsReducer from "./friend/myFriendsSlice";
 import usersReducer from "./users/usersSlice";
 import myProfileReducer from "./profile/myProfileSlice";
 import settingsReducer from "./settings/settingsSlice";
-import loginReucer from "./auth/loginSlice";
+import authReucer from "./auth/authSlice";
+import messageReducer from "./messages/messageSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,8 +17,11 @@ export const store = configureStore({
     myProfile: myProfileReducer,
     settings: settingsReducer,
 
+    // Messages
+    messages: messageReducer,
+
     // Auth
-    login: loginReucer,
+    auth: authReucer,
   },
 });
 
