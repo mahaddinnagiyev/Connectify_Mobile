@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LoginDTO } from "./dto/auth.dto";
+import { FaceIdLoginDTO, LoginDTO } from "./dto/auth.dto";
 import { getTokenFromSession } from "./token.service";
 
 export interface Response {
@@ -18,6 +18,36 @@ export const login = async (formData: LoginDTO): Promise<Response> => {
   try {
     const { data } = await axios.post<Response>(
       `${process.env.SERVER_URL}/auth/login`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        success: false,
+        error: err.response?.data?.error || err.message,
+      };
+    }
+    return {
+      success: false,
+      error: "Something went wrong while logging in",
+    };
+  }
+};
+
+// Login With Face ID
+export const faceIdLogin = async (
+  formData: FaceIdLoginDTO
+): Promise<Response> => {
+  try {
+    const { data } = await axios.post<Response>(
+      `${process.env.SERVER_URL}/auth/login/faceid`,
       formData,
       {
         headers: {
