@@ -13,6 +13,10 @@ import { RootState } from "@redux/store";
 import { color } from "@/colors";
 import { setActiveTab } from "@redux/auth/authSlice";
 import { AuthPage } from "@enums/auth.enum";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 const AuthHeader = () => {
   const dispatch = useDispatch();
@@ -43,6 +47,19 @@ const AuthHeader = () => {
     inputRange: [0, 1],
     outputRange: [0, tabWidth],
   });
+
+  React.useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: process.env.WEB_CLIENT_ID,
+      offlineAccess: true,
+    });
+  }, []);
+
+  async function signInWithGoogle() {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    // userInfo.idToken-ni backend-ə göndərərək JWT / session yaradın
+  }
 
   return (
     <>
