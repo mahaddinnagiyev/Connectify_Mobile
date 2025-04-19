@@ -20,6 +20,7 @@ import {
 import ErrorMessage from "../../messages/ErrorMessage";
 import SuccessMessage from "../../messages/SuccessMessage";
 import { color } from "@/colors";
+import { Audio } from "expo-av";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,10 @@ const LoginForm = () => {
         dispatch(setSuccessMessage(response.message ?? "Login successful"));
         dispatch(setLoginForm({ username_or_email: null, password: null }));
         dispatch(setIsAuthenticated(true));
+        const { sound } = await Audio.Sound.createAsync(
+          require("@assets/sounds/successfull-face-id-audio.wav")
+        );
+        await sound.playAsync();
       } else {
         dispatch(
           setErrorMessage(
@@ -51,6 +56,7 @@ const LoginForm = () => {
         );
       }
     } catch (error) {
+      console.log(error);
       dispatch(
         setErrorMessage(
           (error as Error).message ?? "Something went wrong. Please try again."

@@ -129,7 +129,7 @@ const FaceIDModal: React.FC<FaceIDModalProps> = ({
         <View style={styles.box}>
           <Text style={styles.title}>Face ID Authentication</Text>
           <Text style={styles.subtitle}>
-            Position your face within the frame
+            Position your face within the frame and wait until detect your face
           </Text>
           <View style={styles.scannerContainer}>
             <CameraView facing={facing} style={styles.cameraFill} />
