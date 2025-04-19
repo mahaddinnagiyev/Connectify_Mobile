@@ -30,7 +30,12 @@ import { setIsAuthenticated } from "@redux/auth/authSlice";
 import ErrorMessage from "../messages/ErrorMessage";
 import SuccessMessage from "../messages/SuccessMessage";
 
-const Header = () => {
+interface HeaderProps {
+  activeTab: string;
+  onTabChange: (key: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
   const dispatch = useDispatch();
 
   const { isModalVisible } = useSelector((state: RootState) => state.header);
@@ -100,8 +105,8 @@ const Header = () => {
         </View>
       )}
       <View style={style.header}>
-        <TouchableOpacity onPress={() => navigation.navigate("Messenger")}>
-          {route.name === "Messenger" ? (
+        <TouchableOpacity onPress={() => onTabChange("messenger")}>
+          {activeTab === "Messenger" ? (
             <MaterialIcons name="chat" size={30} color={color.primaryColor} />
           ) : (
             <MaterialIcons name="chat-bubble-outline" size={30} color="black" />
@@ -113,8 +118,8 @@ const Header = () => {
           color="black"
           onPress={() => setIsAlertVisible(true)}
         />
-        <TouchableOpacity onPress={() => navigation.navigate("Users")}>
-          {route.name === "Users" ? (
+        <TouchableOpacity onPress={() => onTabChange("users")}>
+          {activeTab === "Users" ? (
             <MaterialIcons name="people" size={30} color={color.primaryColor} />
           ) : (
             <MaterialIcons name="people-outline" size={30} color="black" />
@@ -122,9 +127,9 @@ const Header = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onLongPress={() => dispatch(toggleModal())}
-          onPress={() => navigation.navigate("MyProfile")}
+          onPress={() => onTabChange("myProfile")}
         >
-          {route.name === "MyProfile" ? (
+          {activeTab === "MyProfile" ? (
             <Image
               source={require("@assets/images/no-profile-photo.png")}
               style={[style.profileIcon, { borderColor: color.primaryColor }]}
@@ -150,19 +155,6 @@ const Header = () => {
           onPress={() => dispatch(toggleModal())}
         >
           <View style={style.modalContent}>
-            <Pressable
-              style={style.menuItem}
-              onPress={() => {
-                dispatch(toggleModal());
-                navigation.navigate("MyProfile");
-              }}
-            >
-              <Image
-                source={require("@assets/images/no-profile-photo.png")}
-                style={style.menuImage}
-              />
-              <Text style={style.menuText}>My Profile</Text>
-            </Pressable>
             <Pressable
               style={style.menuItem}
               onPress={() => {
