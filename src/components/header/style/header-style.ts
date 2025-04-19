@@ -26,10 +26,16 @@ export const style = StyleSheet.create({
   loadingIndicator: {
     transform: [{ scale: 1.5 }],
   },
+  menuContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: 61,
+  },
   profileIcon: {
-    width: 40,
-    height: 40,
-    borderWidth: 2,
+    width: 32,
+    height: 32,
+    borderWidth: 1,
     borderRadius: 50,
   },
   modalOverlay: {
@@ -64,5 +70,22 @@ export const style = StyleSheet.create({
     fontSize: 16,
     color: color.inputTextColor,
     fontWeight: 700,
+  },
+  handleContainer: {
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  handleBar: {
+    width: 48,
+    height: 5,
+    backgroundColor: "#ddd",
+    borderRadius: 4,
+  },
+  pressedItem: {
+    backgroundColor: "#f8f8f8",
+    transform: [{ scale: 0.98 }],
+  },
+  chevron: {
+    marginLeft: "auto",
   },
 });

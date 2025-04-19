@@ -1,6 +1,5 @@
-// MainTabsScreen.tsx
 import * as React from "react";
-import { View, useWindowDimensions, StyleSheet } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 import MessengerScreen from "./messenger/MessengerScreen";
 import UsersScreen from "./users/UsersScreen";

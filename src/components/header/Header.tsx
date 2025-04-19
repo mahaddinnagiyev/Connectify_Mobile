@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   ActivityIndicator,
+  PanResponder,
 } from "react-native";
 import { style } from "./style/header-style";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -14,7 +15,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "@redux/header/headerSlice";
 import { RootState } from "@redux/store";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { color } from "@/colors";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
@@ -47,8 +48,19 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
   const [isLogoutLoading, setIsLogoutLoading] = React.useState(false);
 
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const route = useRoute();
 
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 30) {
+          dispatch(toggleModal());
+        }
+      },
+    })
+  ).current;
+
+  // Logout
   const handleLogout = async () => {
     try {
       setIsLogoutLoading(true);
@@ -104,30 +116,77 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
           />
         </View>
       )}
+
       <View style={style.header}>
-        <TouchableOpacity onPress={() => onTabChange("messenger")}>
+        <TouchableOpacity
+          onPress={() => onTabChange("messenger")}
+          style={style.menuContainer}
+        >
           {activeTab === "Messenger" ? (
             <MaterialIcons name="chat" size={30} color={color.primaryColor} />
           ) : (
             <MaterialIcons name="chat-bubble-outline" size={30} color="black" />
           )}
+          <Text
+            style={[
+              style.menuText,
+              {
+                fontSize: 12,
+                bottom: 0,
+                color: activeTab === "Messenger" ? color.primaryColor : "black",
+              },
+            ]}
+          >
+            Messenger
+          </Text>
         </TouchableOpacity>
-        <MaterialCommunityIcons
-          name="account-group-outline"
-          size={30}
-          color="black"
+        <TouchableOpacity
           onPress={() => setIsAlertVisible(true)}
-        />
-        <TouchableOpacity onPress={() => onTabChange("users")}>
+          style={style.menuContainer}
+        >
+          <MaterialCommunityIcons
+            name="account-group-outline"
+            size={30}
+            color="black"
+          />
+          <Text
+            style={[
+              style.menuText,
+              {
+                fontSize: 12,
+                color: activeTab === "Groups" ? color.primaryColor : "black",
+              },
+            ]}
+          >
+            Groups
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => onTabChange("users")}
+          style={style.menuContainer}
+        >
           {activeTab === "Users" ? (
-            <MaterialIcons name="people" size={30} color={color.primaryColor} />
+            <MaterialIcons name="people" size={31} color={color.primaryColor} />
           ) : (
-            <MaterialIcons name="people-outline" size={30} color="black" />
+            <MaterialIcons name="people-outline" size={31} color="black" />
           )}
+          <Text
+            style={[
+              style.menuText,
+              {
+                fontSize: 12,
+                bottom: 0,
+                color: activeTab === "Users" ? color.primaryColor : "black",
+              },
+            ]}
+          >
+            Users
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onLongPress={() => dispatch(toggleModal())}
           onPress={() => onTabChange("myProfile")}
+          style={[style.menuContainer]}
         >
           {activeTab === "MyProfile" ? (
             <Image
@@ -140,6 +199,18 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               style={[style.profileIcon]}
             />
           )}
+          <Text
+            style={[
+              style.menuText,
+              {
+                fontSize: 12,
+                bottom: 0,
+                color: activeTab === "MyProfile" ? color.primaryColor : "black",
+              },
+            ]}
+          >
+            Profile
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -155,38 +226,52 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
           onPress={() => dispatch(toggleModal())}
         >
           <View style={style.modalContent}>
+            <View style={style.handleContainer} {...panResponder.panHandlers}>
+              <View style={style.handleBar} />
+            </View>
             <Pressable
-              style={style.menuItem}
+              style={({ pressed }) => [
+                style.menuItem,
+                pressed && style.pressedItem,
+              ]}
               onPress={() => {
                 dispatch(toggleModal());
                 navigation.navigate("Settings");
               }}
             >
-              <MaterialIcons name="settings" size={24} color="black" />
+              <MaterialIcons name="settings" size={24} color="#444" />
               <Text style={style.menuText}>Settings</Text>
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color="#666"
+                style={style.chevron}
+              />
             </Pressable>
-            {/* <Pressable
-              style={style.menuItem}
-              onPress={() => {
-                dispatch(toggleModal());
-                navigation.navigate("FAQ");
-              }}
-            >
-              <FontAwesome name="question-circle" size={24} color="black" />
-              <Text style={style.menuText}>FAQ</Text>
-            </Pressable> */}
             <Pressable
-              style={style.menuItem}
+              style={({ pressed }) => [
+                style.menuItem,
+                pressed && style.pressedItem,
+              ]}
               onPress={() => {
                 dispatch(toggleModal());
                 navigation.navigate("ContactUs");
               }}
             >
-              <MaterialIcons name="contact-phone" size={24} color="black" />
+              <MaterialIcons name="contact-phone" size={24} color="#444" />
               <Text style={style.menuText}>Contact Us</Text>
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color="#666"
+                style={style.chevron}
+              />
             </Pressable>
-            <TouchableOpacity
-              style={style.menuItem}
+            <Pressable
+              style={({ pressed }) => [
+                style.menuItem,
+                pressed && style.pressedItem,
+              ]}
               onPress={() => {
                 dispatch(toggleModal());
                 handleLogout();
@@ -194,7 +279,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
             >
               <MaterialIcons name="logout" size={24} color="red" />
               <Text style={[style.menuText, { color: "red" }]}>Logout</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </TouchableOpacity>
       </Modal>
