@@ -120,11 +120,21 @@ const Header = () => {
             <MaterialIcons name="people-outline" size={30} color="black" />
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => dispatch(toggleModal())}>
-          <Image
-            source={require("@assets/images/no-profile-photo.png")}
-            style={style.profileIcon}
-          />
+        <TouchableOpacity
+          onLongPress={() => dispatch(toggleModal())}
+          onPress={() => navigation.navigate("MyProfile")}
+        >
+          {route.name === "MyProfile" ? (
+            <Image
+              source={require("@assets/images/no-profile-photo.png")}
+              style={[style.profileIcon, { borderColor: color.primaryColor }]}
+            />
+          ) : (
+            <Image
+              source={require("@assets/images/no-profile-photo.png")}
+              style={[style.profileIcon]}
+            />
+          )}
         </TouchableOpacity>
       </View>
 

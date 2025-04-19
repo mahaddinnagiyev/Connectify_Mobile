@@ -29,7 +29,6 @@ export const style = StyleSheet.create({
   profileIcon: {
     width: 40,
     height: 40,
-    borderColor: color.primaryColor,
     borderWidth: 2,
     borderRadius: 50,
   },
