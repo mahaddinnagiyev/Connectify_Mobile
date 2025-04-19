@@ -1,5 +1,14 @@
 import { color } from "@/colors";
-import { setCode } from "@redux/auth/authSlice";
+import {
+  setErrorMessage,
+  setSuccessMessage,
+} from "@/src/redux/messages/messageSlice";
+import { confirmAccount, signup } from "@/src/services/auth/auth.service";
+import {
+  setCode,
+  setIsAuthenticated,
+  setSignupForm,
+} from "@redux/auth/authSlice";
 import { RootState } from "@redux/store";
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -13,12 +22,13 @@ import {
   Dimensions,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { Audio } from "expo-av";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const ConfirmAccountScreen = () => {
   const dispatch = useDispatch();
-  const { code } = useSelector((state: RootState) => state.auth);
+  const { signupForm, code } = useSelector((state: RootState) => state.auth);
 
   const [loading, setLoading] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -48,12 +58,71 @@ const ConfirmAccountScreen = () => {
     }
   };
 
-  const handleSubmit = () => {
-    Keyboard.dismiss();
-    setLoading(true);
+  const handleSubmit = async () => {
+    try {
+      Keyboard.dismiss();
+      setLoading(true);
+
+      const response = await confirmAccount(Number(code.join("")));
+
+      if (response.success) {
+        dispatch(
+          setSuccessMessage(
+            "Account confirmed successfully. Welcome to Connectify"
+          )
+        );
+        dispatch(setCode([null, null, null, null, null, null]));
+        dispatch(
+          setSignupForm({
+            first_name: "",
+            last_name: "",
+            username: "",
+            email: "",
+            password: "",
+            confirm: "",
+            gender: "",
+          })
+        );
+        const { sound } = await Audio.Sound.createAsync(
+          require("@assets/sounds/successfull-face-id-audio.wav")
+        );
+        await sound.playAsync();
+        dispatch(setIsAuthenticated(true));
+      } else {
+        if (Array.isArray(response.response?.message)) {
+          dispatch(setErrorMessage(response.response?.message[0]));
+        }
+        dispatch(
+          setErrorMessage(
+            response.response?.message ??
+              response.response?.error ??
+              response.message ??
+              response.error ??
+              "Something went wrong while confirming account"
+          )
+        );
+      }
+    } catch (error) {
+      dispatch(
+        setErrorMessage((error as Error).message) ??
+          "Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleResend = async () => {
+    const response = await signup(signupForm);
+
+    if (response.success) {
+      dispatch(
+        setSuccessMessage(
+          "New confirmation code has been sent to your email. The old code has been expired."
+        )
+      );
+    }
+
     setResendTime((prev) => prev + 30);
   };
 
@@ -85,9 +154,6 @@ const ConfirmAccountScreen = () => {
           />
         ))}
       </View>
-
-      {/* {error ? <Text style={styles.error}>{error}</Text> : null}
-      {success ? <Text style={styles.success}>{success}</Text> : null} */}
 
       <TouchableOpacity
         style={[

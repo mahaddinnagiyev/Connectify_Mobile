@@ -13,21 +13,14 @@ import { setIsAuthenticated, setLoginForm } from "@redux/auth/authSlice";
 import { login } from "@services/auth/auth.service";
 import {
   setErrorMessage,
-  clearErrorMessage,
   setSuccessMessage,
-  clearSuccessMessage,
 } from "@/src/redux/messages/messageSlice";
-import ErrorMessage from "../../messages/ErrorMessage";
-import SuccessMessage from "../../messages/SuccessMessage";
 import { color } from "@/colors";
 import { Audio } from "expo-av";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const { loginForm } = useSelector((state: RootState) => state.auth);
-  const { errorMessage, successMessage } = useSelector(
-    (state: RootState) => state.messages
-  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,7 +49,6 @@ const LoginForm = () => {
         );
       }
     } catch (error) {
-      console.log(error);
       dispatch(
         setErrorMessage(
           (error as Error).message ?? "Something went wrong. Please try again."
@@ -69,20 +61,6 @@ const LoginForm = () => {
 
   return (
     <>
-      {errorMessage && (
-        <ErrorMessage
-          message={errorMessage}
-          onClose={() => dispatch(clearErrorMessage())}
-        />
-      )}
-
-      {successMessage && (
-        <SuccessMessage
-          message={successMessage}
-          onClose={() => dispatch(clearSuccessMessage())}
-        />
-      )}
-
       <View style={styles.formContainer}>
         {isLoading && (
           <View style={styles.loadingOverlay}>

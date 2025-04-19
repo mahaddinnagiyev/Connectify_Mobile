@@ -1,3 +1,5 @@
+import { Gender } from "@/src/enums/gender.enum";
+import { SignupDTO } from "@/src/services/auth/dto/auth.dto";
 import { AuthPage, AuthType } from "@enums/auth.enum";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -14,6 +16,9 @@ interface AuthState {
     face_descriptor: number[];
   };
 
+  // Signup
+  signupForm: SignupDTO;
+
   // Confirm Account
   code: string[];
 }
@@ -27,6 +32,16 @@ const initialState: AuthState = {
   isFaceIDModalOpen: false,
   loginForm: { username_or_email: "", password: "" },
   faceIdLoginForm: { username_or_email_face_id: "", face_descriptor: [] },
+
+  signupForm: {
+    first_name: "",
+    last_name: "",
+    username: "",
+    email: "",
+    gender: "" as Gender,
+    password: "",
+    confirm: "",
+  },
 
   // Confirm Account
   code: new Array(6).fill(""),
@@ -57,6 +72,11 @@ export const authSlice = createSlice({
       state.faceIdLoginForm = { ...state.faceIdLoginForm, ...action.payload };
     },
 
+    // Signup
+    setSignupForm: (state, action) => {
+      state.signupForm = { ...state.signupForm, ...action.payload };
+    },
+
     // Confirm Account
     setCode: (state, action) => {
       state.code = action.payload;
@@ -71,6 +91,7 @@ export const {
   setLoginForm,
   setIsFaceIDModalOpen,
   setFaceIdLoginForm,
+  setSignupForm,
   setCode,
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FaceIdLoginDTO, LoginDTO } from "./dto/auth.dto";
+import { FaceIdLoginDTO, LoginDTO, SignupDTO } from "./dto/auth.dto";
 import { getTokenFromSession } from "./token.service";
 
 export interface Response {
@@ -21,7 +21,7 @@ export const login = async (formData: LoginDTO): Promise<Response> => {
       formData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
         },
         withCredentials: true,
       }
@@ -31,7 +31,10 @@ export const login = async (formData: LoginDTO): Promise<Response> => {
     if (axios.isAxiosError(err)) {
       return {
         success: false,
-        error: err.response?.data?.error || err.message,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
       };
     }
     return {
@@ -51,7 +54,7 @@ export const faceIdLogin = async (
       formData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
         },
         withCredentials: true,
       }
@@ -61,7 +64,10 @@ export const faceIdLogin = async (
     if (axios.isAxiosError(err)) {
       return {
         success: false,
-        error: err.response?.data?.error || err.message,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
       };
     }
     return {
@@ -79,7 +85,7 @@ export const logout = async (): Promise<Response> => {
       {},
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           Authorization: `Bearer ${await getTokenFromSession()}`,
         },
         withCredentials: true,
@@ -91,12 +97,77 @@ export const logout = async (): Promise<Response> => {
     if (axios.isAxiosError(err)) {
       return {
         success: false,
-        error: err.response?.data?.error || err.message,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
       };
     }
     return {
       success: false,
       error: "Something went wrong while logging out",
+    };
+  }
+};
+
+// Signup
+export const signup = async (formData: SignupDTO): Promise<Response> => {
+  try {
+    const { data } = await axios.post<Response>(
+      `${process.env.SERVER_URL}/auth/signup`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        withCredentials: true,
+      }
+    );
+    return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
+      };
+    }
+    return {
+      success: false,
+      error: "Something went wrong while signing up",
+    };
+  }
+};
+
+// Confirm Account
+export const confirmAccount = async (code: number): Promise<Response> => {
+  try {
+    const { data } = await axios.post<Response>(
+      `${process.env.SERVER_URL}/auth/signup/confirm`,
+      { code },
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        withCredentials: true,
+      }
+    );
+    return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
+      };
+    }
+    return {
+      success: false,
+      error: "Something went wrong while confirming account",
     };
   }
 };

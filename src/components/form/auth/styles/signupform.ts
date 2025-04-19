@@ -8,6 +8,17 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: screenWidth * 0.95,
   },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  loadingIndicator: {
+    transform: [{ scale: 1.5 }],
+  },
   scrollContent: {
     padding: 20,
   },
