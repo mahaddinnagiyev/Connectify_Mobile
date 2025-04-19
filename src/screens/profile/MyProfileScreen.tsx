@@ -1,6 +1,5 @@
 import { View, StyleSheet, ScrollView } from "react-native";
 import React from "react";
-import Header from "@components/header/Header";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import ProfilePage from "@components/profile/ProfilePage";
@@ -16,7 +15,6 @@ const MyProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}

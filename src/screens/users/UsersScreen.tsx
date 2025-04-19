@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import Header from "@components/header/Header";
 import { color } from "@/colors";
 import MyFriends from "@components/friends/MyFriends";
 import FriendRequests from "@components/friends/FriendRequests";
@@ -13,9 +12,6 @@ const UsersScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <Header />
-
       {/* Title */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>All Users</Text>
