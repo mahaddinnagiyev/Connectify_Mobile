@@ -4,6 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 interface AuthState {
   isAuthenticated: boolean;
   activeTab: AuthPage;
+
+  // Login
   authType: AuthType;
   isFaceIDModalOpen: boolean;
   loginForm: { username_or_email: string; password: string };
@@ -11,15 +13,23 @@ interface AuthState {
     username_or_email_face_id: string;
     face_descriptor: number[];
   };
+
+  // Confirm Account
+  code: string[];
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
   activeTab: AuthPage.LOGIN,
+
+  // Login
   authType: AuthType.PASSWORD,
   isFaceIDModalOpen: false,
   loginForm: { username_or_email: "", password: "" },
   faceIdLoginForm: { username_or_email_face_id: "", face_descriptor: [] },
+
+  // Confirm Account
+  code: new Array(6).fill(""),
 };
 
 export const authSlice = createSlice({
@@ -32,10 +42,11 @@ export const authSlice = createSlice({
     setActiveTab: (state, action) => {
       state.activeTab = action.payload;
     },
+
+    // Login
     setAuthType: (state, action) => {
       state.authType = action.payload;
     },
-    // Login
     setLoginForm: (state, action) => {
       state.loginForm = { ...state.loginForm, ...action.payload };
     },
@@ -44,6 +55,11 @@ export const authSlice = createSlice({
     },
     setFaceIdLoginForm: (state, action) => {
       state.faceIdLoginForm = { ...state.faceIdLoginForm, ...action.payload };
+    },
+
+    // Confirm Account
+    setCode: (state, action) => {
+      state.code = action.payload;
     },
   },
 });
@@ -55,5 +71,6 @@ export const {
   setLoginForm,
   setIsFaceIDModalOpen,
   setFaceIdLoginForm,
+  setCode,
 } = authSlice.actions;
 export default authSlice.reducer;

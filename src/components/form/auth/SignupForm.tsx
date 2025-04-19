@@ -3,10 +3,16 @@ import { View, Text, Pressable, TextInput, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { styles } from "./styles/signupform";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@/src/navigation/AuthStack";
 
 const SignupForm = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   return (
     <View style={styles.container}>
@@ -120,7 +126,10 @@ const SignupForm = () => {
         </Pressable>
 
         {/* Sign Up Button */}
-        <Pressable style={styles.signupButton}>
+        <Pressable
+          style={styles.signupButton}
+          onPress={() => navigate("ConfirmAccount")}
+        >
           <Text style={styles.signupButtonText}>Sign up</Text>
         </Pressable>
       </ScrollView>
