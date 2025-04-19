@@ -22,14 +22,10 @@ import type { StackParamList } from "@navigation/Navigator";
 import Alert from "../modals/error/Alert";
 import { logout } from "@services/auth/auth.service";
 import {
-  clearErrorMessage,
-  clearSuccessMessage,
   setErrorMessage,
   setSuccessMessage,
 } from "@redux/messages/messageSlice";
 import { setIsAuthenticated } from "@redux/auth/authSlice";
-import ErrorMessage from "../messages/ErrorMessage";
-import SuccessMessage from "../messages/SuccessMessage";
 
 interface HeaderProps {
   activeTab: string;
@@ -40,9 +36,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
   const dispatch = useDispatch();
 
   const { isModalVisible } = useSelector((state: RootState) => state.header);
-  const { errorMessage, successMessage } = useSelector(
-    (state: RootState) => state.messages
-  );
 
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const [isLogoutLoading, setIsLogoutLoading] = React.useState(false);
@@ -93,20 +86,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
 
   return (
     <>
-      {errorMessage && (
-        <ErrorMessage
-          message={errorMessage}
-          onClose={() => dispatch(clearErrorMessage())}
-        />
-      )}
-
-      {successMessage && (
-        <SuccessMessage
-          message={successMessage}
-          onClose={() => dispatch(clearSuccessMessage())}
-        />
-      )}
-
       {isLogoutLoading && (
         <View style={style.loadingOverlay}>
           <ActivityIndicator
