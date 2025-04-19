@@ -34,34 +34,61 @@ const AuthScreen = () => {
           <>
             {/* Switch */}
             <View style={styles.switch}>
-              <MaterialIcons
-                name="password"
-                color={
-                  authType === AuthType.PASSWORD ? color.primaryColor : "black"
-                }
-                size={27}
-              />
+              <View style={styles.iconContainer}>
+                <MaterialIcons
+                  name="password"
+                  size={28}
+                  style={[
+                    styles.authIcon,
+                    authType === AuthType.PASSWORD && styles.activeAuthIcon,
+                  ]}
+                  onPress={() => dispatch(setAuthType(AuthType.PASSWORD))}
+                />
+                <Text
+                  style={[
+                    styles.iconLabel,
+                    authType === AuthType.PASSWORD && styles.activeLabel,
+                  ]}
+                >
+                  Password
+                </Text>
+              </View>
+
               <Switch
                 trackColor={{
-                  false: color.borderColor,
-                  true: color.borderColor,
+                  false: "#e9ecef",
+                  true: color.primaryColor + "20",
                 }}
                 thumbColor={color.primaryColor}
+                ios_backgroundColor="#e9ecef"
+                style={styles.switchControl}
+                value={authType === AuthType.FACEID}
                 onValueChange={(value) => {
                   dispatch(
                     setAuthType(value ? AuthType.FACEID : AuthType.PASSWORD)
                   );
                 }}
-                value={authType === AuthType.FACEID}
-                shouldRasterizeIOS
               />
-              <MaterialIcons
-                name="badge"
-                color={
-                  authType === AuthType.FACEID ? color.primaryColor : "black"
-                }
-                size={27}
-              />
+
+              <View style={styles.iconContainer}>
+                <MaterialIcons
+                  name="face"
+                  size={28}
+                  style={[
+                    styles.authIcon,
+                    authType === AuthType.FACEID && styles.activeAuthIcon,
+                  ]}
+                  onPress={() => dispatch(setAuthType(AuthType.FACEID))}
+                />
+                <Text
+                  style={[
+                    styles.iconLabel,
+                    authType === AuthType.FACEID && styles.activeLabel,
+                  ]}
+                >
+                  Face ID
+                </Text>
+              </View>
             </View>
             {authType === AuthType.PASSWORD ? <LoginForm /> : <FaceIDForm />}
           </>
@@ -89,21 +116,47 @@ const styles = StyleSheet.create({
     width: "95%",
     margin: "auto",
   },
-
   switch: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 25,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    width: "95%",
+    shadowColor: color.primaryColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  iconContainer: {
+    alignItems: "center",
     justifyContent: "center",
-    gap: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: color.borderColor,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    width: "100%",
+    padding: 8,
+  },
+  authIcon: {
+    color: "#adb5bd",
+    padding: 10,
+    borderRadius: 20,
+  },
+  activeAuthIcon: {
+    color: color.primaryColor,
+    backgroundColor: color.primaryColor + "20",
+  },
+  iconLabel: {
+    fontSize: 12,
+    color: "#adb5bd",
+    marginTop: 4,
+    fontFamily: "regular",
+  },
+  activeLabel: {
+    color: color.primaryColor,
+  },
+  switchControl: {
+    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
   },
 });
 
