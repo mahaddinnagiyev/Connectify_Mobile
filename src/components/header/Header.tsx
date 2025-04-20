@@ -36,6 +36,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
   const dispatch = useDispatch();
 
   const { isModalVisible } = useSelector((state: RootState) => state.header);
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const [isLogoutLoading, setIsLogoutLoading] = React.useState(false);
@@ -169,12 +170,20 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
         >
           {activeTab === "MyProfile" ? (
             <Image
-              source={require("@assets/images/no-profile-photo.png")}
+              source={
+                userData.account.profile_picture
+                  ? { uri: userData.account.profile_picture }
+                  : require("@assets/images/no-profile-photo.png")
+              }
               style={[style.profileIcon, { borderColor: color.primaryColor }]}
             />
           ) : (
             <Image
-              source={require("@assets/images/no-profile-photo.png")}
+              source={
+                userData.account.profile_picture
+                  ? { uri: userData.account.profile_picture }
+                  : require("@assets/images/no-profile-photo.png")
+              }
               style={[style.profileIcon]}
             />
           )}
