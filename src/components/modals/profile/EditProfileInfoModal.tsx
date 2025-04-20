@@ -336,6 +336,52 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
     }
   };
 
+  const isFormValid = () => {
+    switch (type) {
+      case "personal":
+        return (
+          personalInfoForm.first_name.trim() !== "" &&
+          personalInfoForm.last_name.trim() !== "" &&
+          personalInfoForm.username.trim() !== ""
+        );
+
+      case "profile":
+        return (
+          profileInfoForm.bio.trim() !== "" &&
+          profileInfoForm.location.trim() !== ""
+        );
+
+      case "social-link":
+        return (
+          socialLinkForm.name.trim() !== "" && socialLinkForm.link.trim() !== ""
+        );
+    }
+  };
+
+  const isFormChanged = () => {
+    switch (type) {
+      case "personal":
+        return (
+          personalInfoForm.first_name !== userData.user.first_name ||
+          personalInfoForm.last_name !== userData.user.last_name ||
+          personalInfoForm.username !== userData.user.username ||
+          personalInfoForm.gender !== userData.user.gender
+        );
+
+      case "profile":
+        return (
+          profileInfoForm.bio !== userData.account.bio ||
+          profileInfoForm.location !== userData.account.location
+        );
+
+      case "social-link":
+        return (
+          socialLinkForm.name !== socialLink.name ||
+          socialLinkForm.link !== socialLink.link
+        );
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -387,9 +433,12 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
             <Pressable
               style={({ pressed }) => [
                 styles.primaryButton,
-                { opacity: pressed ? 0.8 : 1 },
+                pressed || !isFormValid() || !isFormChanged()
+                  ? styles.disabledPrimaryButton
+                  : null,
               ]}
               onPress={onSaveChanges}
+              disabled={!isFormValid() || !isFormChanged()}
             >
               <Text style={styles.primaryButtonText}>Save Changes</Text>
             </Pressable>
