@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import { TabView } from "react-native-tab-view";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,8 +24,20 @@ export default function MyProfileScreen() {
   const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const { activeIndex } = useSelector((state: RootState) => state.myProfile);
-  const { userResponse, isLoading, errorMessage } = useUserData();
+  const { userResponse, isLoading, errorMessage, refetch } = useUserData();
 
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  // Fetch User Datas
   useEffect(() => {
     if (userResponse) {
       if (userResponse.success) {
@@ -62,28 +75,49 @@ export default function MyProfileScreen() {
   ];
 
   const renderScene = ({ route }: { route: { key: string } }) => {
+    const refreshControl = (
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        colors={[color.primaryColor]}
+        tintColor={color.primaryColor}
+      />
+    );
+
     switch (route.key) {
       case "profile":
         return (
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            refreshControl={refreshControl}
+          >
             <ProfilePage />
           </ScrollView>
         );
       case "friends":
         return (
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            refreshControl={refreshControl}
+          >
             <MyFriends />
           </ScrollView>
         );
       case "requests":
         return (
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            refreshControl={refreshControl}
+          >
             <FriendRequests />
           </ScrollView>
         );
       case "blocked":
         return (
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            refreshControl={refreshControl}
+          >
             <BlockList />
           </ScrollView>
         );
