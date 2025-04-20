@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Connectify-Mobile",
-    "slug": "Connectify-Mobile",
+    "slug": "connectify-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "entryPoint": "./App.tsx",
@@ -14,8 +14,6 @@
     "android": {
       "adaptiveIcon": {},
       "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
@@ -47,6 +45,14 @@
     "experiments": {
       "typedRoutes": true
     },
-    "assetBundlePatterns": ["assets/models/**"]
+    "assetBundlePatterns": [
+      "assets/models/**"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b676ba6b-f964-4e49-a5e2-9d14e9af7599"
+      }
+    },
+    "owner": "mahaddinnagiyev"
   }
 }

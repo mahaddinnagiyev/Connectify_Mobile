@@ -1,12 +1,6 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import { View, Text, ScrollView, Pressable, Dimensions } from "react-native";
 import React from "react";
+import { styles } from "./styles/profile-header";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@redux/store";
@@ -103,47 +97,3 @@ const ProfileHeader = () => {
 };
 
 export default ProfileHeader;
-
-const styles = StyleSheet.create({
-  headerMenuContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    height: 60,
-    marginTop: 50,
-    borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-
-  scrollView: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-
-  scrollContent: {
-    alignItems: "center",
-  },
-
-  menuItemWrapper: {
-    marginRight: 15,
-    alignItems: "center",
-  },
-
-  menuText: {
-    fontSize: 14,
-    color: "gray",
-    fontWeight: "800",
-  },
-
-  activeMenuText: {
-    color: "#00ff00",
-    fontWeight: "bold",
-  },
-
-  activeLine: {
-    height: 2,
-    width: "100%",
-    backgroundColor: "#00ff00",
-    marginTop: 3,
-  },
-});
