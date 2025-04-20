@@ -27,6 +27,21 @@ export const styles = StyleSheet.create({
     borderColor: color.primaryColor,
   },
 
+  profileImageContainer: {
+    position: "relative",
+  },
+
+  profilePhotoEditIcon: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    backgroundColor: color.primaryColor,
+    borderRadius: 20,
+    padding: 6,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+
   personalContainer: {
     backgroundColor: "white",
     borderRadius: 16,
