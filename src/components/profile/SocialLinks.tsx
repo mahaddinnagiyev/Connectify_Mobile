@@ -3,16 +3,20 @@ import React from "react";
 import { styles } from "./styles/social-links";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
-import { RootState } from "@/src/redux/store";
-import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import * as Clipboard from "expo-clipboard";
+import { setSuccessMessage } from "@redux/messages/messageSlice";
 
 const SocialLinks = () => {
+  const dispatch = useDispatch();
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const socialLinks = userData.account.social_links ?? [];
 
-  const handleCopy = (url: string) => {
-    window.navigator.clipboard.writeText(url);
+  const handleCopy = async (url: string) => {
+    await Clipboard.setStringAsync(url);
+    dispatch(setSuccessMessage("Link copied to clipboard"));
   };
 
   const handleOpen = async (url: string) => {
