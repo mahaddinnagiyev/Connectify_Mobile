@@ -4,5 +4,5 @@ export interface Account {
   location: string;
   profile_picture: string;
   social_links: { id: string; name: string; link: string }[];
-  last_login: Date;
+  last_login: string;
 }

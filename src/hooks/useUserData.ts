@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios, { AxiosError } from "axios";
 import { UserResponse } from "@services/user/user.service";
-import { getTokenFromSession } from "../services/auth/token.service";
+import { getTokenFromSession } from "@services/auth/token.service";
+import { Response } from "@services/auth/auth.service";
 
 interface ErrorPayload {
   message?: string | string[];

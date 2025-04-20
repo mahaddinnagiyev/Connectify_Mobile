@@ -2,6 +2,17 @@ import { StyleSheet } from "react-native";
 import { color } from "@/colors";
 
 export const styles = StyleSheet.create({
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  loadingIndicator: {
+    transform: [{ scale: 1.5 }],
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",

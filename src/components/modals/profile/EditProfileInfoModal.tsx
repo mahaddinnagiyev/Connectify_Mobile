@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { styles } from "./styles/editProfileModal";
 import { Picker } from "@react-native-picker/picker";
@@ -14,6 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { color } from "@/colors";
 import { Gender } from "@enums/gender.enum";
+import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
 
 interface ProfileModalProps {
   type: "personal" | "profile" | "social-link";
@@ -31,12 +33,68 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
 }) => {
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
-  let socialLink: { id: string; name: string; link: string };
+  const [personalInfoForm, setPersonalInfoForm] = React.useState({
+    first_name: "",
+    last_name: "",
+    username: "",
+    gender: Gender.other,
+  });
+  const [profileInfoForm, setProfileInfoForm] = React.useState({
+    bio: "",
+    location: "",
+  });
+  const [socialLinkForm, setSocialLinkForm] = React.useState({
+    id: "",
+    name: "",
+    link: "",
+  });
 
+  const { updateProfile, updateAccount, updateSocialLink, isLoading } =
+    useUpdateProfile();
+
+  let socialLink: { id: string; name: string; link: string };
   if (socialLinkId && type === "social-link") {
     socialLink = userData.account.social_links.filter(
       (link) => link.id === socialLinkId
     )[0];
+  }
+
+  switch (type) {
+    case "personal":
+      React.useEffect(() => {
+        if (userData) {
+          setPersonalInfoForm({
+            first_name: userData.user.first_name,
+            last_name: userData.user.last_name,
+            username: userData.user.username,
+            gender: userData.user.gender,
+          });
+        }
+      }, [userData.user]);
+      break;
+
+    case "profile":
+      React.useEffect(() => {
+        if (userData) {
+          setProfileInfoForm({
+            bio: userData.account.bio,
+            location: userData.account.location,
+          });
+        }
+      }, [userData.account]);
+      break;
+
+    case "social-link":
+      React.useEffect(() => {
+        if (socialLink) {
+          setSocialLinkForm({
+            id: socialLink.id,
+            name: socialLink.name,
+            link: socialLink.link,
+          });
+        }
+      }, [socialLink!]);
+      break;
   }
 
   const renderForm = () => {
@@ -60,9 +118,15 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>First Name</Text>
               <TextInput
                 style={styles.inputField}
-                value={userData.user.first_name}
+                value={personalInfoForm.first_name}
                 placeholder="John"
                 placeholderTextColor={color.tertiaryColor}
+                onChange={(e) => {
+                  setPersonalInfoForm({
+                    ...personalInfoForm,
+                    first_name: e.nativeEvent.text,
+                  });
+                }}
               />
             </View>
 
@@ -70,9 +134,15 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>Last Name</Text>
               <TextInput
                 style={styles.inputField}
-                value={userData.user.last_name}
+                value={personalInfoForm.last_name}
                 placeholder="Doe"
                 placeholderTextColor={color.tertiaryColor}
+                onChange={(e) => {
+                  setPersonalInfoForm({
+                    ...personalInfoForm,
+                    last_name: e.nativeEvent.text,
+                  });
+                }}
               />
             </View>
 
@@ -80,18 +150,30 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>Username</Text>
               <TextInput
                 style={styles.inputField}
-                value={userData.user.username}
+                value={personalInfoForm.username}
                 placeholder="johndoe123"
                 placeholderTextColor={color.tertiaryColor}
+                onChange={(e) => {
+                  setPersonalInfoForm({
+                    ...personalInfoForm,
+                    username: e.nativeEvent.text,
+                  });
+                }}
               />
             </View>
 
             <View style={[styles.inputCard, styles.pickerCard]}>
               <Text style={styles.inputLabel}>Gender</Text>
               <Picker
-                selectedValue={userData.user.gender}
+                selectedValue={personalInfoForm.gender}
                 dropdownIconColor={color.primaryColor}
                 style={styles.picker}
+                onValueChange={(e) => {
+                  setPersonalInfoForm({
+                    ...personalInfoForm,
+                    gender: e,
+                  });
+                }}
               >
                 <Picker.Item
                   label="Select Gender"
@@ -137,11 +219,17 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>Bio</Text>
               <TextInput
                 style={[styles.inputField, styles.bioInput]}
-                value={userData.account.bio}
+                value={profileInfoForm.bio}
                 placeholder="Tell about yourself..."
                 placeholderTextColor={color.tertiaryColor}
                 multiline
                 numberOfLines={4}
+                onChangeText={(e) => {
+                  setProfileInfoForm({
+                    ...profileInfoForm,
+                    bio: e,
+                  });
+                }}
               />
             </View>
 
@@ -149,9 +237,15 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>Location</Text>
               <TextInput
                 style={styles.inputField}
-                value={userData.account.location}
+                value={profileInfoForm.location}
                 placeholder="City, Country"
                 placeholderTextColor={color.tertiaryColor}
+                onChangeText={(e) => {
+                  setProfileInfoForm({
+                    ...profileInfoForm,
+                    location: e,
+                  });
+                }}
               />
               <MaterialIcons
                 name="location-on"
@@ -178,9 +272,15 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>Platform Name</Text>
               <TextInput
                 style={styles.inputField}
-                value={socialLink?.name}
-                placeholder="Instagram"
+                value={socialLinkForm.name}
+                placeholder="Example: Instagram"
                 placeholderTextColor={color.tertiaryColor}
+                onChangeText={(e) => {
+                  setSocialLinkForm({
+                    ...socialLinkForm,
+                    name: e,
+                  });
+                }}
               />
               <MaterialIcons
                 name="social-distance"
@@ -194,10 +294,16 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
               <Text style={styles.inputLabel}>Profile URL</Text>
               <TextInput
                 style={styles.inputField}
-                value={socialLink?.link}
-                placeholder="https://instagram.com/username"
+                value={socialLinkForm.link}
+                placeholder="https://example.com/username"
                 placeholderTextColor={color.tertiaryColor}
                 keyboardType="url"
+                onChangeText={(e) => {
+                  setSocialLinkForm({
+                    ...socialLinkForm,
+                    link: e,
+                  });
+                }}
               />
               <MaterialIcons
                 name="http"
@@ -211,6 +317,25 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
     }
   };
 
+  const onSaveChanges = async () => {
+    switch (type) {
+      case "personal":
+        await updateProfile(personalInfoForm);
+        onClose();
+        break;
+
+      case "profile":
+        await updateAccount(profileInfoForm);
+        onClose();
+        break;
+
+      case "social-link":
+        await updateSocialLink(socialLinkForm);
+        onClose();
+        break;
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -220,6 +345,15 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
+          {isLoading && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator
+                size="large"
+                color={color.primaryColor}
+                style={styles.loadingIndicator}
+              />
+            </View>
+          )}
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>
               {type === "personal" && "Edit Personal Info"}
@@ -255,6 +389,7 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
                 styles.primaryButton,
                 { opacity: pressed ? 0.8 : 1 },
               ]}
+              onPress={onSaveChanges}
             >
               <Text style={styles.primaryButtonText}>Save Changes</Text>
             </Pressable>

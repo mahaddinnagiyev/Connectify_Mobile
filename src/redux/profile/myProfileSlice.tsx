@@ -16,7 +16,14 @@ const initialState: MyProfileState = {
   activeIndex: 0,
   userData: {
     user: {} as User,
-    account: {} as Account,
+    account: {
+      id: "",
+      bio: "",
+      location: "",
+      profile_picture: "",
+      social_links: [],
+      last_login: "",
+    } as Account,
     privacySettings: {} as PrivacySettings,
   },
 };
@@ -31,8 +38,42 @@ export const myProfileSlice = createSlice({
     setUserData(state, action: PayloadAction<MyProfileState["userData"]>) {
       state.userData = action.payload;
     },
+    updateUserFields(
+      state,
+      action: PayloadAction<Partial<MyProfileState["userData"]["user"]>>
+    ) {
+      state.userData.user = {
+        ...state.userData.user,
+        ...action.payload,
+      };
+    },
+    updateAccountFields(
+      state,
+      action: PayloadAction<Partial<MyProfileState["userData"]["account"]>>
+    ) {
+      state.userData.account = {
+        ...state.userData.account,
+        ...action.payload,
+      };
+    },
+    updateSocialLink(
+      state,
+      action: PayloadAction<{ id: string; name: string; link: string }>
+    ) {
+      const { id, name, link } = action.payload;
+      state.userData.account.social_links =
+        state.userData.account.social_links.map((sl) =>
+          sl.id === id ? { ...sl, name, link } : sl
+        );
+    },
   },
 });
 
-export const { setActiveIndex, setUserData } = myProfileSlice.actions;
+export const {
+  setActiveIndex,
+  setUserData,
+  updateUserFields,
+  updateAccountFields,
+  updateSocialLink,
+} = myProfileSlice.actions;
 export default myProfileSlice.reducer;
