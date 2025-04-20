@@ -7,10 +7,12 @@ import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
 import { RootState } from "@redux/store";
 import { useSelector } from "react-redux";
+import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 
 const PersonalInfo = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showImageModal, setShowImageModal] = React.useState(false);
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
@@ -58,6 +60,7 @@ const PersonalInfo = () => {
                 name="edit-square"
                 size={24}
                 color={color.primaryColor}
+                onPress={() => setShowEditModal(true)}
               />
             </View>
           </View>
@@ -133,6 +136,12 @@ const PersonalInfo = () => {
           }
         />
       )}
+
+      <EditProfileInfoModal
+        type="personal"
+        visible={showEditModal}
+        onClose={() => setShowEditModal(false)}
+      />
     </>
   );
 };
