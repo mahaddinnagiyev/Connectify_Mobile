@@ -5,17 +5,14 @@ import { color } from "@/colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
+import { RootState } from "@redux/store";
+import { useSelector } from "react-redux";
 
 const PersonalInfo = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showImageModal, setShowImageModal] = React.useState(false);
-  const userInfo = {
-    firstName: "John",
-    lastName: "Doe",
-    username: "johndoe",
-    email: "john@example.com",
-    gender: "Male",
-  };
+
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   return (
     <>
@@ -26,7 +23,11 @@ const PersonalInfo = () => {
           <View style={styles.profileImageContainer}>
             <Pressable onPress={() => setShowImageModal(true)}>
               <Image
-                source={require("@assets/images/no-profile-photo.png")}
+                source={
+                  userData.account.profile_picture
+                    ? { uri: userData.account.profile_picture }
+                    : require("@assets/images/no-profile-photo.png")
+                }
                 style={styles.profile_picture}
               />
             </Pressable>
@@ -67,13 +68,13 @@ const PersonalInfo = () => {
             <View style={styles.infoRow}>
               <View style={[styles.infoItem]}>
                 <Text style={styles.infoLabel}>First Name</Text>
-                <Text style={styles.infoValue}>{userInfo.firstName}</Text>
+                <Text style={styles.infoValue}>{userData.user.first_name}</Text>
                 <View style={styles.infoLine} />
               </View>
 
               <View style={[styles.infoItem]}>
                 <Text style={styles.infoLabel}>Last Name</Text>
-                <Text style={styles.infoValue}>{userInfo.lastName}</Text>
+                <Text style={styles.infoValue}>{userData.user.last_name}</Text>
                 <View style={styles.infoLine} />
               </View>
             </View>
@@ -82,13 +83,17 @@ const PersonalInfo = () => {
             {[
               {
                 label: "Username",
-                value: userInfo.username,
+                value: userData.user.username,
                 icon: "at" as const,
               },
-              { label: "Email", value: userInfo.email, icon: "mail" as const },
+              {
+                label: "Email",
+                value: userData.user.email,
+                icon: "mail" as const,
+              },
               {
                 label: "Gender",
-                value: userInfo.gender,
+                value: userData.user.gender,
                 icon: "male-female" as const,
               },
             ].map((item, index) => (
@@ -121,7 +126,11 @@ const PersonalInfo = () => {
         <ProfilePhotoModal
           visible={showImageModal}
           onClose={() => setShowImageModal(false)}
-          imageSource={require("@assets/images/no-profile-photo.png")}
+          imageSource={
+            userData.account.profile_picture
+              ? { uri: userData.account.profile_picture }
+              : require("@assets/images/no-profile-photo.png")
+          }
         />
       )}
     </>

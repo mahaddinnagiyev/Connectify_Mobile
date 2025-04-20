@@ -3,22 +3,13 @@ import React from "react";
 import { styles } from "./styles/social-links";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
+import { RootState } from "@/src/redux/store";
+import { useSelector } from "react-redux";
 
 const SocialLinks = () => {
-  const socialLinks = [
-    {
-      id: 1,
-      platform: "GitHub",
-      name: "@johndoe",
-      url: "https://github.com/johndoe",
-    },
-    {
-      id: 2,
-      platform: "LinkedIn",
-      name: "John Doe",
-      url: "https://linkedin.com/in/johndoe",
-    },
-  ];
+  const { userData } = useSelector((state: RootState) => state.myProfile);
+
+  const socialLinks = userData.account.social_links ?? [];
 
   const handleCopy = (url: string) => {
     window.navigator.clipboard.writeText(url);
@@ -43,7 +34,7 @@ const SocialLinks = () => {
         <View key={link.id} style={styles.linkCard}>
           {/* Platform and actions */}
           <View style={styles.linkHeader}>
-            <Text style={styles.platformText}>{link.platform}</Text>
+            <Text style={styles.platformText}>{link.name}</Text>
             <View style={styles.actions}>
               <Pressable style={styles.iconButton}>
                 <MaterialIcons
@@ -67,14 +58,14 @@ const SocialLinks = () => {
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {link.url}
+                {link.link}
               </Text>
             </View>
 
             <View style={styles.linkActions}>
               <Pressable
                 style={styles.actionButton}
-                onPress={() => handleCopy(link.url)}
+                onPress={() => handleCopy(link.link)}
               >
                 <Ionicons name="copy" size={18} color={color.primaryColor} />
                 <Text style={styles.actionText}>Copy</Text>
@@ -82,7 +73,7 @@ const SocialLinks = () => {
 
               <Pressable
                 style={styles.actionButton}
-                onPress={() => handleOpen(link.url)}
+                onPress={() => handleOpen(link.link)}
               >
                 <Ionicons name="open" size={18} color={color.primaryColor} />
                 <Text style={styles.actionText}>Open</Text>

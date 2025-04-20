@@ -3,13 +3,11 @@ import React from "react";
 import { styles } from "./styles/profile-info";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
+import { RootState } from "@redux/store";
+import { useSelector } from "react-redux";
 
 const ProfileInfo = () => {
-  const profileData = {
-    bio: "Frontend developer passionate about creating user-friendly interfaces and learning new technologies.",
-    location: "Baku, Azerbaijan",
-    lastSeen: "12:30",
-  };
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   return (
     <View style={styles.container}>
@@ -37,17 +35,28 @@ const ProfileInfo = () => {
           {[
             {
               label: "Bio",
-              value: profileData.bio,
+              value: userData.account.bio ?? "This User Has No Bio",
               icon: "document-text" as const,
             },
             {
               label: "Location",
-              value: profileData.location,
+              value: userData.account.location ?? "This User Has No Location",
               icon: "location" as const,
             },
             {
               label: "Last Seen",
-              value: profileData.lastSeen,
+              value: userData.account.last_login
+                ? new Date(userData.account.last_login)
+                    .toLocaleTimeString("az-AZ", {
+                      timeZone: "Asia/Baku",
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                    .toString()
+                : "No Last Login Data",
               icon: "time" as const,
             },
           ].map((item, index) => (

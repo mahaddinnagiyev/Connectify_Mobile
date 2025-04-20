@@ -18,7 +18,8 @@
       "@color": ["./colors.ts"],
       "@assets/*": ["./assets/*"],
       "@enums/*": ["./src/enums/*"],
-      "@services/*": ["./src/services/*"]
+      "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/hooks/*"],
     }
   },
   "include": [
