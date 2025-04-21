@@ -54,7 +54,11 @@ const MyFriends = () => {
           <Pressable style={styles.friendItem}>
             <View style={styles.profileContainer}>
               <Image
-                source={{ uri: item.profile_picture }}
+                source={
+                  item.profile_picture
+                    ? { uri: item.profile_picture }
+                    : require("@assets/images/no-profile-photo.png")
+                }
                 style={styles.avatar}
               />
               <View style={styles.textContainer}>

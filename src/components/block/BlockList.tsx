@@ -9,43 +9,60 @@ import {
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
+import { useFriendData } from "@/src/hooks/useFriendData";
+import { BlockAction } from "@/src/services/friends/blockList.dto";
+import ConfirmModal from "../modals/confirm/ConfirmModal";
 
 const BlockList = () => {
+  const [showConfirmModal, setShowConfirmModal] = React.useState(false);
+  const [blockId, setBlockId] = React.useState<string | null>(null);
 
-  const blockedUsers = [
-    {
-      id: 1,
-      name: "Elvin Həsənov",
-      username: "@elvin_h",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 2,
-      name: "Aydan Məmmədova",
-      username: "@aydan_m",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-  ];
+  const { blockList } = useSelector((state: RootState) => state.myFriends);
+
+  const { fetchBlockList, blockAndUnblockUser, isLoading } = useFriendData();
+
+  React.useEffect(() => {
+    const handleFetchBlockList = async () => {
+      await fetchBlockList();
+    };
+
+    handleFetchBlockList();
+  }, []);
+
+  const handleUnblockUser = async () => {
+    await blockAndUnblockUser(blockId!, BlockAction.unblock);
+    setBlockId(null);
+    setShowConfirmModal(false);
+  };
 
   return (
     <View style={styles.container}>
       {/* Title */}
-      <Text style={styles.headerText}>
-        Blocked Users ({blockedUsers.length})
-      </Text>
+      <Text style={styles.headerText}>Blocked Users ({blockList.length})</Text>
 
       {/* Blocked Users List */}
       <FlatList
-        data={blockedUsers}
+        data={blockList}
         scrollEnabled={false}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.userItem}>
             {/* Profile Info */}
             <View style={styles.userInfo}>
-              <Image source={item.avatar} style={styles.avatar} />
+              <Image
+                source={
+                  item.profile_picture
+                    ? { uri: item.profile_picture }
+                    : require("@assets/images/no-profile-photo.png")
+                }
+                style={styles.avatar}
+              />
               <View style={styles.textContainer}>
-                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.name}>
+                  {item.first_name} {item.last_name}
+                </Text>
                 <Text style={styles.username}>{item.username}</Text>
               </View>
             </View>
@@ -53,7 +70,10 @@ const BlockList = () => {
             {/* Unblock Button */}
             <Pressable
               style={styles.unblockButton}
-              onPress={() => console.log("Unblock:", item.id)}
+              onPress={() => {
+                setBlockId(item.blocked_id);
+                setShowConfirmModal(true);
+              }}
             >
               <Ionicons name="lock-open" size={20} color="white" />
               <Text style={styles.buttonText}>Unblock</Text>
@@ -63,6 +83,17 @@ const BlockList = () => {
         ListEmptyComponent={
           <Text style={styles.emptyText}>No blocked users</Text>
         }
+      />
+
+      <ConfirmModal
+        visible={showConfirmModal}
+        title="Unblock User"
+        message="Are you sure you want to unblock this user?"
+        confirmText="Unblock"
+        cancelText="Cancel"
+        isLoading={isLoading}
+        onConfirm={handleUnblockUser}
+        onCancel={() => setShowConfirmModal(false)}
       />
     </View>
   );
