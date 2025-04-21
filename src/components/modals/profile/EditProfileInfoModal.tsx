@@ -382,6 +382,17 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
     }
   };
 
+  const isValidLink = () => {
+    if (type === "social-link") {
+      try {
+        new URL(socialLinkForm.link);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -433,12 +444,19 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
             <Pressable
               style={({ pressed }) => [
                 styles.primaryButton,
-                pressed || !isFormValid() || !isFormChanged()
+                pressed ||
+                !isFormValid() ||
+                !isFormChanged() ||
+                (type === "social-link" && !isValidLink())
                   ? styles.disabledPrimaryButton
                   : null,
               ]}
               onPress={onSaveChanges}
-              disabled={!isFormValid() || !isFormChanged()}
+              disabled={
+                !isFormValid() ||
+                !isFormChanged() ||
+                (type === "social-link" && !isValidLink())
+              }
             >
               <Text style={styles.primaryButtonText}>Save Changes</Text>
             </Pressable>
