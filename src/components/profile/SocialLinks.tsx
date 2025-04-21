@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Clipboard from "expo-clipboard";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
+import AddSocialLinkModal from "../modals/profile/AddSocialLinkModal";
 
 const SocialLinks = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
   const [socialLinkId, setSocialLinkId] = React.useState<string | null>(null);
 
@@ -33,7 +35,10 @@ const SocialLinks = () => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Social Links</Text>
-          <Pressable style={styles.addButton}>
+          <Pressable
+            style={styles.addButton}
+            onPress={() => setShowAddModal(true)}
+          >
             <Ionicons name="add-circle" size={24} color={color.primaryColor} />
           </Pressable>
         </View>
@@ -100,6 +105,11 @@ const SocialLinks = () => {
           </View>
         ))}
       </View>
+
+      <AddSocialLinkModal
+        visible={showAddModal}
+        onClose={() => setShowAddModal(false)}
+      />
 
       <EditProfileInfoModal
         type="social-link"

@@ -66,6 +66,16 @@ export const myProfileSlice = createSlice({
           sl.id === id ? { ...sl, name, link } : sl
         );
     },
+    addSocialLink(
+      state,
+      action: PayloadAction<{ id: string; name: string; link: string }>
+    ) {
+      const { id, name, link } = action.payload;
+      state.userData.account.social_links = [
+        ...state.userData.account.social_links,
+        { id, name, link },
+      ];
+    },
   },
 });
 
@@ -75,5 +85,6 @@ export const {
   updateUserFields,
   updateAccountFields,
   updateSocialLink,
+  addSocialLink,
 } = myProfileSlice.actions;
 export default myProfileSlice.reducer;

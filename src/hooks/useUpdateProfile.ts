@@ -4,6 +4,7 @@ import {
   updateAccountFields,
   updateUserFields,
   updateSocialLink as updateSocialLinkAction,
+  addSocialLink as addSocialLinkAction,
 } from "@redux/profile/myProfileSlice";
 import {
   setErrorMessage,
@@ -17,6 +18,18 @@ export interface UpdateResponse {
   success: boolean;
   message?: string;
   error?: string;
+  response?: {
+    success: boolean;
+    message?: string;
+    error?: string;
+  };
+}
+
+export interface AddResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  data?: { id: string; name: string; link: string };
   response?: {
     success: boolean;
     message?: string;
@@ -38,6 +51,11 @@ export interface UpdateProfileInfoPayload {
 
 export interface UpdateSocialLinkPayload {
   id: string;
+  name: string;
+  link: string;
+}
+
+export interface AddSocialLink {
   name: string;
   link: string;
 }
@@ -162,5 +180,60 @@ export function useUpdateProfile() {
     }
   };
 
-  return { updateProfile, updateAccount, updateSocialLink, isLoading };
+  const addSocialLink = async (payload: AddSocialLink) => {
+    try {
+      setIsLoading(true);
+      const token = await getTokenFromSession();
+      const { data } = await axios.post<AddResponse>(
+        `${process.env.SERVER_URL}/account/social-link`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        dispatch(addSocialLinkAction(data.data!));
+        dispatch(setSuccessMessage(data.message ?? "New Social Link Added"));
+      } else {
+        let msg: any;
+
+        if (Array.isArray(data.response?.message)) {
+          msg = data.response?.message[0];
+        } else {
+          msg =
+            data.response?.message ??
+            data.response?.error ??
+            data.message ??
+            data.error ??
+            "Something went wrong";
+        }
+        dispatch(setErrorMessage(msg));
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        return {
+          success: false,
+          message:
+            err.response?.data?.message ??
+            err.response?.data?.error ??
+            err.message,
+        };
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    updateProfile,
+    updateAccount,
+    updateSocialLink,
+    addSocialLink,
+    isLoading,
+  };
 }
