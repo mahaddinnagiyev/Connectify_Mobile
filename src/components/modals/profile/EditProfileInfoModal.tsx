@@ -64,10 +64,10 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
       React.useEffect(() => {
         if (userData) {
           setPersonalInfoForm({
-            first_name: userData.user.first_name,
-            last_name: userData.user.last_name,
-            username: userData.user.username,
-            gender: userData.user.gender,
+            first_name: userData.user.first_name || "",
+            last_name: userData.user.last_name || "",
+            username: userData.user.username || "",
+            gender: userData.user.gender || Gender.other,
           });
         }
       }, [userData.user]);
@@ -77,8 +77,8 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
       React.useEffect(() => {
         if (userData) {
           setProfileInfoForm({
-            bio: userData.account.bio,
-            location: userData.account.location,
+            bio: userData.account.bio || "",
+            location: userData.account.location || "",
           });
         }
       }, [userData.account]);
@@ -88,9 +88,9 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
       React.useEffect(() => {
         if (socialLink) {
           setSocialLinkForm({
-            id: socialLink.id,
-            name: socialLink.name,
-            link: socialLink.link,
+            id: socialLink.id || "",
+            name: socialLink.name || "",
+            link: socialLink.link || "",
           });
         }
       }, [socialLink!]);
