@@ -16,7 +16,7 @@ import { getTokenFromSession } from "@services/auth/token.service";
 import { Gender } from "@enums/gender.enum";
 import { useState } from "react";
 
-interface UpdateResponse {
+export interface Response {
   success: boolean;
   message?: string;
   error?: string;
@@ -93,7 +93,7 @@ export function useUpdateProfile() {
     try {
       setIsLoading(true);
       const token = await getTokenFromSession();
-      const { data } = await axios.patch<UpdateResponse>(
+      const { data } = await axios.patch<Response>(
         `${process.env.SERVER_URL}/user/my-profile`,
         payload,
         {
@@ -132,7 +132,7 @@ export function useUpdateProfile() {
     try {
       setIsLoading(true);
       const token = await getTokenFromSession();
-      const { data } = await axios.patch<UpdateResponse>(
+      const { data } = await axios.patch<Response>(
         `${process.env.SERVER_URL}/account/my-info`,
         payload,
         {
@@ -172,7 +172,7 @@ export function useUpdateProfile() {
     try {
       setIsLoading(true);
       const token = await getTokenFromSession();
-      const { data } = await axios.patch<UpdateResponse>(
+      const { data } = await axios.patch<Response>(
         `${process.env.SERVER_URL}/account/social-link/${payload.id}`,
         { name: payload.name, link: payload.link },
         {
@@ -259,7 +259,7 @@ export function useUpdateProfile() {
     try {
       setIsLoading(true);
       const token = await getTokenFromSession();
-      const { data } = await axios.delete<UpdateResponse>(
+      const { data } = await axios.delete<Response>(
         `${process.env.SERVER_URL}/account/social-link/${payload.id}`,
         {
           headers: {

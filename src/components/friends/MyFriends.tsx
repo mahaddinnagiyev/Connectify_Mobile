@@ -6,44 +6,26 @@ import {
   FlatList,
   Image,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
+import { useFriendData } from "@/src/hooks/useFriendData";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
 
 const MyFriends = () => {
-  const friends = [
-    {
-      id: 1,
-      name: "Mahaddin Nagiyev",
-      username: "@nagiyev_mahaddin",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 2,
-      name: "Nərmin Hüseynova",
-      username: "@nermin_h",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 3,
-      name: "Mahaddin Nagiyev",
-      username: "@nagiyev_mahaddin",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 4,
-      name: "Nərmin Hüseynova",
-      username: "@nermin_h",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 5,
-      name: "Mahaddin Nagiyev",
-      username: "@nagiyev_mahaddin",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-  ];
+  const { friends } = useSelector((state: RootState) => state.myFriends);
+  const { isLoading, fetchAllMyFriends } = useFriendData();
+
+  React.useEffect(() => {
+    const handleFetchMyFriends = async () => {
+      await fetchAllMyFriends();
+    };
+
+    handleFetchMyFriends();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -60,6 +42,10 @@ const MyFriends = () => {
         />
       </View>
 
+      {friends.length === 0 && !isLoading && (
+        <Text style={styles.noFriendsText}>No friends found</Text>
+      )}
+
       {/* Friends list */}
       <FlatList
         data={friends}
@@ -67,9 +53,14 @@ const MyFriends = () => {
         renderItem={({ item }) => (
           <Pressable style={styles.friendItem}>
             <View style={styles.profileContainer}>
-              <Image source={item.avatar} style={styles.avatar} />
+              <Image
+                source={{ uri: item.profile_picture }}
+                style={styles.avatar}
+              />
               <View style={styles.textContainer}>
-                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.name}>
+                  {item.first_name} {item.last_name}
+                </Text>
                 <Text style={styles.username}>{item.username}</Text>
               </View>
             </View>
@@ -94,7 +85,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#fff",
   },
-
   headerText: {
     fontSize: 24,
     margin: "auto",
@@ -171,6 +161,13 @@ const styles = StyleSheet.create({
   statusText: {
     color: color.primaryColor,
     fontWeight: "700",
+  },
+  noFriendsText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2D3436",
+    marginTop: 20,
+    textAlign: "center",
   },
 });
 
