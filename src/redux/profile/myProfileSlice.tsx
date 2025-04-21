@@ -38,6 +38,8 @@ export const myProfileSlice = createSlice({
     setUserData(state, action: PayloadAction<MyProfileState["userData"]>) {
       state.userData = action.payload;
     },
+
+    // User Info
     updateUserFields(
       state,
       action: PayloadAction<Partial<MyProfileState["userData"]["user"]>>
@@ -47,7 +49,19 @@ export const myProfileSlice = createSlice({
         ...action.payload,
       };
     },
+
+    // Account Info
     updateAccountFields(
+      state,
+      action: PayloadAction<Partial<MyProfileState["userData"]["account"]>>
+    ) {
+      state.userData.account = {
+        ...state.userData.account,
+        ...action.payload,
+      };
+    },
+
+    changeProfilePhoto(
       state,
       action: PayloadAction<Partial<MyProfileState["userData"]["account"]>>
     ) {
@@ -95,5 +109,6 @@ export const {
   updateSocialLink,
   addSocialLink,
   removeSocialLink,
+  changeProfilePhoto,
 } = myProfileSlice.actions;
 export default myProfileSlice.reducer;

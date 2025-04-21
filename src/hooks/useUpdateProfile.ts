@@ -6,6 +6,7 @@ import {
   updateSocialLink as updateSocialLinkAction,
   addSocialLink as addSocialLinkAction,
   removeSocialLink as removeSocialLinkAction,
+  changeProfilePhoto as changeProfilePhotoAction,
 } from "@redux/profile/myProfileSlice";
 import {
   setErrorMessage,
@@ -15,7 +16,7 @@ import { getTokenFromSession } from "@services/auth/token.service";
 import { Gender } from "@enums/gender.enum";
 import { useState } from "react";
 
-export interface UpdateResponse {
+interface UpdateResponse {
   success: boolean;
   message?: string;
   error?: string;
@@ -26,7 +27,7 @@ export interface UpdateResponse {
   };
 }
 
-export interface AddResponse {
+interface AddResponse {
   success: boolean;
   message?: string;
   error?: string;
@@ -38,28 +39,51 @@ export interface AddResponse {
   };
 }
 
-export interface UpdatePersonalInfoPayload {
+interface UpdatePersonalInfoPayload {
   first_name: string;
   last_name: string;
   username: string;
   gender: Gender;
 }
 
-export interface UpdateProfileInfoPayload {
+interface UpdateProfileInfoPayload {
   bio: string;
   location: string;
 }
 
-export interface UpdateSocialLinkPayload {
+interface UpdateSocialLinkPayload {
   id: string;
   name: string;
   link: string;
 }
 
-export interface AddSocialLink {
+interface AddSocialLink {
   name: string;
   link: string;
 }
+
+interface ChangeProfilePhotoPayload {
+  file?: File;
+  clear?: boolean;
+}
+
+interface UpdateProfilePicture {
+  success: boolean;
+  message?: string;
+  error?: string;
+  profile_picture?: string;
+  response?: {
+    success: boolean;
+    message?: string;
+    error?: string;
+  };
+}
+
+export type UploadFile = {
+  uri: string;
+  name: string;
+  type: string;
+};
 
 export function useUpdateProfile() {
   const dispatch = useDispatch();
@@ -279,12 +303,91 @@ export function useUpdateProfile() {
     }
   };
 
+  const changeProfilePhoto = async (payload: ChangeProfilePhotoPayload) => {
+    setIsLoading(true);
+    try {
+      const token = await getTokenFromSession();
+      let response;
+
+      if (payload.file) {
+        const formData = new FormData();
+        formData.append("profile_picture", payload.file as any);
+        console.log(formData);
+
+        response = await axios.patch<UpdateProfilePicture>(
+          `${process.env.SERVER_URL}/account/profile-pic`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true,
+          }
+        );
+      } else {
+        response = await axios.patch<UpdateProfilePicture>(
+          `${process.env.SERVER_URL}/account/profile-pic`,
+          { clear: payload.clear ?? false },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+      }
+
+      const data = response.data;
+
+      if (data.success) {
+        dispatch(
+          changeProfilePhotoAction({
+            profile_picture: data?.profile_picture ?? undefined,
+          })
+        );
+        dispatch(
+          setSuccessMessage(
+            data.message || "Profile photo updated successfully"
+          )
+        );
+      } else {
+        dispatch(
+          setErrorMessage(
+            data.response?.message ??
+              data.response?.error ??
+              data.message ??
+              data.error ??
+              "Failed to update photo"
+          )
+        );
+      }
+    } catch (err) {
+      let msg: any;
+
+      if (axios.isAxiosError(err)) {
+        msg =
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message;
+      }
+
+      msg = msg ?? "Something went wrong";
+
+      dispatch(setErrorMessage(msg));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     updateProfile,
     updateAccount,
     updateSocialLink,
     addSocialLink,
     removeSocialLink,
+    changeProfilePhoto,
     isLoading,
   };
 }
