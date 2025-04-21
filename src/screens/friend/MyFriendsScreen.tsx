@@ -16,11 +16,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { StackParamList } from "@navigation/Navigator";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const MyFriendsScreen = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const { friends } = useSelector((state: RootState) => state.myFriends);
+
+  const truncateUsername = (name: string) => {
+    if (name.length > 25) {
+      return name.slice(0, 25) + "...";
+    }
+    return name;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -60,7 +70,7 @@ const MyFriendsScreen = () => {
 
       {/* Friend List */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {Array.from({ length: 20 }).map((_, index) => (
+        {friends.map((friend, index) => (
           <TouchableOpacity
             style={styles.chat}
             key={index}
@@ -68,13 +78,26 @@ const MyFriendsScreen = () => {
           >
             {/* Profile Photo */}
             <Image
-              source={require("@assets/images/no-profile-photo.png")}
+              source={
+                friend.profile_picture
+                  ? { uri: friend.profile_picture }
+                  : require("@assets/images/no-profile-photo.png")
+              }
               style={styles.profilePhoto}
             />
             {/* Chat Detail */}
             <View style={styles.chatDetail}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                John Doe | @johndoe
+                {truncateUsername(
+                  friend.first_name +
+                    " " +
+                    friend.last_name +
+                    " " +
+                    "|" +
+                    " " +
+                    "@" +
+                    friend.username
+                )}{" "}
               </Text>
               <View style={styles.lastMessage}>
                 <Text>Whats's Up Man</Text>
