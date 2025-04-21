@@ -9,6 +9,8 @@ import * as Clipboard from "expo-clipboard";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import AddSocialLinkModal from "../modals/profile/AddSocialLinkModal";
+import ConfirmModal from "../modals/confirm/ConfirmModal";
+import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
 
 const SocialLinks = () => {
   const dispatch = useDispatch();
@@ -16,9 +18,12 @@ const SocialLinks = () => {
 
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
+  const [showRemoveModal, setShowRemoveModal] = React.useState<boolean>(false);
   const [socialLinkId, setSocialLinkId] = React.useState<string | null>(null);
 
   const socialLinks = userData.account.social_links ?? [];
+
+  const { removeSocialLink, isLoading } = useUpdateProfile();
 
   const handleCopy = async (url: string) => {
     await Clipboard.setStringAsync(url);
@@ -27,6 +32,11 @@ const SocialLinks = () => {
 
   const handleOpen = async (url: string) => {
     await Linking.openURL(url);
+  };
+
+  const handleRemoveSocialLink = async () => {
+    await removeSocialLink({ id: socialLinkId ?? "" });
+    setShowRemoveModal(false);
   };
 
   return (
@@ -66,6 +76,10 @@ const SocialLinks = () => {
                     name="highlight-remove"
                     size={18}
                     color="red"
+                    onPress={() => {
+                      setSocialLinkId(link.id);
+                      setShowRemoveModal(true);
+                    }}
                   />
                 </Pressable>
               </View>
@@ -116,6 +130,18 @@ const SocialLinks = () => {
         visible={showEditModal}
         onClose={() => setShowEditModal(false)}
         socialLinkId={socialLinkId!}
+      />
+
+      <ConfirmModal
+        visible={showRemoveModal}
+        title="Remove Social Link"
+        message="Are you sure you want to remove this social link?"
+        confirmText="Remove"
+        confirmColor="red"
+        cancelText="Cancel"
+        isLoading={isLoading}
+        onCancel={() => setShowRemoveModal(false)}
+        onConfirm={handleRemoveSocialLink}
       />
     </>
   );

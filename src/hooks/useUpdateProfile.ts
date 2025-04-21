@@ -5,6 +5,7 @@ import {
   updateUserFields,
   updateSocialLink as updateSocialLinkAction,
   addSocialLink as addSocialLinkAction,
+  removeSocialLink as removeSocialLinkAction,
 } from "@redux/profile/myProfileSlice";
 import {
   setErrorMessage,
@@ -85,10 +86,10 @@ export function useUpdateProfile() {
         dispatch(setSuccessMessage(data.message ?? "Profile updated"));
       } else {
         const msg =
-          data.message ??
-          data.error ??
           data.response?.message ??
           data.response?.error ??
+          data.message ??
+          data.error ??
           "Something went wrong";
         dispatch(setErrorMessage(msg));
       }
@@ -124,10 +125,10 @@ export function useUpdateProfile() {
         dispatch(setSuccessMessage(data.message ?? "Profile updated"));
       } else {
         const msg =
-          data.message ??
-          data.error ??
           data.response?.message ??
           data.response?.error ??
+          data.message ??
+          data.error ??
           "Something went wrong";
         dispatch(setErrorMessage(msg));
       }
@@ -142,6 +143,7 @@ export function useUpdateProfile() {
     }
   };
 
+  // Social Links
   const updateSocialLink = async (payload: UpdateSocialLinkPayload) => {
     try {
       setIsLoading(true);
@@ -162,10 +164,10 @@ export function useUpdateProfile() {
         dispatch(setSuccessMessage(data.message ?? "Link updated"));
       } else {
         const msg =
-          data.message ??
-          data.error ??
           data.response?.message ??
           data.response?.error ??
+          data.message ??
+          data.error ??
           "Something went wrong";
         dispatch(setErrorMessage(msg));
       }
@@ -229,11 +231,60 @@ export function useUpdateProfile() {
     }
   };
 
+  const removeSocialLink = async (payload: { id: string }) => {
+    try {
+      setIsLoading(true);
+      const token = await getTokenFromSession();
+      const { data } = await axios.delete<UpdateResponse>(
+        `${process.env.SERVER_URL}/account/social-link/${payload.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        dispatch(removeSocialLinkAction({ id: payload.id }));
+        dispatch(setSuccessMessage(data.message ?? "Socil Link removed"));
+      } else {
+        let msg: any;
+
+        if (Array.isArray(data.response?.message)) {
+          msg = data.response?.message[0];
+        } else {
+          msg =
+            data.response?.message ??
+            data.response?.error ??
+            data.message ??
+            data.error ??
+            "Something went wrong";
+        }
+        dispatch(setErrorMessage(msg));
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        return {
+          success: false,
+          message:
+            err.response?.data?.message ??
+            err.response?.data?.error ??
+            err.message,
+        };
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     updateProfile,
     updateAccount,
     updateSocialLink,
     addSocialLink,
+    removeSocialLink,
     isLoading,
   };
 }

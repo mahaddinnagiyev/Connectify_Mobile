@@ -33,6 +33,11 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
 }) => {
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
+  const [socialLink, setSocialLink] = React.useState<{
+    id: string;
+    name: string;
+    link: string;
+  } | null>(null);
   const [personalInfoForm, setPersonalInfoForm] = React.useState({
     first_name: "",
     last_name: "",
@@ -52,12 +57,14 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
   const { updateProfile, updateAccount, updateSocialLink, isLoading } =
     useUpdateProfile();
 
-  let socialLink: { id: string; name: string; link: string };
-  if (socialLinkId && type === "social-link") {
-    socialLink = userData.account.social_links.filter(
-      (link) => link.id === socialLinkId
-    )[0];
-  }
+  React.useEffect(() => {
+    if (type === "social-link" && socialLinkId) {
+      const found =
+        userData.account.social_links.find((sl) => sl.id === socialLinkId) ??
+        null;
+      setSocialLink(found);
+    }
+  }, [type, socialLinkId, userData.account.social_links]);
 
   switch (type) {
     case "personal":
@@ -376,8 +383,8 @@ const EditProfileInfoModal: React.FC<ProfileModalProps> = ({
 
       case "social-link":
         return (
-          socialLinkForm.name !== socialLink.name ||
-          socialLinkForm.link !== socialLink.link
+          socialLinkForm.name !== socialLink?.name ||
+          socialLinkForm.link !== socialLink?.link
         );
     }
   };
