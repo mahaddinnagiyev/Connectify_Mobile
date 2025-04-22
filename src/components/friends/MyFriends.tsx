@@ -6,17 +6,23 @@ import {
   FlatList,
   Image,
   Pressable,
-  ActivityIndicator,
 } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
-import { useFriendData } from "@/src/hooks/useFriendData";
+import { useFriendData } from "@hooks/useFriendData";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@navigation/UserStack";
+import { useUserData } from "@hooks/useUserData";
 
 const MyFriends = () => {
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { friends } = useSelector((state: RootState) => state.myFriends);
+  const { getUserByUsername } = useUserData();
   const { isLoading, fetchAllMyFriends } = useFriendData();
 
   React.useEffect(() => {
@@ -26,6 +32,10 @@ const MyFriends = () => {
 
     handleFetchMyFriends();
   }, []);
+
+  const handleGetUserData = async (username: string) => {
+    await getUserByUsername(username);
+  };
 
   return (
     <View style={styles.container}>
@@ -51,7 +61,13 @@ const MyFriends = () => {
         data={friends}
         scrollEnabled={false}
         renderItem={({ item }) => (
-          <Pressable style={styles.friendItem}>
+          <Pressable
+            style={styles.friendItem}
+            onPress={() => {
+              navigate("OtherUserProfile");
+              handleGetUserData(item.username);
+            }}
+          >
             <View style={styles.profileContainer}>
               <Image
                 source={

@@ -24,7 +24,7 @@ export default function MyProfileScreen() {
   const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const { activeIndex } = useSelector((state: RootState) => state.myProfile);
-  const { userResponse, isLoading, errorMessage, refetch } = useUserData();
+  const { userResponse, isLoading, refetch } = useUserData();
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -62,10 +62,7 @@ export default function MyProfileScreen() {
         );
       }
     }
-    if (errorMessage) {
-      dispatch(setErrorMessage(errorMessage));
-    }
-  }, [userResponse, errorMessage, dispatch]);
+  }, [userResponse, dispatch]);
 
   const routes = [
     { key: "profile", title: "Profile" },
@@ -91,7 +88,7 @@ export default function MyProfileScreen() {
             contentContainerStyle={styles.scrollContainer}
             refreshControl={refreshControl}
           >
-            <ProfilePage />
+            <ProfilePage isMyProfileScreen={true} />
           </ScrollView>
         );
       case "friends":

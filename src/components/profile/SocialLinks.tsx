@@ -11,10 +11,18 @@ import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import AddSocialLinkModal from "../modals/profile/AddSocialLinkModal";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
 import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
+import { UserData } from "./ProfilePage";
 
-const SocialLinks = () => {
+interface SocialLinkProps {
+  isMyProfileScreen: boolean;
+  userData: UserData;
+}
+
+const SocialLinks: React.FC<SocialLinkProps> = ({
+  isMyProfileScreen,
+  userData,
+}) => {
   const dispatch = useDispatch();
-  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
@@ -49,7 +57,13 @@ const SocialLinks = () => {
             style={styles.addButton}
             onPress={() => setShowAddModal(true)}
           >
-            <Ionicons name="add-circle" size={24} color={color.primaryColor} />
+            {isMyProfileScreen && (
+              <Ionicons
+                name="add-circle"
+                size={24}
+                color={color.primaryColor}
+              />
+            )}
           </Pressable>
         </View>
 
@@ -59,30 +73,32 @@ const SocialLinks = () => {
             {/* Platform and actions */}
             <View style={styles.linkHeader}>
               <Text style={styles.platformText}>{link.name}</Text>
-              <View style={styles.actions}>
-                <Pressable style={styles.iconButton}>
-                  <MaterialIcons
-                    name="edit-square"
-                    size={18}
-                    color={color.primaryColor}
-                    onPress={() => {
-                      setSocialLinkId(link.id);
-                      setShowEditModal(true);
-                    }}
-                  />
-                </Pressable>
-                <Pressable style={styles.iconButton}>
-                  <MaterialIcons
-                    name="highlight-remove"
-                    size={18}
-                    color="red"
-                    onPress={() => {
-                      setSocialLinkId(link.id);
-                      setShowRemoveModal(true);
-                    }}
-                  />
-                </Pressable>
-              </View>
+              {isMyProfileScreen && (
+                <View style={styles.actions}>
+                  <Pressable style={styles.iconButton}>
+                    <MaterialIcons
+                      name="edit-square"
+                      size={18}
+                      color={color.primaryColor}
+                      onPress={() => {
+                        setSocialLinkId(link.id);
+                        setShowEditModal(true);
+                      }}
+                    />
+                  </Pressable>
+                  <Pressable style={styles.iconButton}>
+                    <MaterialIcons
+                      name="highlight-remove"
+                      size={18}
+                      color="red"
+                      onPress={() => {
+                        setSocialLinkId(link.id);
+                        setShowRemoveModal(true);
+                      }}
+                    />
+                  </Pressable>
+                </View>
+              )}
             </View>
 
             {/* Name, URL, and actions */}
@@ -120,29 +136,33 @@ const SocialLinks = () => {
         ))}
       </View>
 
-      <AddSocialLinkModal
-        visible={showAddModal}
-        onClose={() => setShowAddModal(false)}
-      />
+      {isMyProfileScreen && (
+        <>
+          <AddSocialLinkModal
+            visible={showAddModal}
+            onClose={() => setShowAddModal(false)}
+          />
 
-      <EditProfileInfoModal
-        type="social-link"
-        visible={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        socialLinkId={socialLinkId!}
-      />
+          <EditProfileInfoModal
+            type="social-link"
+            visible={showEditModal}
+            onClose={() => setShowEditModal(false)}
+            socialLinkId={socialLinkId!}
+          />
 
-      <ConfirmModal
-        visible={showRemoveModal}
-        title="Remove Social Link"
-        message="Are you sure you want to remove this social link?"
-        confirmText="Remove"
-        confirmColor="red"
-        cancelText="Cancel"
-        isLoading={isLoading}
-        onCancel={() => setShowRemoveModal(false)}
-        onConfirm={handleRemoveSocialLink}
-      />
+          <ConfirmModal
+            visible={showRemoveModal}
+            title="Remove Social Link"
+            message="Are you sure you want to remove this social link?"
+            confirmText="Remove"
+            confirmColor="red"
+            cancelText="Cancel"
+            isLoading={isLoading}
+            onCancel={() => setShowRemoveModal(false)}
+            onConfirm={handleRemoveSocialLink}
+          />
+        </>
+      )}
     </>
   );
 };

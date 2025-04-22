@@ -8,20 +8,31 @@ import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
 import { RootState } from "@redux/store";
 import { useSelector } from "react-redux";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
+import { UserData } from "./ProfilePage";
 
-const PersonalInfo = () => {
+interface PersonalInfoProps {
+  isMyProfileScreen: boolean;
+  userData: UserData;
+}
+
+const PersonalInfo: React.FC<PersonalInfoProps> = ({
+  isMyProfileScreen,
+  userData,
+}) => {
   const [showModal, setShowModal] = React.useState(false);
   const [showImageModal, setShowImageModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
-
-  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   return (
     <>
       <View style={styles.container}>
         {/* Title And Profile Photo */}
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>My Profile</Text>
+          <Text style={styles.title}>
+            {isMyProfileScreen
+              ? "My Profile"
+              : `@${userData.user.username}'s Profile`}
+          </Text>
           <View style={styles.profileImageContainer}>
             <Pressable onPress={() => setShowImageModal(true)}>
               <Image
@@ -33,12 +44,14 @@ const PersonalInfo = () => {
                 style={styles.profile_picture}
               />
             </Pressable>
-            <Pressable
-              style={styles.profilePhotoEditIcon}
-              onPress={() => setShowModal(true)}
-            >
-              <Ionicons name="camera" size={24} color="white" />
-            </Pressable>
+            {isMyProfileScreen && (
+              <Pressable
+                style={styles.profilePhotoEditIcon}
+                onPress={() => setShowModal(true)}
+              >
+                <Ionicons name="camera" size={24} color="white" />
+              </Pressable>
+            )}
           </View>
         </View>
 
@@ -55,14 +68,16 @@ const PersonalInfo = () => {
               <Text style={styles.presonalTitle}>Personal Information</Text>
             </View>
 
-            <View>
-              <MaterialIcons
-                name="edit-square"
-                size={24}
-                color={color.primaryColor}
-                onPress={() => setShowEditModal(true)}
-              />
-            </View>
+            {isMyProfileScreen && (
+              <View>
+                <MaterialIcons
+                  name="edit-square"
+                  size={24}
+                  color={color.primaryColor}
+                  onPress={() => setShowEditModal(true)}
+                />
+              </View>
+            )}
           </View>
 
           {/* Personal Informations Content */}
@@ -118,9 +133,9 @@ const PersonalInfo = () => {
         </View>
       </View>
 
-      {showModal && (
+      {showModal && isMyProfileScreen && (
         <ChangePhotoModal
-          showModal={showModal}
+          visible={showModal}
           onClose={() => setShowModal(false)}
         />
       )}
@@ -137,11 +152,13 @@ const PersonalInfo = () => {
         />
       )}
 
-      <EditProfileInfoModal
-        type="personal"
-        visible={showEditModal}
-        onClose={() => setShowEditModal(false)}
-      />
+      {isMyProfileScreen && (
+        <EditProfileInfoModal
+          type="personal"
+          visible={showEditModal}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
     </>
   );
 };

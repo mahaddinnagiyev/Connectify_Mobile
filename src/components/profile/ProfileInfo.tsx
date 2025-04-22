@@ -6,10 +6,17 @@ import { color } from "@/colors";
 import { RootState } from "@redux/store";
 import { useSelector } from "react-redux";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
+import { UserData } from "./ProfilePage";
 
-const ProfileInfo = () => {
-  const { userData } = useSelector((state: RootState) => state.myProfile);
+interface ProfileInfoProps {
+  isMyProfileScreen: boolean;
+  userData: UserData;
+}
 
+const ProfileInfo: React.FC<ProfileInfoProps> = ({
+  isMyProfileScreen,
+  userData,
+}) => {
   const [showEditModal, setShowEditModal] = React.useState(false);
 
   return (
@@ -27,12 +34,14 @@ const ProfileInfo = () => {
               />
               <Text style={styles.titleText}>Profile Information</Text>
             </View>
-            <MaterialIcons
-              name="edit-square"
-              size={24}
-              color={color.primaryColor}
-              onPress={() => setShowEditModal(true)}
-            />
+            {isMyProfileScreen && (
+              <MaterialIcons
+                name="edit-square"
+                size={24}
+                color={color.primaryColor}
+                onPress={() => setShowEditModal(true)}
+              />
+            )}
           </View>
 
           {/* Information Grid */}
@@ -89,11 +98,13 @@ const ProfileInfo = () => {
         </View>
       </View>
 
-      <EditProfileInfoModal
-        type="profile"
-        visible={showEditModal}
-        onClose={() => setShowEditModal(false)}
-      />
+      {isMyProfileScreen && (
+        <EditProfileInfoModal
+          type="profile"
+          visible={showEditModal}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
     </>
   );
 };
