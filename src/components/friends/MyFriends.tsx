@@ -16,13 +16,11 @@ import { RootState } from "@redux/store";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
-import { useUserData } from "@hooks/useUserData";
 
 const MyFriends = () => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { friends } = useSelector((state: RootState) => state.myFriends);
-  const { getUserByUsername } = useUserData();
   const { isLoading, fetchAllMyFriends } = useFriendData();
 
   React.useEffect(() => {
@@ -32,10 +30,6 @@ const MyFriends = () => {
 
     handleFetchMyFriends();
   }, []);
-
-  const handleGetUserData = async (username: string) => {
-    await getUserByUsername(username);
-  };
 
   return (
     <View style={styles.container}>
@@ -64,8 +58,7 @@ const MyFriends = () => {
           <Pressable
             style={styles.friendItem}
             onPress={() => {
-              navigate("OtherUserProfile");
-              handleGetUserData(item.username);
+              navigate("OtherUserProfile", { username: item.username });
             }}
           >
             <View style={styles.profileContainer}>

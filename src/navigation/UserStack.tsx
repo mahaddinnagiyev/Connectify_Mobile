@@ -15,7 +15,7 @@ export type StackParamList = {
   MyFriends: undefined;
   Settings: undefined;
   ContactUs: undefined;
-  OtherUserProfile: undefined;
+  OtherUserProfile: { username: string };
 };
 
 export default function UserStack() {

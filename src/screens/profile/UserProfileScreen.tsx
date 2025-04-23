@@ -12,12 +12,23 @@ import ProfilePage from "@components/profile/ProfilePage";
 import { useUserData } from "@/src/hooks/useUserData";
 import { color } from "@/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@/src/navigation/UserStack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const UserProfileScreen = () => {
-  const { isOtherUserDataLoading } = useUserData();
+  const { getUserByUsername, isOtherUserDataLoading } = useUserData();
+
+  const route = useRoute<RouteProp<StackParamList, "OtherUserProfile">>();
+  const { username } = route.params;
+
+  React.useEffect(() => {
+    const handleGetUserData = async () => {
+      await getUserByUsername(username);
+    };
+
+    handleGetUserData();
+  }, [username]);
 
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
@@ -32,15 +43,19 @@ const UserProfileScreen = () => {
           <Text style={styles.headerButtonText}>Back</Text>
         </Pressable>
       </View>
-      {isOtherUserDataLoading ? (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={color.primaryColor} />
-        </View>
-      ) : (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <ProfilePage isMyProfileScreen={false} />
-        </ScrollView>
-      )}
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {isOtherUserDataLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator
+              size="small"
+              color={color.primaryColor}
+              style={styles.loadingIndicator}
+            />
+          </View>
+        )}
+        <ProfilePage isMyProfileScreen={false} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -53,13 +68,14 @@ const styles = StyleSheet.create({
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(255, 255, 255, 0.8)",
-    zIndex: 1,
+    zIndex: 999,
+    elevation: 999,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
   },
   loadingIndicator: {
-    transform: [{ scale: 1.5 }],
+    transform: [{ scale: 2 }],
   },
   header: {
     flexDirection: "row",
