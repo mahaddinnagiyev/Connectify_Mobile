@@ -5,17 +5,20 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
+import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
 
 interface ProfileInfoProps {
   isMyProfileScreen: boolean;
   isLoading: boolean;
   userData: UserData;
+  shouldBlur: (privacy?: PrivacySettingsChoice) => boolean;
 }
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
   isMyProfileScreen,
   isLoading,
   userData,
+  shouldBlur,
 }) => {
   // Animations
   const fadeAnim = React.useRef(new Animated.Value(0.5)).current;
@@ -84,11 +87,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
               {
                 label: "Bio",
                 value: userData.account.bio ?? "This User Has No Bio",
+                privacySetting: userData.privacySettings.bio,
                 icon: "document-text" as const,
               },
               {
                 label: "Location",
                 value: userData.account.location ?? "This User Has No Location",
+                privacySetting: userData.privacySettings.location,
                 icon: "location" as const,
               },
               {
@@ -105,6 +110,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                       })
                       .toString()
                   : "No Last Login Data",
+                privacySetting: userData.privacySettings.last_login,
                 icon: "time" as const,
               },
             ].map((item, index) => (
@@ -117,17 +123,19 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                 />
                 <View style={styles.textContainer}>
                   <Text style={styles.label}>{item.label}</Text>
-                  <Text
-                    style={styles.value}
-                    numberOfLines={item.label === "Bio" ? 3 : 1}
-                    ellipsizeMode="tail"
-                  >
-                    {isLoading ? (
-                      <SkeletonLoader style={{ width: "100%", height: 20 }} />
-                    ) : (
-                      item.value
-                    )}
-                  </Text>
+                  {shouldBlur(item.privacySetting) ? (
+                    <SkeletonLoader
+                      style={{ width: 120, height: 16, marginVertical: 4 }}
+                    />
+                  ) : (
+                    <Text
+                      style={styles.value}
+                      numberOfLines={item.label === "Bio" ? 3 : 1}
+                      ellipsizeMode="tail"
+                    >
+                      {item.value}
+                    </Text>
+                  )}
                   <View style={styles.divider} />
                 </View>
               </View>

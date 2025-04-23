@@ -11,17 +11,20 @@ import AddSocialLinkModal from "../modals/profile/AddSocialLinkModal";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
 import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
 import { UserData } from "./ProfilePage";
+import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
 
 interface SocialLinkProps {
   isMyProfileScreen: boolean;
   isLoading: boolean;
   userData: UserData;
+  shouldBlur: (privacy?: PrivacySettingsChoice) => boolean;
 }
 
 const SocialLinks: React.FC<SocialLinkProps> = ({
   isMyProfileScreen,
   isLoading,
   userData,
+  shouldBlur,
 }) => {
   // Animations
   const fadeAnim = React.useRef(new Animated.Value(0.5)).current;
@@ -85,146 +88,183 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
   return (
     <>
       <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Social Links</Text>
-          <Pressable
-            style={styles.addButton}
-            onPress={() => setShowAddModal(true)}
-          >
-            {isMyProfileScreen && (
-              <Ionicons
-                name="add-circle"
-                size={24}
-                color={color.primaryColor}
-              />
-            )}
-          </Pressable>
-        </View>
-
         {/* Social Links */}
-        {socialLinks.map((link) => (
-          <View key={link.id} style={styles.linkCard}>
-            {/* Platform and actions */}
-            <View style={styles.linkHeader}>
-              <Text style={styles.platformText}>{link.name}</Text>
-              {isMyProfileScreen && (
-                <View style={styles.actions}>
-                  <Pressable style={styles.iconButton}>
-                    <MaterialIcons
-                      name="edit-square"
-                      size={18}
-                      color={color.primaryColor}
-                      onPress={() => {
-                        setSocialLinkId(link.id);
-                        setShowEditModal(true);
-                      }}
-                    />
-                  </Pressable>
-                  <Pressable style={styles.iconButton}>
-                    <MaterialIcons
-                      name="highlight-remove"
-                      size={18}
-                      color="red"
-                      onPress={() => {
-                        setSocialLinkId(link.id);
-                        setShowRemoveModal(true);
-                      }}
-                    />
-                  </Pressable>
+        {shouldBlur(userData.privacySettings.social_links) ? null : (
+          <>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.title}>Social Links</Text>
+              <Pressable
+                style={styles.addButton}
+                onPress={() => setShowAddModal(true)}
+              >
+                {isMyProfileScreen && (
+                  <Ionicons
+                    name="add-circle"
+                    size={24}
+                    color={color.primaryColor}
+                  />
+                )}
+              </Pressable>
+            </View>
+            {socialLinks.map((link) => (
+              <View key={link.id} style={styles.linkCard}>
+                {/* Platform and actions */}
+                <View style={styles.linkHeader}>
+                  <Text style={styles.platformText}>{link.name}</Text>
+                  {isMyProfileScreen && (
+                    <View style={styles.actions}>
+                      <Pressable style={styles.iconButton}>
+                        <MaterialIcons
+                          name="edit-square"
+                          size={18}
+                          color={color.primaryColor}
+                          onPress={() => {
+                            setSocialLinkId(link.id);
+                            setShowEditModal(true);
+                          }}
+                        />
+                      </Pressable>
+                      <Pressable style={styles.iconButton}>
+                        <MaterialIcons
+                          name="highlight-remove"
+                          size={18}
+                          color="red"
+                          onPress={() => {
+                            setSocialLinkId(link.id);
+                            setShowRemoveModal(true);
+                          }}
+                        />
+                      </Pressable>
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
 
-            {/* Name, URL, and actions */}
-            <View style={styles.linkBody}>
-              <View>
-                <Text style={styles.nameText}>{link.name}</Text>
-                <Text
-                  style={styles.urlText}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {link.link}
-                </Text>
+                {/* Name, URL, and actions */}
+                <View style={styles.linkBody}>
+                  <View>
+                    <Text style={styles.nameText}>{link.name}</Text>
+                    <Text
+                      style={styles.urlText}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {link.link}
+                    </Text>
+                  </View>
+
+                  <View style={styles.linkActions}>
+                    <Pressable
+                      style={styles.actionButton}
+                      onPress={() => handleCopy(link.link)}
+                    >
+                      <Ionicons
+                        name="copy"
+                        size={18}
+                        color={color.primaryColor}
+                      />
+                      <Text style={styles.actionText}>Copy</Text>
+                    </Pressable>
+
+                    <Pressable
+                      style={styles.actionButton}
+                      onPress={() => handleOpen(link.link)}
+                    >
+                      <Ionicons
+                        name="open"
+                        size={18}
+                        color={color.primaryColor}
+                      />
+                      <Text style={styles.actionText}>Open</Text>
+                    </Pressable>
+                  </View>
+                </View>
               </View>
-
-              <View style={styles.linkActions}>
-                <Pressable
-                  style={styles.actionButton}
-                  onPress={() => handleCopy(link.link)}
-                >
-                  <Ionicons name="copy" size={18} color={color.primaryColor} />
-                  <Text style={styles.actionText}>Copy</Text>
-                </Pressable>
-
-                <Pressable
-                  style={styles.actionButton}
-                  onPress={() => handleOpen(link.link)}
-                >
-                  <Ionicons name="open" size={18} color={color.primaryColor} />
-                  <Text style={styles.actionText}>Open</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        ))}
+            ))}
+          </>
+        )}
 
         {isLoading && (
-          <View style={styles.linkCard}>
-            {/* Platform and actions */}
-            <View style={styles.linkHeader}>
-              <Text style={styles.platformText}>
-                <SkeletonLoader style={{ width: "100%", height: 20 }} />
-              </Text>
-              {isMyProfileScreen && (
-                <View style={styles.actions}>
-                  <Pressable style={styles.iconButton}>
-                    <MaterialIcons
-                      name="edit-square"
+          <>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.title}>Social Links</Text>
+              <Pressable
+                style={styles.addButton}
+                onPress={() => setShowAddModal(true)}
+              >
+                {isMyProfileScreen && (
+                  <Ionicons
+                    name="add-circle"
+                    size={24}
+                    color={color.primaryColor}
+                  />
+                )}
+              </Pressable>
+            </View>
+            <View style={styles.linkCard}>
+              {/* Platform and actions */}
+              <View style={styles.linkHeader}>
+                <Text style={styles.platformText}>
+                  <SkeletonLoader style={{ width: "100%", height: 20 }} />
+                </Text>
+                {isMyProfileScreen && (
+                  <View style={styles.actions}>
+                    <Pressable style={styles.iconButton}>
+                      <MaterialIcons
+                        name="edit-square"
+                        size={18}
+                        color={color.primaryColor}
+                      />
+                    </Pressable>
+                    <Pressable style={styles.iconButton}>
+                      <MaterialIcons
+                        name="highlight-remove"
+                        size={18}
+                        color="red"
+                      />
+                    </Pressable>
+                  </View>
+                )}
+              </View>
+
+              {/* Name, URL, and actions */}
+              <View style={styles.linkBody}>
+                <View>
+                  <Text style={styles.nameText}>
+                    <SkeletonLoader style={{ width: 170, height: 20 }} />
+                  </Text>
+                  <Text
+                    style={styles.urlText}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    <SkeletonLoader style={{ width: 170, height: 20 }} />
+                  </Text>
+                </View>
+
+                <View style={styles.linkActions}>
+                  <Pressable style={styles.actionButton}>
+                    <Ionicons
+                      name="copy"
                       size={18}
                       color={color.primaryColor}
                     />
+                    <Text style={styles.actionText}>Copy</Text>
                   </Pressable>
-                  <Pressable style={styles.iconButton}>
-                    <MaterialIcons
-                      name="highlight-remove"
+
+                  <Pressable style={styles.actionButton}>
+                    <Ionicons
+                      name="open"
                       size={18}
-                      color="red"
+                      color={color.primaryColor}
                     />
+                    <Text style={styles.actionText}>Open</Text>
                   </Pressable>
                 </View>
-              )}
-            </View>
-
-            {/* Name, URL, and actions */}
-            <View style={styles.linkBody}>
-              <View>
-                <Text style={styles.nameText}>
-                  <SkeletonLoader style={{ width: 170, height: 20 }} />
-                </Text>
-                <Text
-                  style={styles.urlText}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  <SkeletonLoader style={{ width: 170, height: 20 }} />
-                </Text>
-              </View>
-
-              <View style={styles.linkActions}>
-                <Pressable style={styles.actionButton}>
-                  <Ionicons name="copy" size={18} color={color.primaryColor} />
-                  <Text style={styles.actionText}>Copy</Text>
-                </Pressable>
-
-                <Pressable style={styles.actionButton}>
-                  <Ionicons name="open" size={18} color={color.primaryColor} />
-                  <Text style={styles.actionText}>Open</Text>
-                </Pressable>
               </View>
             </View>
-          </View>
+          </>
         )}
       </View>
 

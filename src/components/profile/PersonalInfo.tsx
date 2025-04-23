@@ -7,17 +7,20 @@ import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
+import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
 
 interface PersonalInfoProps {
   isMyProfileScreen: boolean;
   isLoading: boolean;
   userData: UserData;
+  shouldBlur: (privacy?: PrivacySettingsChoice) => boolean;
 }
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({
   isMyProfileScreen,
   isLoading,
   userData,
+  shouldBlur,
 }) => {
   // Animations
   const fadeAnim = React.useRef(new Animated.Value(0.5)).current;
@@ -157,11 +160,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
               {
                 label: "Email",
                 value: userData.user.email,
+                privacySetting: userData.privacySettings.email,
                 icon: "mail" as const,
               },
               {
                 label: "Gender",
                 value: userData.user.gender,
+                privacySetting: userData.privacySettings.gender,
                 icon: "male-female" as const,
               },
             ].map((item, index) => (
@@ -174,13 +179,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 />
                 <View>
                   <Text style={styles.infoLabel}>{item.label}</Text>
-                  <Text style={styles.infoValue}>
-                    {isLoading ? (
-                      <SkeletonLoader style={{ width: 100, height: 16 }} />
-                    ) : (
-                      item.value
-                    )}
-                  </Text>
+                  {shouldBlur(item.privacySetting) ? (
+                    <SkeletonLoader
+                      style={{ width: 120, height: 16, marginVertical: 4 }}
+                    />
+                  ) : (
+                    <Text style={styles.infoValue}>{item.value}</Text>
+                  )}
                   <View style={styles.infoLine} />
                 </View>
               </View>

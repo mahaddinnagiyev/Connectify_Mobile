@@ -4,7 +4,10 @@ import ProfileInfo from "./ProfileInfo";
 import SocialLinks from "./SocialLinks";
 import { User } from "@services/user/dto/user.dto";
 import { Account } from "@services/account/dto/account.dto";
-import { PrivacySettings } from "@services/account/dto/privacy.dto";
+import {
+  PrivacySettings,
+  PrivacySettingsChoice,
+} from "@services/account/dto/privacy.dto";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux/store";
 
@@ -23,13 +26,30 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   isMyProfileScreen,
   isLoading,
 }) => {
-  let userData: UserData;
+  const userData = useSelector((state: RootState) =>
+    isMyProfileScreen ? state.myProfile.userData : state.users.otherUserData
+  );
 
-  if (isMyProfileScreen) {
-    userData = useSelector((state: RootState) => state.myProfile.userData);
-  } else {
-    userData = useSelector((state: RootState) => state.users.otherUserData);
-  }
+  const friends = useSelector((s: RootState) => s.myFriends.friends);
+  const [isFriend, setIsFriend] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isMyProfileScreen) return setIsFriend(true);
+    const yes = friends.some((f) => f.friend_id === userData.user.id);
+    setIsFriend(yes);
+  }, [isMyProfileScreen, friends, userData.user.id]);
+
+  const shouldBlur = (privacy?: PrivacySettingsChoice) => {
+    if (isLoading) return true;
+    if (isMyProfileScreen) return false;
+    if (privacy === PrivacySettingsChoice.nobody) return true;
+    if (privacy === PrivacySettingsChoice.my_friends && !isFriend) {
+      return true;
+    }
+
+    if (privacy === PrivacySettingsChoice.everyone) return false;
+    return false;
+  };
 
   return (
     <>
@@ -37,16 +57,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         isMyProfileScreen={isMyProfileScreen}
         userData={userData}
         isLoading={isLoading}
+        shouldBlur={shouldBlur}
       />
       <ProfileInfo
         isMyProfileScreen={isMyProfileScreen}
         userData={userData}
         isLoading={isLoading}
+        shouldBlur={shouldBlur}
       />
       <SocialLinks
         isMyProfileScreen={isMyProfileScreen}
         userData={userData}
         isLoading={isLoading}
+        shouldBlur={shouldBlur}
       />
     </>
   );
