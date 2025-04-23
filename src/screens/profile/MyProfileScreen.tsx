@@ -88,7 +88,7 @@ export default function MyProfileScreen() {
             contentContainerStyle={styles.scrollContainer}
             refreshControl={refreshControl}
           >
-            <ProfilePage isMyProfileScreen={true} />
+            <ProfilePage isMyProfileScreen={true} isLoading={isLoading} />
           </ScrollView>
         );
       case "friends":

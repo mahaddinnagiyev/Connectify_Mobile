@@ -45,16 +45,7 @@ const UserProfileScreen = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {isOtherUserDataLoading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator
-              size="small"
-              color={color.primaryColor}
-              style={styles.loadingIndicator}
-            />
-          </View>
-        )}
-        <ProfilePage isMyProfileScreen={false} />
+        <ProfilePage isMyProfileScreen={false} isLoading={isOtherUserDataLoading} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -65,18 +56,6 @@ export default UserProfileScreen;
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", alignItems: "stretch" },
   scrollContainer: { flexGrow: 1 },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    zIndex: 999,
-    elevation: 999,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-  },
-  loadingIndicator: {
-    transform: [{ scale: 2 }],
-  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",

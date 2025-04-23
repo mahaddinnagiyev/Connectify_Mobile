@@ -1,24 +1,58 @@
-import { View, Text, Image, Pressable, Modal } from "react-native";
+import { View, Text, Image, Pressable, Animated } from "react-native";
 import React from "react";
 import { styles } from "./styles/personal-info";
 import { color } from "@/colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
-import { RootState } from "@redux/store";
-import { useSelector } from "react-redux";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
 
 interface PersonalInfoProps {
   isMyProfileScreen: boolean;
+  isLoading: boolean;
   userData: UserData;
 }
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({
   isMyProfileScreen,
+  isLoading,
   userData,
 }) => {
+  // Animations
+  const fadeAnim = React.useRef(new Animated.Value(0.5)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0.5,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  const SkeletonLoader = ({ style }: { style: any }) => (
+    <Animated.View
+      style={[
+        {
+          backgroundColor: "#E1E1E1",
+          borderRadius: 4,
+        },
+        style,
+        { opacity: fadeAnim },
+      ]}
+    />
+  );
+
+  // States And Functions
   const [showModal, setShowModal] = React.useState(false);
   const [showImageModal, setShowImageModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
@@ -29,9 +63,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         {/* Title And Profile Photo */}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            {isMyProfileScreen
-              ? "My Profile"
-              : `@${userData.user.username}'s Profile`}
+            {isLoading ? (
+              <SkeletonLoader style={{ width: 150, height: 24 }} />
+            ) : isMyProfileScreen ? (
+              "My Profile"
+            ) : (
+              `@${userData.user.username}'s Profile`
+            )}
           </Text>
           <View style={styles.profileImageContainer}>
             <Pressable onPress={() => setShowImageModal(true)}>
@@ -86,13 +124,25 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
             <View style={styles.infoRow}>
               <View style={[styles.infoItem]}>
                 <Text style={styles.infoLabel}>First Name</Text>
-                <Text style={styles.infoValue}>{userData.user.first_name}</Text>
+                <Text style={styles.infoValue}>
+                  {isLoading ? (
+                    <SkeletonLoader style={{ width: 100, height: 16 }} />
+                  ) : (
+                    userData.user.first_name
+                  )}
+                </Text>
                 <View style={styles.infoLine} />
               </View>
 
               <View style={[styles.infoItem]}>
                 <Text style={styles.infoLabel}>Last Name</Text>
-                <Text style={styles.infoValue}>{userData.user.last_name}</Text>
+                <Text style={styles.infoValue}>
+                  {isLoading ? (
+                    <SkeletonLoader style={{ width: 100, height: 16 }} />
+                  ) : (
+                    userData.user.last_name
+                  )}
+                </Text>
                 <View style={styles.infoLine} />
               </View>
             </View>
@@ -124,7 +174,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 />
                 <View>
                   <Text style={styles.infoLabel}>{item.label}</Text>
-                  <Text style={styles.infoValue}>{item.value}</Text>
+                  <Text style={styles.infoValue}>
+                    {isLoading ? (
+                      <SkeletonLoader style={{ width: 100, height: 16 }} />
+                    ) : (
+                      item.value
+                    )}
+                  </Text>
                   <View style={styles.infoLine} />
                 </View>
               </View>

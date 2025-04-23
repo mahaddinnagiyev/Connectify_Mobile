@@ -10,6 +10,7 @@ import { RootState } from "@/src/redux/store";
 
 interface ProfilePageProps {
   isMyProfileScreen: boolean;
+  isLoading: boolean;
 }
 
 export interface UserData {
@@ -18,7 +19,10 @@ export interface UserData {
   privacySettings: PrivacySettings;
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ isMyProfileScreen }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({
+  isMyProfileScreen,
+  isLoading,
+}) => {
   let userData: UserData;
 
   if (isMyProfileScreen) {
@@ -29,9 +33,21 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ isMyProfileScreen }) => {
 
   return (
     <>
-      <PersonalInfo isMyProfileScreen={isMyProfileScreen} userData={userData} />
-      <ProfileInfo isMyProfileScreen={isMyProfileScreen} userData={userData} />
-      <SocialLinks isMyProfileScreen={isMyProfileScreen} userData={userData} />
+      <PersonalInfo
+        isMyProfileScreen={isMyProfileScreen}
+        userData={userData}
+        isLoading={isLoading}
+      />
+      <ProfileInfo
+        isMyProfileScreen={isMyProfileScreen}
+        userData={userData}
+        isLoading={isLoading}
+      />
+      <SocialLinks
+        isMyProfileScreen={isMyProfileScreen}
+        userData={userData}
+        isLoading={isLoading}
+      />
     </>
   );
 };

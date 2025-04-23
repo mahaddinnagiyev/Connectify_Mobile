@@ -1,10 +1,9 @@
-import { View, Text, Pressable, Linking } from "react-native";
+import { View, Text, Pressable, Linking, Animated } from "react-native";
 import React from "react";
 import { styles } from "./styles/social-links";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
-import { RootState } from "@redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as Clipboard from "expo-clipboard";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
@@ -15,13 +14,49 @@ import { UserData } from "./ProfilePage";
 
 interface SocialLinkProps {
   isMyProfileScreen: boolean;
+  isLoading: boolean;
   userData: UserData;
 }
 
 const SocialLinks: React.FC<SocialLinkProps> = ({
   isMyProfileScreen,
+  isLoading,
   userData,
 }) => {
+  // Animations
+  const fadeAnim = React.useRef(new Animated.Value(0.5)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0.5,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  const SkeletonLoader = ({ style }: { style: any }) => (
+    <Animated.View
+      style={[
+        {
+          backgroundColor: "#E1E1E1",
+          borderRadius: 4,
+        },
+        style,
+        { opacity: fadeAnim },
+      ]}
+    />
+  );
+
+  // States & Functions
   const dispatch = useDispatch();
 
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
@@ -31,7 +66,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
 
   const socialLinks = userData.account.social_links ?? [];
 
-  const { removeSocialLink, isLoading } = useUpdateProfile();
+  const { removeSocialLink, isLoading: isRemoveLoading } = useUpdateProfile();
 
   const handleCopy = async (url: string) => {
     await Clipboard.setStringAsync(url);
@@ -134,6 +169,63 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
             </View>
           </View>
         ))}
+
+        {isLoading && (
+          <View style={styles.linkCard}>
+            {/* Platform and actions */}
+            <View style={styles.linkHeader}>
+              <Text style={styles.platformText}>
+                <SkeletonLoader style={{ width: "100%", height: 20 }} />
+              </Text>
+              {isMyProfileScreen && (
+                <View style={styles.actions}>
+                  <Pressable style={styles.iconButton}>
+                    <MaterialIcons
+                      name="edit-square"
+                      size={18}
+                      color={color.primaryColor}
+                    />
+                  </Pressable>
+                  <Pressable style={styles.iconButton}>
+                    <MaterialIcons
+                      name="highlight-remove"
+                      size={18}
+                      color="red"
+                    />
+                  </Pressable>
+                </View>
+              )}
+            </View>
+
+            {/* Name, URL, and actions */}
+            <View style={styles.linkBody}>
+              <View>
+                <Text style={styles.nameText}>
+                  <SkeletonLoader style={{ width: 170, height: 20 }} />
+                </Text>
+                <Text
+                  style={styles.urlText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <SkeletonLoader style={{ width: 170, height: 20 }} />
+                </Text>
+              </View>
+
+              <View style={styles.linkActions}>
+                <Pressable style={styles.actionButton}>
+                  <Ionicons name="copy" size={18} color={color.primaryColor} />
+                  <Text style={styles.actionText}>Copy</Text>
+                </Pressable>
+
+                <Pressable style={styles.actionButton}>
+                  <Ionicons name="open" size={18} color={color.primaryColor} />
+                  <Text style={styles.actionText}>Open</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        )}
       </View>
 
       {isMyProfileScreen && (
@@ -157,7 +249,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
             confirmText="Remove"
             confirmColor="red"
             cancelText="Cancel"
-            isLoading={isLoading}
+            isLoading={isRemoveLoading}
             onCancel={() => setShowRemoveModal(false)}
             onConfirm={handleRemoveSocialLink}
           />

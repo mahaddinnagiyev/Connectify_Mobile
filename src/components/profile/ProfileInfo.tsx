@@ -1,22 +1,56 @@
-import { View, Text } from "react-native";
+import { View, Text, Animated } from "react-native";
 import React from "react";
 import { styles } from "./styles/profile-info";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
-import { RootState } from "@redux/store";
-import { useSelector } from "react-redux";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
 
 interface ProfileInfoProps {
   isMyProfileScreen: boolean;
+  isLoading: boolean;
   userData: UserData;
 }
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
   isMyProfileScreen,
+  isLoading,
   userData,
 }) => {
+  // Animations
+  const fadeAnim = React.useRef(new Animated.Value(0.5)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0.5,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  const SkeletonLoader = ({ style }: { style: any }) => (
+    <Animated.View
+      style={[
+        {
+          backgroundColor: "#E1E1E1",
+          borderRadius: 4,
+        },
+        style,
+        { opacity: fadeAnim },
+      ]}
+    />
+  );
+
+  // State And Functions
   const [showEditModal, setShowEditModal] = React.useState(false);
 
   return (
@@ -88,7 +122,11 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                     numberOfLines={item.label === "Bio" ? 3 : 1}
                     ellipsizeMode="tail"
                   >
-                    {item.value}
+                    {isLoading ? (
+                      <SkeletonLoader style={{ width: "100%", height: 20 }} />
+                    ) : (
+                      item.value
+                    )}
                   </Text>
                   <View style={styles.divider} />
                 </View>
