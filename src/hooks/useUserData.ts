@@ -14,10 +14,25 @@ interface ErrorPayload {
   error?: string;
 }
 
+interface SearchUserResponse {
+  success: boolean;
+  allUsers: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    username: string;
+    profile_picture: string;
+  }[];
+  response: { success: boolean; error?: string; message?: string };
+  error?: string;
+  message?: string;
+}
+
 export function useUserData() {
   const dispatch = useDispatch();
   const [userResponse, setUserResponse] = useState<UserResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isOtherUserDataLoading, setIsOtherUserDataLoading] =
     useState<boolean>(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -132,6 +147,36 @@ export function useUserData() {
     }
   };
 
+  // SearchUser
+  const searchUser = async (u: string) => {
+    try {
+      setIsSearching(true);
+
+      const { data } = await axios.get<SearchUserResponse>(
+        `${process.env.SERVER_URL}/user/search?u=${u}`,
+        {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${await getTokenFromSession()}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        return data.allUsers;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   return {
     userResponse,
     isLoading,
@@ -141,5 +186,7 @@ export function useUserData() {
     getUserByUsername,
     refetchOtherUserData: getUserByUsername,
     isOtherUserDataLoading,
+    searchUser,
+    isSearching,
   };
 }

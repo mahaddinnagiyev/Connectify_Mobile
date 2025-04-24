@@ -1,3 +1,4 @@
+import React from "react";
 import {
   View,
   Text,
@@ -6,93 +7,123 @@ import {
   FlatList,
   Image,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
+import { useUserData } from "@/src/hooks/useUserData";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@/src/navigation/UserStack";
 
-const AllUsers = () => {
-  const friends = [
-    {
-      id: 1,
-      name: "Mahaddin Nagiyev",
-      username: "@nagiyev_mahaddin",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 2,
-      name: "Nərmin Hüseynova",
-      username: "@nermin_h",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 3,
-      name: "Mahaddin Nagiyev",
-      username: "@nagiyev_mahaddin",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 4,
-      name: "Nərmin Hüseynova",
-      username: "@nermin_h",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-    {
-      id: 5,
-      name: "Mahaddin Nagiyev",
-      username: "@nagiyev_mahaddin",
-      avatar: require("@assets/images/no-profile-photo.png"),
-    },
-  ];
+interface IUserItem {
+  id: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+  profile_picture?: string;
+}
+
+const AllUsers: React.FC = () => {
+  const [users, setUsers] = React.useState<IUserItem[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const { searchUser, isSearching } = useUserData();
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const searchTimeout = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    setUsers([]);
+
+    if (text === "") {
+      return;
+    }
+
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+    searchTimeout.current = setTimeout(async () => {
+      const formatted = text.trim().replace(/\s+/g, "+");
+      const results = await searchUser(formatted);
+      setUsers(results ?? []);
+    }, 500);
+  };
 
   return (
     <View style={styles.container}>
-      {/* Title */}
       <Text style={styles.headerText}>All Users</Text>
 
-      {/* Search bar */}
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#666" />
         <TextInput
           style={styles.searchInput}
           placeholder="Search users..."
           placeholderTextColor="#888"
+          value={searchQuery}
+          onChangeText={handleSearch}
         />
       </View>
 
-      {/* Friends list */}
+      {isSearching && (
+        <ActivityIndicator
+          size="large"
+          color={color.primaryColor}
+          style={{ marginVertical: 10 }}
+        />
+      )}
+
+      {searchQuery === "" && !isSearching && (
+        <Text
+          style={{
+            marginTop: 10,
+            color: "#666",
+            fontSize: 16,
+            textAlign: "center",
+          }}
+        >
+          Let's start searching!
+        </Text>
+      )}
+
+      {users.length === 0 && !isSearching && searchQuery !== "" && (
+        <Text
+          style={{
+            marginTop: 10,
+            color: "#666",
+            fontSize: 16,
+            textAlign: "center",
+          }}
+        >
+          No users found.
+        </Text>
+      )}
+
       <FlatList
-        data={friends}
+        data={users}
+        keyExtractor={(item) => item.id}
         scrollEnabled={false}
         renderItem={({ item }) => (
-          <Pressable style={styles.friendItem}>
+          <Pressable
+            style={styles.friendItem}
+            onPress={() =>
+              navigate("OtherUserProfile", { username: item.username })
+            }
+          >
             <View style={styles.profileContainer}>
-              <Image source={item.avatar} style={styles.avatar} />
+              <Image
+                source={
+                  item.profile_picture
+                    ? { uri: item.profile_picture }
+                    : require("@assets/images/no-profile-photo.png")
+                }
+                style={styles.avatar}
+              />
               <View style={styles.textContainer}>
-                <Text style={styles.name}>{item.name}</Text>
+                <Text
+                  style={styles.name}
+                >{`${item.first_name} ${item.last_name}`}</Text>
                 <Text style={styles.username}>{item.username}</Text>
-              </View>
-            </View>
-
-            {/* Actions */}
-            <View style={styles.actions}>
-              <View style={styles.statusIndicator}>
-                <Text>
-                  <MaterialIcons
-                    name="chat"
-                    size={22}
-                    color={color.primaryColor}
-                  />
-                </Text>
-              </View>
-              <View style={styles.statusIndicator}>
-                <Text>
-                  <MaterialIcons
-                    name="person-add"
-                    size={24}
-                    color={color.primaryColor}
-                  />
-                </Text>
               </View>
             </View>
           </Pressable>
@@ -169,11 +200,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#636E72",
     marginTop: 2,
-  },
-  actions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 15,
   },
   statusIndicator: {
     width: 30,
