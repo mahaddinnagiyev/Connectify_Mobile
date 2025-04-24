@@ -17,19 +17,31 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
 
-const MyFriends = () => {
+const MyFriends: React.FC = () => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const { friends } = useSelector((state: RootState) => state.myFriends);
   const { isLoading, fetchAllMyFriends } = useFriendData();
 
-  React.useEffect(() => {
-    const handleFetchMyFriends = async () => {
-      await fetchAllMyFriends();
-    };
+  const { friends } = useSelector((state: RootState) => state.myFriends);
 
-    handleFetchMyFriends();
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  React.useEffect(() => {
+    fetchAllMyFriends();
   }, []);
+
+  const filteredFriends = React.useMemo(() => {
+    if (!searchQuery.trim()) {
+      return friends;
+    }
+    const q = searchQuery.toLowerCase();
+    return friends.filter(
+      (f) =>
+        f.username.toLowerCase().includes(q) ||
+        f.first_name.toLowerCase().includes(q) ||
+        f.last_name.toLowerCase().includes(q)
+    );
+  }, [searchQuery, friends]);
 
   return (
     <View style={styles.container}>
@@ -43,16 +55,20 @@ const MyFriends = () => {
           style={styles.searchInput}
           placeholder="Search friends..."
           placeholderTextColor="#888"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
 
-      {friends.length === 0 && !isLoading && (
+      {/* No results message */}
+      {filteredFriends.length === 0 && !isLoading && (
         <Text style={styles.noFriendsText}>No friends found</Text>
       )}
 
       {/* Friends list */}
       <FlatList
-        data={friends}
+        data={filteredFriends}
+        keyExtractor={(item) => item.id}
         scrollEnabled={false}
         renderItem={({ item }) => (
           <Pressable
