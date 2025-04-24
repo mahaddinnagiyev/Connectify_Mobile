@@ -7,7 +7,8 @@ import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
-import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
+import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
+import PrivacyLegendModal from "../modals/profile/PrivacyLegendModal";
 
 interface PersonalInfoProps {
   isMyProfileScreen: boolean;
@@ -56,9 +57,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   );
 
   // States And Functions
-  const [showModal, setShowModal] = React.useState(false);
-  const [showImageModal, setShowImageModal] = React.useState(false);
-  const [showEditModal, setShowEditModal] = React.useState(false);
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [showImageModal, setShowImageModal] = React.useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
+  const [showPrivacyModal, setShowPrivacyModal] =
+    React.useState<boolean>(false);
 
   return (
     <>
@@ -177,14 +180,52 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   color={color.primaryColor}
                   style={styles.fieldIcon}
                 />
-                <View>
+                <View style={{ flex: 1 }}>
                   <Text style={styles.infoLabel}>{item.label}</Text>
                   {shouldBlur(item.privacySetting) ? (
                     <SkeletonLoader
                       style={{ width: 120, height: 16, marginVertical: 4 }}
                     />
                   ) : (
-                    <Text style={styles.infoValue}>{item.value}</Text>
+                    <View style={styles.infoTextWithLock}>
+                      <Text style={styles.infoValue}>{item.value}</Text>
+                      {isMyProfileScreen && (
+                        <>
+                          {item.privacySetting ===
+                            PrivacySettingsChoice.nobody && (
+                            <MaterialIcons
+                              name="lock-person"
+                              size={20}
+                              color="black"
+                              style={styles.lockIcon}
+                              onPress={() => setShowPrivacyModal(true)}
+                            />
+                          )}
+
+                          {item.privacySetting ===
+                            PrivacySettingsChoice.everyone && (
+                            <MaterialIcons
+                              name="public"
+                              size={20}
+                              color="black"
+                              style={styles.lockIcon}
+                              onPress={() => setShowPrivacyModal(true)}
+                            />
+                          )}
+
+                          {item.privacySetting ===
+                            PrivacySettingsChoice.my_friends && (
+                            <MaterialIcons
+                              name="people-alt"
+                              size={20}
+                              color="black"
+                              style={styles.lockIcon}
+                              onPress={() => setShowPrivacyModal(true)}
+                            />
+                          )}
+                        </>
+                      )}
+                    </View>
                   )}
                   <View style={styles.infoLine} />
                 </View>
@@ -214,11 +255,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
       )}
 
       {isMyProfileScreen && (
-        <EditProfileInfoModal
-          type="personal"
-          visible={showEditModal}
-          onClose={() => setShowEditModal(false)}
-        />
+        <>
+          <EditProfileInfoModal
+            type="personal"
+            visible={showEditModal}
+            onClose={() => setShowEditModal(false)}
+          />
+
+          <PrivacyLegendModal
+            visible={showPrivacyModal}
+            onClose={() => setShowPrivacyModal(false)}
+          />
+        </>
       )}
     </>
   );

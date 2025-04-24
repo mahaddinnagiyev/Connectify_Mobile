@@ -119,6 +119,17 @@ export const styles = StyleSheet.create({
     display: "none",
   },
 
+  infoTextWithLock: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  lockIcon: {
+    marginLeft: 8,
+    color: color.boldColor
+  },
+
   fieldIcon: {
     padding: 8,
     backgroundColor: "#E8F5E9",

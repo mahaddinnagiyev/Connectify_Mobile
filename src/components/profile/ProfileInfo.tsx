@@ -5,7 +5,8 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
-import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
+import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
+import PrivacyLegendModal from "../modals/profile/PrivacyLegendModal";
 
 interface ProfileInfoProps {
   isMyProfileScreen: boolean;
@@ -54,7 +55,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   );
 
   // State And Functions
-  const [showEditModal, setShowEditModal] = React.useState(false);
+  const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
+  const [showPrivacyModal, setShowPrivacyModal] = React.useState<boolean>(false);
 
   return (
     <>
@@ -128,13 +130,51 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                       style={{ width: 120, height: 16, marginVertical: 4 }}
                     />
                   ) : (
-                    <Text
-                      style={styles.value}
-                      numberOfLines={item.label === "Bio" ? 3 : 1}
-                      ellipsizeMode="tail"
-                    >
-                      {item.value}
-                    </Text>
+                    <View style={styles.infoTextWithLock}>
+                      <Text
+                        style={styles.value}
+                        numberOfLines={item.label === "Bio" ? 3 : 1}
+                        ellipsizeMode="tail"
+                      >
+                        {item.value}
+                      </Text>
+                      {isMyProfileScreen && (
+                        <>
+                          {item.privacySetting ===
+                            PrivacySettingsChoice.nobody && (
+                            <MaterialIcons
+                              name="lock-person"
+                              size={20}
+                              color="black"
+                              style={styles.lockIcon}
+                              onPress={() => setShowPrivacyModal(true)}
+                            />
+                          )}
+
+                          {item.privacySetting ===
+                            PrivacySettingsChoice.everyone && (
+                            <MaterialIcons
+                              name="public"
+                              size={20}
+                              color="black"
+                              style={styles.lockIcon}
+                              onPress={() => setShowPrivacyModal(true)}
+                            />
+                          )}
+
+                          {item.privacySetting ===
+                            PrivacySettingsChoice.my_friends && (
+                            <MaterialIcons
+                              name="people-alt"
+                              size={20}
+                              color="black"
+                              style={styles.lockIcon}
+                              onPress={() => setShowPrivacyModal(true)}
+                            />
+                          )}
+                        </>
+                      )}
+                    </View>
                   )}
                   <View style={styles.divider} />
                 </View>
@@ -145,11 +185,18 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       </View>
 
       {isMyProfileScreen && (
-        <EditProfileInfoModal
-          type="profile"
-          visible={showEditModal}
-          onClose={() => setShowEditModal(false)}
-        />
+        <>
+          <EditProfileInfoModal
+            type="profile"
+            visible={showEditModal}
+            onClose={() => setShowEditModal(false)}
+          />
+
+          <PrivacyLegendModal
+            visible={showPrivacyModal}
+            onClose={() => setShowPrivacyModal(false)}
+          />
+        </>
       )}
     </>
   );

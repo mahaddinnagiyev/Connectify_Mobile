@@ -9,9 +9,10 @@ import { setSuccessMessage } from "@redux/messages/messageSlice";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import AddSocialLinkModal from "../modals/profile/AddSocialLinkModal";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
-import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
+import { useUpdateProfile } from "@hooks/useUpdateProfile";
 import { UserData } from "./ProfilePage";
-import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
+import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
+import PrivacyLegendModal from "../modals/profile/PrivacyLegendModal";
 
 interface SocialLinkProps {
   isMyProfileScreen: boolean;
@@ -59,12 +60,29 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
     />
   );
 
+  const getSocialPrivacyIconName = () => {
+    switch (userData.privacySettings.social_links) {
+      case PrivacySettingsChoice.nobody:
+        return "lock-person";
+      case PrivacySettingsChoice.everyone:
+        return "public";
+      case PrivacySettingsChoice.my_friends:
+        return "people-alt";
+      default:
+        return null;
+    }
+  };
+
+  const socialPrivacyIconName = getSocialPrivacyIconName();
+
   // States & Functions
   const dispatch = useDispatch();
 
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
   const [showRemoveModal, setShowRemoveModal] = React.useState<boolean>(false);
+  const [showPrivacyModal, setShowPrivacyModal] =
+    React.useState<boolean>(false);
   const [socialLinkId, setSocialLinkId] = React.useState<string | null>(null);
 
   const socialLinks = userData.account.social_links ?? [];
@@ -94,19 +112,36 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
             {/* Header */}
             <View style={styles.header}>
               <Text style={styles.title}>Social Links</Text>
-              <Pressable
-                style={styles.addButton}
-                onPress={() => setShowAddModal(true)}
-              >
-                {isMyProfileScreen && (
-                  <Ionicons
-                    name="add-circle"
-                    size={24}
-                    color={color.primaryColor}
-                  />
-                )}
-              </Pressable>
+
+              {isMyProfileScreen && (
+                <View style={styles.headerActions}>
+                  {/* Privacy icon */}
+                  {socialPrivacyIconName && (
+                    <MaterialIcons
+                      name={socialPrivacyIconName}
+                      size={20}
+                      color="black"
+                      style={styles.lockIcon}
+                      onPress={() => setShowPrivacyModal(true)}
+                    />
+                  )}
+
+                  {/* Add-button icon */}
+                  <Pressable
+                    style={styles.addButton}
+                    onPress={() => setShowAddModal(true)}
+                  >
+                    <Ionicons
+                      name="add-circle"
+                      size={24}
+                      color={color.primaryColor}
+                    />
+                  </Pressable>
+                </View>
+              )}
             </View>
+
+            {/* Links */}
             {socialLinks.map((link) => (
               <View key={link.id} style={styles.linkCard}>
                 {/* Platform and actions */}
@@ -202,6 +237,8 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
                 )}
               </Pressable>
             </View>
+
+            {/* Link Card */}
             <View style={styles.linkCard}>
               {/* Platform and actions */}
               <View style={styles.linkHeader}>
@@ -292,6 +329,11 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
             isLoading={isRemoveLoading}
             onCancel={() => setShowRemoveModal(false)}
             onConfirm={handleRemoveSocialLink}
+          />
+
+          <PrivacyLegendModal
+            visible={showPrivacyModal}
+            onClose={() => setShowPrivacyModal(false)}
           />
         </>
       )}

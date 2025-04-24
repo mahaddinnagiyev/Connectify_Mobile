@@ -1,3 +1,4 @@
+import { color } from "@/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -66,5 +67,15 @@ export const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#F0F0F0",
     marginTop: 12,
+  },
+  infoTextWithLock: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  lockIcon: {
+    marginLeft: 8,
+    color: color.boldColor
   },
 });

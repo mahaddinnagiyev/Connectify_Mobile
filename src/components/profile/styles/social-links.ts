@@ -17,6 +17,12 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#2D3436",
   },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
   addButton: {
     padding: 5,
   },
@@ -82,5 +88,15 @@ export const styles = StyleSheet.create({
     color: color.primaryColor,
     fontSize: 14,
     fontWeight: "500",
+  },
+  infoTextWithLock: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  lockIcon: {
+    marginLeft: 8,
+    color: color.boldColor
   },
 });
