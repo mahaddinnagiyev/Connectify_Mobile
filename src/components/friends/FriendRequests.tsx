@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Pressable, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  FlatList,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { styles } from "./styles/friendRequests";
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from "date-fns";
@@ -34,6 +41,8 @@ const FriendRequests: React.FC = () => {
   );
   const {
     isLoading,
+    isAccepting,
+    isRejecting,
     fetchAllFriendReuqest,
     acceptAndRejectFrienship,
     blockAndUnblockUser,
@@ -108,7 +117,11 @@ const FriendRequests: React.FC = () => {
               acceptAndRejectFriendship(item.id, FriendshipAction.accept)
             }
           >
-            <Ionicons name="checkmark" size={18} color="white" />
+            {isAccepting ? (
+              <ActivityIndicator size={"small"} color={"white"} />
+            ) : (
+              <Ionicons name="checkmark" size={18} color="white" />
+            )}
           </Pressable>
           <Pressable
             style={[styles.button, styles.rejectButton]}
@@ -116,7 +129,11 @@ const FriendRequests: React.FC = () => {
               acceptAndRejectFriendship(item.id, FriendshipAction.reject)
             }
           >
-            <Ionicons name="close" size={18} color="white" />
+            {isRejecting ? (
+              <ActivityIndicator size={"small"} color={"white"} />
+            ) : (
+              <Ionicons name="close" size={18} color="white" />
+            )}
           </Pressable>
           <Pressable
             style={[styles.button, styles.blockButton]}

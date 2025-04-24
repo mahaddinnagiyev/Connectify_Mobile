@@ -52,6 +52,8 @@ async function getToken() {
 export function useFriendData() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
 
   const fetchAllMyFriends = async () => {
     try {
@@ -133,7 +135,9 @@ export function useFriendData() {
     id: string
   ) => {
     try {
-      setIsLoading(true);
+      status === FriendshipAction.accept
+        ? setIsAccepting(true)
+        : setIsRejecting(true);
 
       const { data } = await axios.patch<Response>(
         `${process.env.SERVER_URL}/friendship/request?status=${status}&request=${id}`,
@@ -173,7 +177,8 @@ export function useFriendData() {
       }
       dispatch(setErrorMessage((error as Error).message));
     } finally {
-      setIsLoading(false);
+      setIsAccepting(false);
+      setIsRejecting(false);
     }
   };
 
@@ -344,6 +349,8 @@ export function useFriendData() {
 
   return {
     isLoading,
+    isAccepting,
+    isRejecting,
     fetchAllMyFriends,
     fetchAllFriendReuqest,
     acceptAndRejectFrienship,
