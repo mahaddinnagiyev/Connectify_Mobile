@@ -7,6 +7,7 @@ import {
   addSocialLink as addSocialLinkAction,
   removeSocialLink as removeSocialLinkAction,
   changeProfilePhoto as changeProfilePhotoAction,
+  updatePrivacySettings as updatePrivacySettingsAction,
 } from "@redux/profile/myProfileSlice";
 import {
   setErrorMessage,
@@ -15,6 +16,13 @@ import {
 import { getTokenFromSession } from "@services/auth/token.service";
 import { Gender } from "@enums/gender.enum";
 import { useState } from "react";
+import { PrivacySettings } from "../services/account/dto/privacy.dto";
+
+export type UploadFile = {
+  uri: string;
+  name: string;
+  type: string;
+};
 
 export interface Response {
   success: boolean;
@@ -79,15 +87,10 @@ interface UpdateProfilePicture {
   };
 }
 
-export type UploadFile = {
-  uri: string;
-  name: string;
-  type: string;
-};
-
 export function useUpdateProfile() {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPrivacyChanging, setIsPrivacyChanging] = useState<boolean>(false);
 
   const updateProfile = async (payload: UpdatePersonalInfoPayload) => {
     try {
@@ -381,6 +384,58 @@ export function useUpdateProfile() {
     }
   };
 
+  const updatePrivacySettings = async (payload: PrivacySettings) => {
+    try {
+      setIsPrivacyChanging(true);
+
+      const token = await getTokenFromSession();
+      const { data } = await axios.patch<Response>(
+        `${process.env.SERVER_URL}/account/privacy-settings`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        dispatch(updatePrivacySettingsAction(payload));
+        dispatch(setSuccessMessage(data.message ?? "Privacy settings updated"));
+      } else {
+        if (Array.isArray(data.response?.message)) {
+          dispatch(setErrorMessage(data.response?.message[0]));
+        } else {
+          dispatch(
+            setErrorMessage(
+              data.response?.message ??
+                data.response?.error ??
+                data.message ??
+                data.error ??
+                "Something went wrong"
+            )
+          );
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          success: false,
+          message:
+            error.response?.data?.message ??
+            error.response?.data?.error ??
+            error.message,
+        };
+      }
+    } finally {
+      setIsPrivacyChanging(false);
+    }
+  };
+
   return {
     updateProfile,
     updateAccount,
@@ -388,6 +443,8 @@ export function useUpdateProfile() {
     addSocialLink,
     removeSocialLink,
     changeProfilePhoto,
+    updatePrivacySettings,
+    isPrivacyChanging,
     isLoading,
   };
 }

@@ -6,67 +6,170 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { color } from "@/colors";
 import { useNavigation } from "@react-navigation/native";
-import type { StackParamList } from "@navigation/Navigator";
+import type { StackParamList } from "@navigation/UserStack";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AccountSettings from "@components/settings/AccountSettings";
 import PrivacySettings from "@components/settings/PrivacySettings";
-
-export type PrivacyOption = "Everyone" | "My Friends" | "No One";
+import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import { setIsPrivachSettingsChagned } from "@redux/profile/myProfileSlice";
+import { useUpdateProfile } from "@hooks/useUpdateProfile";
+import { PrivacySettings as Privacy } from "@services/account/dto/privacy.dto";
+import ConfirmModal from "@components/modals/confirm/ConfirmModal";
 
 const SettingsScreen = () => {
-  const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const [faceIdEnabled, setFaceIdEnabled] = useState(false);
-  const [privacySettings, setPrivacySettings] = useState<
-    Record<string, PrivacyOption>
-  >({
-    email: "My Friends",
-    gender: "My Friends",
-    bio: "Everyone",
-    location: "No One",
-    socialLinks: "My Friends",
-    lastLogin: "No One",
-  });
+  const dispatch = useDispatch();
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
-  const handlePrivacyChange = (setting: string, value: PrivacyOption) => {
+  const { userData, isPrivacySettingsChanged } = useSelector(
+    (state: RootState) => state.myProfile
+  );
+  const { updatePrivacySettings, isPrivacyChanging } = useUpdateProfile();
+
+  const [showDiscardModal, setShowDiscardModal] = useState<boolean>(false);
+  const [faceIdEnabled, setFaceIdEnabled] = useState<boolean>(false);
+  const [privacySettings, setPrivacySettings] = useState<
+    Record<string, PrivacySettingsChoice>
+  >({
+    email: userData.privacySettings.email,
+    gender: userData.privacySettings.gender,
+    bio: userData.privacySettings.bio,
+    location: userData.privacySettings.location,
+    socialLinks: userData.privacySettings.social_links,
+    lastLogin: userData.privacySettings.last_login,
+  });
+  const originalSettings = useRef(privacySettings);
+  const pendingAction = useRef<any>(null);
+
+  useEffect(() => {
+    const hasChanged = Object.keys(privacySettings).some(
+      (key) => privacySettings[key] !== originalSettings.current[key]
+    );
+    dispatch(setIsPrivachSettingsChagned(hasChanged));
+  }, [privacySettings, dispatch]);
+
+  const handlePrivacyChange = (
+    setting: string,
+    value: PrivacySettingsChoice
+  ) => {
     setPrivacySettings((prev) => ({ ...prev, [setting]: value }));
   };
 
+  const handleSave = async () => {
+    const privacySettingsObject: Privacy = {
+      email: privacySettings.email,
+      gender: privacySettings.gender,
+      bio: privacySettings.bio,
+      location: privacySettings.location,
+      social_links: privacySettings.socialLinks,
+      last_login: privacySettings.lastLogin,
+    };
+
+    await updatePrivacySettings(privacySettingsObject);
+
+    dispatch(setIsPrivachSettingsChagned(false));
+    originalSettings.current = { ...privacySettings };
+  };
+
+  const handleBackPress = () => {
+    if (isPrivacySettingsChanged) {
+      setShowDiscardModal(true);
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  useEffect(() => {
+    const beforeRemoveListener = navigation.addListener("beforeRemove", (e) => {
+      if (!isPrivacySettingsChanged) {
+        return;
+      }
+      e.preventDefault();
+      setShowDiscardModal(true);
+    });
+    return beforeRemoveListener;
+  }, [navigation, isPrivacySettingsChanged]);
+
+  useEffect(() => {
+    // listener yarat
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      if (!isPrivacySettingsChanged) {
+        return;
+      }
+      e.preventDefault();
+
+      pendingAction.current = e.data.action;
+      setShowDiscardModal(true);
+    });
+    return unsubscribe;
+  }, [navigation, isPrivacySettingsChanged]);
+
+  const onSaveAndGoBack = async () => {
+    await handleSave();
+    setShowDiscardModal(false);
+    navigation.goBack();
+  };
+
+  const onDiscardChanges = () => {
+    dispatch(setIsPrivachSettingsChagned(false));
+    originalSettings.current = { ...privacySettings };
+    setShowDiscardModal(false);
+    navigation.dispatch(pendingAction.current);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Settings</Text>
-        <Pressable
-          style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
-          onPress={() => navigate.goBack()}
+    <>
+      <SafeAreaView style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Settings</Text>
+          <Pressable
+            style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
+            onPress={handleBackPress}
+          >
+            <Text style={styles.headerButtonText}>Back</Text>
+          </Pressable>
+        </View>
+
+        {/* Main Content */}
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.headerButtonText}>Back</Text>
-        </Pressable>
-      </View>
+          {/* Account Settings Section */}
+          <AccountSettings
+            faceIdEnabled={faceIdEnabled}
+            onFaceIdToggle={() => setFaceIdEnabled(!faceIdEnabled)}
+            onPasswordChange={() => console.log("Change password pressed")}
+            onRemoveAccount={() => console.log("Remove account pressed")}
+          />
 
-      {/* Main Content */}
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Account Settings Section */}
-        <AccountSettings
-          faceIdEnabled={faceIdEnabled}
-          onFaceIdToggle={() => setFaceIdEnabled(!faceIdEnabled)}
-          onPasswordChange={() => console.log("Change password pressed")}
-          onRemoveAccount={() => console.log("Remove account pressed")}
-        />
+          {/* Privacy Settings Section */}
+          <PrivacySettings
+            privacySettings={privacySettings}
+            onPrivacyChange={handlePrivacyChange}
+            onSave={handleSave}
+            isSaving={isPrivacyChanging}
+          />
+        </ScrollView>
+      </SafeAreaView>
 
-        {/* Privacy Settings Section */}
-        <PrivacySettings
-          privacySettings={privacySettings}
-          onPrivacyChange={handlePrivacyChange}
-        />
-      </ScrollView>
-    </SafeAreaView>
+      <ConfirmModal
+        visible={showDiscardModal}
+        title="Discard changes?"
+        message="You have unsaved changes. Are you sure you want to discard them?"
+        onConfirm={onSaveAndGoBack}
+        onCancel={onDiscardChanges}
+        confirmText="Save"
+        cancelText="Discard"
+        cancelColor="red"
+        isLoading={isPrivacyChanging}
+      />
+    </>
   );
 };
 

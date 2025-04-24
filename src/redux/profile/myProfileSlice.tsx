@@ -10,6 +10,9 @@ interface MyProfileState {
     account: Account;
     privacySettings: PrivacySettings;
   };
+
+  // Privacy Settings
+  isPrivacySettingsChanged: boolean;
 }
 
 const initialState: MyProfileState = {
@@ -26,6 +29,9 @@ const initialState: MyProfileState = {
     } as Account,
     privacySettings: {} as PrivacySettings,
   },
+
+  // Privacy Settings
+  isPrivacySettingsChanged: false,
 };
 
 export const myProfileSlice = createSlice({
@@ -98,6 +104,25 @@ export const myProfileSlice = createSlice({
           (sl) => sl.id !== action.payload.id
         );
     },
+
+    // Privacy Settings
+    setIsPrivachSettingsChagned: (state, action: PayloadAction<boolean>) => {
+      state.isPrivacySettingsChanged = action.payload;
+    },
+
+    updatePrivacySettingsForm: (
+      state,
+      action: PayloadAction<PrivacySettings>
+    ) => {
+      state.userData.privacySettings = action.payload;
+    },
+
+    updatePrivacySettings: (state, action: PayloadAction<PrivacySettings>) => {
+      state.userData.privacySettings = {
+        ...state.userData.privacySettings,
+        ...action.payload,
+      };
+    },
   },
 });
 
@@ -105,10 +130,17 @@ export const {
   setActiveIndex,
   setUserData,
   updateUserFields,
+
+  // Account
   updateAccountFields,
   updateSocialLink,
   addSocialLink,
   removeSocialLink,
   changeProfilePhoto,
+
+  // Privacy Settings
+  setIsPrivachSettingsChagned,
+  updatePrivacySettingsForm,
+  updatePrivacySettings,
 } = myProfileSlice.actions;
 export default myProfileSlice.reducer;
