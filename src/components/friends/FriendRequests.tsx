@@ -6,9 +6,12 @@ import { formatDistanceToNow } from "date-fns";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { useFriendData } from "@hooks/useFriendData";
-import { BlockAction } from "@/src/services/friends/blockList.dto";
+import { BlockAction } from "@services/friends/blockList.dto";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
-import { FriendshipAction } from "@/src/enums/friendship.enum";
+import { FriendshipAction } from "@enums/friendship.enum";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@navigation/UserStack";
 
 interface RequestItem {
   id: string;
@@ -20,6 +23,9 @@ interface RequestItem {
 }
 
 const FriendRequests: React.FC = () => {
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const [activeTab, setActiveTab] = useState<"sent" | "received">("received");
   const [blockUserId, setBlockUserId] = useState<string | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -71,7 +77,12 @@ const FriendRequests: React.FC = () => {
 
   const renderItem = ({ item }: { item: RequestItem }) => (
     <View style={styles.requestItem}>
-      <View style={styles.userInfo}>
+      <Pressable
+        style={styles.userInfo}
+        onPress={() => {
+          navigate("OtherUserProfile", { username: item.username });
+        }}
+      >
         <Image
           source={
             item.avatarUrl
@@ -87,7 +98,7 @@ const FriendRequests: React.FC = () => {
             {formatDistanceToNow(item.timestamp)} ago
           </Text>
         </View>
-      </View>
+      </Pressable>
 
       {activeTab === "received" ? (
         <View style={styles.actions}>

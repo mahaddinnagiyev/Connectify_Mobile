@@ -10,12 +10,18 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
-import { useFriendData } from "@/src/hooks/useFriendData";
-import { BlockAction } from "@/src/services/friends/blockList.dto";
+import { RootState } from "@redux/store";
+import { useFriendData } from "@hooks/useFriendData";
+import { BlockAction } from "@services/friends/blockList.dto";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@navigation/UserStack";
+import { useNavigation } from "@react-navigation/native";
 
 const BlockList = () => {
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const [showConfirmModal, setShowConfirmModal] = React.useState(false);
   const [blockId, setBlockId] = React.useState<string | null>(null);
 
@@ -50,7 +56,12 @@ const BlockList = () => {
         renderItem={({ item }) => (
           <View style={styles.userItem}>
             {/* Profile Info */}
-            <View style={styles.userInfo}>
+            <Pressable
+              style={styles.userInfo}
+              onPress={() => {
+                navigate("OtherUserProfile", { username: item.username });
+              }}
+            >
               <Image
                 source={
                   item.profile_picture
@@ -65,7 +76,7 @@ const BlockList = () => {
                 </Text>
                 <Text style={styles.username}>{item.username}</Text>
               </View>
-            </View>
+            </Pressable>
 
             {/* Unblock Button */}
             <Pressable

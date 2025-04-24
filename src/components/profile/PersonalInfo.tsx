@@ -1,14 +1,31 @@
-import { View, Text, Image, Pressable, Animated } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  Animated,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
 import { styles } from "./styles/personal-info";
 import { color } from "@/colors";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
 import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
 import { UserData } from "./ProfilePage";
 import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
 import PrivacyLegendModal from "../modals/profile/PrivacyLegendModal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
+import { BlockAction } from "@/src/services/friends/blockList.dto";
+import { useFriendData } from "@/src/hooks/useFriendData";
+import ConfirmModal from "../modals/confirm/ConfirmModal";
 
 interface PersonalInfoProps {
   isMyProfileScreen: boolean;
@@ -62,6 +79,114 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] =
     React.useState<boolean>(false);
+  const [showConfirmModal, setShowConfirmModal] =
+    React.useState<boolean>(false);
+
+  const {
+    friends,
+    sentFriendshipRequests,
+    receivedFriendshipRequests,
+    blockList,
+  } = useSelector((state: RootState) => state.myFriends);
+
+  const {
+    blockAndUnblockUser,
+    isLoading: isFriendDataLoading,
+    sentFriendshipRequest,
+    removeFriend,
+  } = useFriendData();
+
+  const handleBlockAndUnblockUser = async () => {
+    await blockAndUnblockUser(
+      userData.user.id,
+      blockList.find((block) => block.blocked_id === userData.user.id)
+        ? BlockAction.unblock
+        : BlockAction.block
+    );
+    setShowConfirmModal(false);
+  };
+
+  const setFriendButton = () => {
+    if (friends.find((friend) => friend.friend_id === userData.user.id)) {
+      return (
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "red" }]}
+          onPress={async () =>
+            await removeFriend(
+              friends.find((friend) => friend.friend_id === userData.user.id)!
+                .id
+            )
+          }
+        >
+          {isFriendDataLoading ? (
+            <ActivityIndicator size={"small"} color={"white"} />
+          ) : (
+            <MaterialIcons name="person-remove" size={20} color="white" />
+          )}
+          <Text style={styles.actionButtonText}>Remove</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (
+      sentFriendshipRequests.find(
+        (request) => request.requestee.id === userData.user.id
+      ) ||
+      receivedFriendshipRequests.find(
+        (request) => request.requester.id === userData.user.id
+      )
+    ) {
+      return (
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: color.primaryColor }]}
+        >
+          <MaterialIcons name="access-time" size={20} color="white" />
+          <Text style={styles.actionButtonText}>Pending</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        style={styles.actionButton}
+        onPress={async () => await sentFriendshipRequest(userData.user.id)}
+      >
+        {isFriendDataLoading ? (
+          <ActivityIndicator size={"small"} color={"white"} />
+        ) : (
+          <MaterialIcons name="person-add" size={20} color="white" />
+        )}
+        <Text style={styles.actionButtonText}>Add</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const setBlockButton = () => {
+    if (blockList.find((block) => block.blocked_id === userData.user.id)) {
+      return (
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => {
+            setShowConfirmModal(true);
+          }}
+        >
+          <MaterialIcons name="person-remove" size={20} color="white" />
+          <Text style={styles.actionButtonText}>Unblock</Text>
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity
+        style={[styles.actionButton, styles.blockButton]}
+        onPress={() => {
+          setShowConfirmModal(true);
+        }}
+      >
+        <MaterialCommunityIcons name="block-helper" size={20} color="white" />
+        <Text style={styles.actionButtonText}>Block</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <>
@@ -88,13 +213,32 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 style={styles.profile_picture}
               />
             </Pressable>
-            {isMyProfileScreen && (
+            {isMyProfileScreen ? (
               <Pressable
                 style={styles.profilePhotoEditIcon}
                 onPress={() => setShowModal(true)}
               >
                 <Ionicons name="camera" size={24} color="white" />
               </Pressable>
+            ) : (
+              <>
+                {isLoading ? (
+                  <SkeletonLoader
+                    style={{ width: 100, height: 24, marginTop: 20 }}
+                  />
+                ) : (
+                  <View style={styles.actionButtonsContainer}>
+                    <TouchableOpacity style={styles.actionButton}>
+                      <Ionicons name="chatbubble" size={20} color="white" />
+                      <Text style={styles.actionButtonText}>Message</Text>
+                    </TouchableOpacity>
+
+                    {setFriendButton()}
+
+                    {setBlockButton()}
+                  </View>
+                )}
+              </>
             )}
           </View>
         </View>
@@ -268,6 +412,22 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           />
         </>
       )}
+
+      <ConfirmModal
+        visible={showConfirmModal}
+        title="Are you sure?"
+        message="This action cannot be undone"
+        confirmText={
+          blockList.find((block) => block.blocked_id === userData.user.id)
+            ? "Unblock"
+            : "Block"
+        }
+        cancelText="Cancel"
+        confirmColor="red"
+        isLoading={isFriendDataLoading}
+        onConfirm={handleBlockAndUnblockUser}
+        onCancel={() => setShowConfirmModal(false)}
+      />
     </>
   );
 };

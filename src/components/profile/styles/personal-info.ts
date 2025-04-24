@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
 
   profileImageContainer: {
     position: "relative",
+    alignItems: "center",
   },
 
   profilePhotoEditIcon: {
@@ -40,6 +41,29 @@ export const styles = StyleSheet.create({
     padding: 6,
     borderWidth: 2,
     borderColor: "white",
+  },
+
+  actionButtonsContainer: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 15,
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: color.primaryColor,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    gap: 6,
+  },
+  blockButton: {
+    backgroundColor: "red",
+  },
+  actionButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "500",
   },
 
   personalContainer: {
@@ -127,7 +151,7 @@ export const styles = StyleSheet.create({
 
   lockIcon: {
     marginLeft: 8,
-    color: color.boldColor
+    color: color.boldColor,
   },
 
   fieldIcon: {

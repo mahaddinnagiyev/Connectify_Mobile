@@ -177,6 +177,85 @@ export function useFriendData() {
     }
   };
 
+  const sentFriendshipRequest = async (id: string) => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await axios.post<Response>(
+        `${process.env.SERVER_URL}/friendship/request/create?requestee=${id}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getToken()}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        await fetchAllFriendReuqest();
+        dispatch(setSuccessMessage(data.message ?? "Friendship request sent"));
+      } else {
+        dispatch(
+          setErrorMessage(
+            data.response?.message ??
+              data.response?.error ??
+              data.message ??
+              data.error ??
+              "Something went wrong"
+          )
+        );
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const removeFriend = async (id: string) => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await axios.delete<Response>(
+        `${process.env.SERVER_URL}/friendship/request/remove?request=${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getToken()}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        await fetchAllMyFriends();
+        dispatch(setSuccessMessage(data.message ?? "Friend removed"));
+      } else {
+        dispatch(
+          setErrorMessage(
+            data.response?.message ??
+              data.response?.error ??
+              data.message ??
+              data.error ??
+              "Something went wrong"
+          )
+        );
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Block List
   const fetchBlockList = async () => {
     try {
@@ -232,12 +311,12 @@ export function useFriendData() {
 
       if (data.success) {
         if (block_action === BlockAction.block) {
-          dispatch(setSuccessMessage(data.message ?? "User blocked"));
           await Promise.all([
             fetchAllFriendReuqest(),
             fetchBlockList(),
             fetchAllMyFriends(),
           ]);
+          dispatch(setSuccessMessage(data.message ?? "User blocked"));
         } else if (block_action === BlockAction.unblock) {
           dispatch(setSuccessMessage(data.message ?? "User unblocked"));
           await fetchBlockList();
@@ -268,6 +347,8 @@ export function useFriendData() {
     fetchAllMyFriends,
     fetchAllFriendReuqest,
     acceptAndRejectFrienship,
+    sentFriendshipRequest,
+    removeFriend,
 
     // Block List
     fetchBlockList,
