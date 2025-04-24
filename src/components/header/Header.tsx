@@ -37,6 +37,9 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
 
   const { isModalVisible } = useSelector((state: RootState) => state.header);
   const { userData } = useSelector((state: RootState) => state.myProfile);
+  const { receivedFriendshipRequests } = useSelector(
+    (state: RootState) => state.myFriends
+  );
 
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const [isLogoutLoading, setIsLogoutLoading] = React.useState(false);
@@ -145,11 +148,24 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
           onPress={() => onTabChange("users")}
           style={style.menuContainer}
         >
-          {activeTab === "Users" ? (
-            <MaterialIcons name="people" size={31} color={color.primaryColor} />
-          ) : (
-            <MaterialIcons name="people-outline" size={31} color="black" />
-          )}
+          <View style={style.iconWrapper}>
+            {activeTab === "Users" ? (
+              <MaterialIcons
+                name="people"
+                size={31}
+                color={color.primaryColor}
+              />
+            ) : (
+              <MaterialIcons name="people-outline" size={31} color="black" />
+            )}
+            {receivedFriendshipRequests.length > 0 && (
+              <View style={style.badge}>
+                <Text style={style.badgeText}>
+                  {receivedFriendshipRequests.length}
+                </Text>
+              </View>
+            )}
+          </View>
           <Text
             style={[
               style.menuText,

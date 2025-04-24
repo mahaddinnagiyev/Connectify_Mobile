@@ -88,4 +88,24 @@ export const style = StyleSheet.create({
   chevron: {
     marginLeft: "auto",
   },
+  iconWrapper: {
+    position: "relative",
+  },
+  badge: {
+    position: "absolute",
+    top: -4,
+    right: -6,
+    backgroundColor: "red",
+    borderRadius: 10,
+    minWidth: 17,
+    height: 17,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 9,
+    fontWeight: "bold",
+  },
 });
