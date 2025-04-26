@@ -8,10 +8,20 @@ import { setOtherUserData } from "../redux/users/usersSlice";
 import { User } from "../services/user/dto/user.dto";
 import { Account } from "../services/account/dto/account.dto";
 import { PrivacySettings } from "../services/account/dto/privacy.dto";
+import { setIsAuthenticated } from "../redux/auth/authSlice";
+
+interface ApiResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  status?: number;
+}
 
 interface ErrorPayload {
   message?: string | string[];
   error?: string;
+  status?: number;
+  response?: { message?: string; error?: string; status?: number };
 }
 
 interface SearchUserResponse {
@@ -28,6 +38,17 @@ interface SearchUserResponse {
   message?: string;
 }
 
+interface GetMyDataResponse {
+  success: boolean;
+  user: User;
+  account: Account;
+  privacy_settings: PrivacySettings;
+  status?: number;
+  response?: ApiResponse;
+  message?: string;
+  error?: string;
+}
+
 export function useUserData() {
   const dispatch = useDispatch();
   const [userResponse, setUserResponse] = useState<UserResponse | null>(null);
@@ -40,7 +61,7 @@ export function useUserData() {
   const fetchUser = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.get<UserResponse>(
+      const { data } = await axios.get<GetMyDataResponse>(
         `${process.env.SERVER_URL}/user/by`,
         {
           headers: {
@@ -51,16 +72,31 @@ export function useUserData() {
           signal: abortControllerRef.current?.signal,
         }
       );
+
+      if (
+        (data.status && data.status === 404) ||
+        (data.response?.status && data.response.status === 404)
+      )
+        return dispatch(setIsAuthenticated(false));
+
       setUserResponse(data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.code === "ERR_CANCELED") return;
         const axiosErr = err as AxiosError<ErrorPayload>;
         const payload = axiosErr.response?.data;
-        let msg: string;
+        let msg: string = "";
+
+        if (
+          (axiosErr.status && axiosErr.status === 404) ||
+          (axiosErr.response?.status && axiosErr.response.status === 404)
+        )
+          return dispatch(setIsAuthenticated(false));
 
         if (payload) {
-          if (Array.isArray(payload.message)) {
+          if (payload.status && payload.status === 404) {
+            dispatch(setIsAuthenticated(false));
+          } else if (Array.isArray(payload.message)) {
             msg = payload.message[0];
           } else if (typeof payload.message === "string") {
             msg = payload.message;

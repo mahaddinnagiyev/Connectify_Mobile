@@ -148,7 +148,6 @@ const SettingsScreen = () => {
             email={userData.user.email}
             faceIdEnabled={faceIdEnabled}
             onFaceIdToggle={() => setFaceIdEnabled(!faceIdEnabled)}
-            onRemoveAccount={() => console.log("Remove account pressed")}
           />
 
           {/* Privacy Settings Section */}

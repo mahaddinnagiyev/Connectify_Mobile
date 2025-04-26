@@ -3,7 +3,10 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
-import { forgotPassoword } from "@/src/services/auth/auth.service";
+import {
+  forgotPassoword,
+  removeAccount,
+} from "@/src/services/auth/auth.service";
 import { useDispatch } from "react-redux";
 import {
   setErrorMessage,
@@ -14,21 +17,18 @@ type Props = {
   email: string;
   faceIdEnabled: boolean;
   onFaceIdToggle: () => void;
-  onRemoveAccount: () => void;
 };
 
-const AccountSettings = ({
-  email,
-  faceIdEnabled,
-  onFaceIdToggle,
-  onRemoveAccount,
-}: Props) => {
+const AccountSettings = ({ email, faceIdEnabled, onFaceIdToggle }: Props) => {
   const dispatch = useDispatch();
 
   const [showConfirmPassword, setShowConfirmPassword] =
     React.useState<boolean>(false);
+  const [showRemoveAccount, setShowRemoveAccount] =
+    React.useState<boolean>(false);
   const [changePasswordRequest, setChangePasswordRequest] =
     React.useState<boolean>(false);
+  const [isRemoveAccount, setIsRemoveAccount] = React.useState<boolean>(false);
 
   const changePassword = async () => {
     try {
@@ -55,6 +55,34 @@ const AccountSettings = ({
     } finally {
       setChangePasswordRequest(false);
       setShowConfirmPassword(false);
+    }
+  };
+
+  const handleRemoveAccount = async () => {
+    try {
+      setIsRemoveAccount(true);
+      const response = await removeAccount();
+
+      if (response.success) {
+        dispatch(
+          setSuccessMessage(response.message ?? "Account removed successfully")
+        );
+      } else {
+        dispatch(
+          setErrorMessage(
+            response.response?.message ??
+              response.response?.error ??
+              response.message ??
+              response.error ??
+              "Something went wrong while confirming account"
+          )
+        );
+      }
+    } catch (error) {
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsRemoveAccount(false);
+      setShowRemoveAccount(false);
     }
   };
 
@@ -116,7 +144,7 @@ const AccountSettings = ({
               styles.dangerButton,
               { opacity: pressed ? 0.8 : 1 },
             ]}
-            onPress={onRemoveAccount}
+            onPress={() => setShowRemoveAccount(true)}
           >
             <Ionicons name="trash" size={16} color="#ff4444" />
             <Text style={[styles.buttonText, styles.dangerText]}>Remove</Text>
@@ -133,6 +161,18 @@ const AccountSettings = ({
         cancelText="Cancel"
         isLoading={changePasswordRequest}
         title="Change Password"
+      />
+
+      <ConfirmModal
+        visible={showRemoveAccount}
+        onConfirm={handleRemoveAccount}
+        onCancel={() => setShowRemoveAccount(false)}
+        message="Are you sure you want to remove your account?"
+        confirmText="Remove"
+        cancelText="Cancel"
+        isLoading={isRemoveAccount}
+        title="Remove Account"
+        confirmColor="red"
       />
     </>
   );

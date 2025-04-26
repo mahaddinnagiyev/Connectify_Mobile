@@ -202,3 +202,35 @@ export const forgotPassoword = async (email: string): Promise<Response> => {
     };
   }
 };
+
+// Remove Account
+export const removeAccount = async (): Promise<Response> => {
+  try {
+    const { data } = await axios.post<Response>(
+      `${process.env.SERVER_URL}/auth/delete`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${await getTokenFromSession()}`,
+        },
+        withCredentials: true,
+      }
+    );
+    return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
+      };
+    }
+    return {
+      success: false,
+      error: "Something went wrong while confirming account",
+    };
+  }
+};
