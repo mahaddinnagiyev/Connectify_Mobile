@@ -20,6 +20,11 @@ import { setIsPrivachSettingsChagned } from "@redux/profile/myProfileSlice";
 import { useUpdateProfile } from "@hooks/useUpdateProfile";
 import { PrivacySettings as Privacy } from "@services/account/dto/privacy.dto";
 import ConfirmModal from "@components/modals/confirm/ConfirmModal";
+import {
+  setErrorMessage,
+  setSuccessMessage,
+} from "@/src/redux/messages/messageSlice";
+import { forgotPassoword } from "@/src/services/auth/auth.service";
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
@@ -29,7 +34,6 @@ const SettingsScreen = () => {
     (state: RootState) => state.myProfile
   );
   const { updatePrivacySettings, isPrivacyChanging } = useUpdateProfile();
-
   const [showDiscardModal, setShowDiscardModal] = useState<boolean>(false);
   const [faceIdEnabled, setFaceIdEnabled] = useState<boolean>(false);
   const [privacySettings, setPrivacySettings] = useState<
@@ -95,7 +99,6 @@ const SettingsScreen = () => {
   }, [navigation, isPrivacySettingsChanged]);
 
   useEffect(() => {
-    // listener yarat
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
       if (!isPrivacySettingsChanged) {
         return;
@@ -142,9 +145,9 @@ const SettingsScreen = () => {
         >
           {/* Account Settings Section */}
           <AccountSettings
+            email={userData.user.email}
             faceIdEnabled={faceIdEnabled}
             onFaceIdToggle={() => setFaceIdEnabled(!faceIdEnabled)}
-            onPasswordChange={() => console.log("Change password pressed")}
             onRemoveAccount={() => console.log("Remove account pressed")}
           />
 
