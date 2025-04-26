@@ -171,3 +171,34 @@ export const confirmAccount = async (code: number): Promise<Response> => {
     };
   }
 };
+
+// Forgot Password
+export const forgotPassoword = async (email: string): Promise<Response> => {
+  try {
+    const { data } = await axios.post<Response>(
+      `${process.env.SERVER_URL}/auth/forgot-password`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        withCredentials: true,
+      }
+    );
+    return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        success: false,
+        message:
+          err.response?.data?.message ??
+          err.response?.data?.error ??
+          err.message,
+      };
+    }
+    return {
+      success: false,
+      error: "Something went wrong while confirming account",
+    };
+  }
+};

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 import { ActivityIndicator, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import AuthStack from "./AuthStack";
@@ -18,6 +19,15 @@ export type StackParamList = {
   Settings: undefined;
   ContactUs: undefined;
   Auth: undefined;
+};
+
+const linking = {
+  prefixes: [Linking.createURL("/"), "myapp://"],
+  config: {
+    screens: {
+      ForgotPassword: "forgot-password/:token",
+    },
+  },
 };
 
 export default function RootNavigator() {
@@ -44,7 +54,7 @@ export default function RootNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {isAuthenticated ? <UserStack /> : <AuthStack />}
     </NavigationContainer>
   );

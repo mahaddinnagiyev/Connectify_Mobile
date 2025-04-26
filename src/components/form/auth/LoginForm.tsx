@@ -14,11 +14,16 @@ import { login } from "@services/auth/auth.service";
 import {
   setErrorMessage,
   setSuccessMessage,
-} from "@/src/redux/messages/messageSlice";
+} from "@redux/messages/messageSlice";
 import { color } from "@/colors";
 import { Audio } from "expo-av";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackParamList } from "@navigation/AuthStack";
 
 const LoginForm = () => {
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
   const dispatch = useDispatch();
   const { loginForm } = useSelector((state: RootState) => state.auth);
 
@@ -110,7 +115,12 @@ const LoginForm = () => {
         <Pressable style={styles.forgotPasswordButton}>
           <Text style={styles.forgotPasswordText}>
             Forgot password?{" "}
-            <Text style={styles.forgotPasswordLink}>Click here</Text>
+            <Text
+              style={styles.forgotPasswordLink}
+              onPress={() => navigate("ForgotPassword")}
+            >
+              Click here
+            </Text>
           </Text>
         </Pressable>
 
