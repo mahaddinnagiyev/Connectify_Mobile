@@ -90,12 +90,12 @@ const AuthHeader = () => {
         )}
       </View>
 
-      <Pressable style={styles.googleButton}>
+      {/* <Pressable style={styles.googleButton}>
         <Ionicons name="logo-google" size={20} color={color.primaryColor} />
         <Text style={styles.googleButtonText}>
           Sign {activeTab === AuthPage.LOGIN ? "in" : "up"} with Google
         </Text>
-      </Pressable>
+      </Pressable> */}
 
       <View style={styles.divider}>
         <View style={styles.dividerLine} />
