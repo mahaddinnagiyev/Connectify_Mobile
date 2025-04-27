@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
@@ -7,19 +7,29 @@ import {
   forgotPassoword,
   removeAccount,
 } from "@/src/services/auth/auth.service";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setErrorMessage,
   setSuccessMessage,
 } from "@/src/redux/messages/messageSlice";
+import { styles } from "./styles/accountSettings.style";
+import FaceIDModal from "../modals/auth/FaceIDModal";
+import { setIsFaceIDModalOpen } from "@/src/redux/auth/authSlice";
+import { RootState } from "@/src/redux/store";
 
 type Props = {
   email: string;
   faceIdEnabled: boolean;
   onFaceIdToggle: () => void;
+  setIsFaceIdModalOpen: (value: boolean) => void;
 };
 
-const AccountSettings = ({ email, faceIdEnabled, onFaceIdToggle }: Props) => {
+const AccountSettings = ({
+  email,
+  faceIdEnabled,
+  onFaceIdToggle,
+  setIsFaceIdModalOpen,
+}: Props) => {
   const dispatch = useDispatch();
 
   const [showConfirmPassword, setShowConfirmPassword] =
@@ -107,7 +117,7 @@ const AccountSettings = ({ email, faceIdEnabled, onFaceIdToggle }: Props) => {
         </View>
 
         {/* Face ID */}
-        <View style={styles.settingItem}>
+        {/* <View style={styles.settingItem}>
           <Text style={styles.settingText}>Face ID</Text>
           <Pressable
             style={({ pressed }) => [
@@ -118,7 +128,7 @@ const AccountSettings = ({ email, faceIdEnabled, onFaceIdToggle }: Props) => {
             onPress={onFaceIdToggle}
           >
             <Ionicons
-              name={faceIdEnabled ? "lock-open" : "lock-closed"}
+              name={faceIdEnabled ? "lock-closed" : "lock-open"}
               size={16}
               color={faceIdEnabled ? "white" : color.primaryColor}
             />
@@ -131,7 +141,7 @@ const AccountSettings = ({ email, faceIdEnabled, onFaceIdToggle }: Props) => {
               {faceIdEnabled ? "Disable" : "Enable"}
             </Text>
           </Pressable>
-        </View>
+        </View> */}
 
         {/* Remove Account */}
         <View style={styles.settingItem}>
@@ -177,68 +187,5 @@ const AccountSettings = ({ email, faceIdEnabled, onFaceIdToggle }: Props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  section: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#2D3436",
-    marginBottom: 12,
-  },
-  settingItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    minHeight: 56,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-  settingText: {
-    fontSize: 16,
-    color: "#2D3436",
-    flex: 1,
-    marginRight: 10,
-  },
-  actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: color.primaryColor + "15",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    minWidth: 110,
-    justifyContent: "center",
-  },
-  activeButton: {
-    backgroundColor: color.primaryColor,
-  },
-  activeButtonText: {
-    color: "#fff",
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: color.primaryColor,
-  },
-  dangerText: {
-    color: "#ff4444",
-  },
-  dangerButton: {
-    backgroundColor: "#ff444415",
-  },
-});
 
 export default AccountSettings;

@@ -2,6 +2,7 @@ import { Account } from "@services/account/dto/account.dto";
 import { PrivacySettings } from "@services/account/dto/privacy.dto";
 import { User } from "@services/user/dto/user.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Gender } from "@/src/enums/gender.enum";
 
 interface MyProfileState {
   activeIndex: number;
@@ -18,7 +19,16 @@ interface MyProfileState {
 const initialState: MyProfileState = {
   activeIndex: 0,
   userData: {
-    user: {} as User,
+    user: {
+      id: "",
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      gender: null,
+      face_descriptor: null,
+      created_at: null,
+    } as User,
     account: {
       id: "",
       bio: "",
@@ -123,6 +133,11 @@ export const myProfileSlice = createSlice({
         ...action.payload,
       };
     },
+
+    // Update User Face ID
+    updateUserFaceID: (state, action: PayloadAction<number[] | null>) => {
+      state.userData.user.face_descriptor = action.payload;
+    },
   },
 });
 
@@ -142,5 +157,8 @@ export const {
   setIsPrivachSettingsChagned,
   updatePrivacySettingsForm,
   updatePrivacySettings,
+
+  // Face ID
+  updateUserFaceID,
 } = myProfileSlice.actions;
 export default myProfileSlice.reducer;

@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+import { View, Text, Pressable, SafeAreaView, ScrollView } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { color } from "@/colors";
 import { useNavigation } from "@react-navigation/native";
@@ -20,11 +13,9 @@ import { setIsPrivachSettingsChagned } from "@redux/profile/myProfileSlice";
 import { useUpdateProfile } from "@hooks/useUpdateProfile";
 import { PrivacySettings as Privacy } from "@services/account/dto/privacy.dto";
 import ConfirmModal from "@components/modals/confirm/ConfirmModal";
-import {
-  setErrorMessage,
-  setSuccessMessage,
-} from "@/src/redux/messages/messageSlice";
-import { forgotPassoword } from "@/src/services/auth/auth.service";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { styles } from "./style/settingScreen.styles";
+import FaceIDModal from "@/src/components/modals/auth/FaceIDModal";
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
@@ -35,7 +26,7 @@ const SettingsScreen = () => {
   );
   const { updatePrivacySettings, isPrivacyChanging } = useUpdateProfile();
   const [showDiscardModal, setShowDiscardModal] = useState<boolean>(false);
-  const [faceIdEnabled, setFaceIdEnabled] = useState<boolean>(false);
+  const [isFaceIdModalOpen, setIsFaceIdModalOpen] = useState<boolean>(false);
   const [privacySettings, setPrivacySettings] = useState<
     Record<string, PrivacySettingsChoice>
   >({
@@ -143,11 +134,52 @@ const SettingsScreen = () => {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
+          {/* Notification Section */}
+          {/* {!userData.user.face_descriptor && (
+            <View style={styles.securityBanner}>
+              <View style={styles.bannerLeft}>
+                <Ionicons
+                  name="lock-open-outline"
+                  size={24}
+                  color={color.primaryColor}
+                  style={styles.bannerIcon}
+                />
+                <View style={styles.bannerTextContainer}>
+                  <Text style={styles.bannerTitle}>Enhance Your Security</Text>
+                  <Text style={styles.bannerDescription}>
+                    Protect your account with biometric authentication. Enable
+                    Face ID for secure access.
+                  </Text>
+                </View>
+              </View>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.enableButton,
+                  { opacity: pressed ? 0.8 : 1 },
+                ]}
+                onPress={() => setIsFaceIdModalOpen(true)}
+              >
+                <Text style={styles.enableButtonText}>Enable</Text>
+                <MaterialCommunityIcons
+                  name="face-recognition"
+                  size={18}
+                  color="white"
+                />
+              </Pressable>
+            </View>
+          )} */}
+
           {/* Account Settings Section */}
           <AccountSettings
             email={userData.user.email}
-            faceIdEnabled={faceIdEnabled}
-            onFaceIdToggle={() => setFaceIdEnabled(!faceIdEnabled)}
+            faceIdEnabled={userData.user.face_descriptor !== null}
+            onFaceIdToggle={
+              userData.user.face_descriptor
+                ? () => {}
+                : () => setIsFaceIdModalOpen(true)
+            }
+            setIsFaceIdModalOpen={setIsFaceIdModalOpen}
           />
 
           {/* Privacy Settings Section */}
@@ -171,49 +203,17 @@ const SettingsScreen = () => {
         cancelColor="red"
         isLoading={isPrivacyChanging}
       />
+
+      {isFaceIdModalOpen && (
+        <FaceIDModal
+          visible={isFaceIdModalOpen}
+          onClose={() => setIsFaceIdModalOpen(false)}
+          type="register"
+          onSuccess={() => setIsFaceIdModalOpen(false)}
+        />
+      )}
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f8f9fa",
-    marginTop: 28,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    height: 60,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderColor: "#ececec",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-
-  headerButtonText: {
-    fontSize: 16,
-    fontWeight: 800,
-    color: color.primaryColor,
-    backgroundColor: color.inputBgColor,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 18,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: color.primaryColor,
-  },
-  content: {
-    padding: 16,
-  },
-});
 
 export default SettingsScreen;

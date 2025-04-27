@@ -6,7 +6,7 @@ export interface User {
   last_name: string;
   email: string;
   username: string;
-  gender: Gender;
-  created_at: Date;
-  face_descriptor?: number[];
+  gender: Gender | null;
+  created_at: Date | null;
+  face_descriptor: number[] | null;
 }

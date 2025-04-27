@@ -27,7 +27,7 @@ const AuthScreen = () => {
         {activeTab === AuthPage.LOGIN && (
           <>
             {/* Switch */}
-            <View style={styles.switch}>
+            {/* <View style={styles.switch}>
               <View style={styles.iconContainer}>
                 <MaterialIcons
                   name="password"
@@ -84,7 +84,8 @@ const AuthScreen = () => {
                 </Text>
               </View>
             </View>
-            {authType === AuthType.PASSWORD ? <LoginForm /> : <FaceIDForm />}
+            {authType === AuthType.PASSWORD ? <LoginForm /> : <FaceIDForm />} */}
+            <LoginForm />
           </>
         )}
 

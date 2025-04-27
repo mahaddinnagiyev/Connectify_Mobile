@@ -2,13 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import axios, { AxiosError } from "axios";
 import { UserResponse } from "@services/user/user.service";
 import { getTokenFromSession } from "@services/auth/token.service";
-import { setErrorMessage } from "@redux/messages/messageSlice";
+import {
+  setErrorMessage,
+  setSuccessMessage,
+} from "@redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
 import { setOtherUserData } from "../redux/users/usersSlice";
 import { User } from "../services/user/dto/user.dto";
 import { Account } from "../services/account/dto/account.dto";
 import { PrivacySettings } from "../services/account/dto/privacy.dto";
 import { setIsAuthenticated } from "../redux/auth/authSlice";
+import { Response } from "./useUpdateProfile";
+import { updateUserFaceID } from "../redux/profile/myProfileSlice";
 
 interface ApiResponse {
   success: boolean;
@@ -56,6 +61,8 @@ export function useUserData() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isOtherUserDataLoading, setIsOtherUserDataLoading] =
     useState<boolean>(false);
+  const [isFaceIdLoading, setIsFaceIdLoading] = useState<boolean>(false);
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const fetchUser = async () => {
@@ -213,6 +220,45 @@ export function useUserData() {
     }
   };
 
+  // Face ID
+  const registerUserFaceID = async (face_descriptor: number[]) => {
+    try {
+      setIsFaceIdLoading(true);
+      const { data } = await axios.patch<Response>(
+        `${process.env.SERVER_URL}/auth/register/faceid`,
+        { face_descriptor },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${await getTokenFromSession()}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (data.success) {
+        dispatch(updateUserFaceID(face_descriptor));
+        dispatch(setSuccessMessage(data.message ?? "Face ID updated"));
+      } else {
+        dispatch(
+          setErrorMessage(
+            data.response?.message ??
+              data.response?.error ??
+              data.message ??
+              data.error ??
+              "Something went wrong"
+          )
+        );
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsFaceIdLoading(false);
+    }
+  };
+
   return {
     userResponse,
     isLoading,
@@ -224,5 +270,9 @@ export function useUserData() {
     isOtherUserDataLoading,
     searchUser,
     isSearching,
+
+    // Face ID
+    isFaceIdLoading,
+    registerUserFaceID,
   };
 }
