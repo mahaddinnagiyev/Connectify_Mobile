@@ -1,106 +1,138 @@
+import React, { useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  Dimensions,
   Image,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
-import { color } from "@/colors";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
+import { useMessengerData } from "@/src/hooks/useMessengerData";
+import { styles } from "../styles/userChats.style";
+import { color } from "@/colors";
 
-const screenHeight = Dimensions.get("window").height;
-const screenWidth = Dimensions.get("window").width;
+const truncate = (text: string = "", maxLength: number): string => {
+  return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
+};
+
+const formatTime = (input?: string | Date): string => {
+  if (!input) return "";
+  const date = typeof input === "string" ? new Date(input) : input;
+  let h = date.getHours();
+  const m = date.getMinutes().toString().padStart(2, "0");
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${m} ${ampm}`;
+};
 
 const UserChats = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const { chats } = useSelector((state: RootState) => state.messenger);
+  const { fetchChats } = useMessengerData();
+
+  const [refrehing, setRefreshing] = React.useState<boolean>(false);
+  const [isChatsLoading, setIsChatsLoading] = React.useState<boolean>(false);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setIsChatsLoading(true);
+    try {
+      fetchChats();
+    } finally {
+      setRefreshing(false);
+      setIsChatsLoading(false);
+    }
+  };
+
+  const refreshControl = (
+    <RefreshControl
+      refreshing={refrehing}
+      onRefresh={handleRefresh}
+      colors={[color.primaryColor]}
+      tintColor={color.primaryColor}
+    />
+  );
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.chat}
-            onPress={() => navigate.navigate("Chat")}
-          >
-            {/* <Text>{index + 1}</Text> */}
-            <Image
-              source={require("@assets/images/no-profile-photo.png")}
-              style={styles.profilePhoto}
-            />
-            <View style={styles.chatDetail}>
-              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                John Doe | @johndoe
-              </Text>
-              <View style={styles.lastMessage}>
-                <Text>Whats's Up Man</Text>
-                <Text style={{ fontSize: 9 }}>12:00</Text>
-              </View>
+      {isChatsLoading ? (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator
+            size="small"
+            color={color.primaryColor}
+            style={styles.loadingIndicator}
+          />
+          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+            Your chats are loading
+          </Text>
+        </View>
+      ) : (
+        <>
+          {chats.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.noChatsText}>No chats found.</Text>
             </View>
-            <View>
-              <Text style={styles.unreadCount}>2</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+          ) : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              refreshControl={refreshControl}
+            >
+              {chats.map((chat) => {
+                const name = chat.name
+                  ? truncate(chat.name, 25)
+                  : truncate(
+                      `${chat.otherUser.first_name} ${chat.otherUser.last_name} | @${chat.otherUser.username}`,
+                      25
+                    );
+
+                const message = truncate(chat.lastMessage?.content, 30);
+
+                const time = formatTime(chat.lastMessage?.created_at);
+
+                return (
+                  <TouchableOpacity
+                    key={chat.id}
+                    style={styles.chat}
+                    onPress={() => navigate.navigate("Chat")}
+                  >
+                    <Image
+                      source={
+                        chat.otherUserAccount.profile_picture
+                          ? { uri: chat.otherUserAccount.profile_picture }
+                          : require("@assets/images/no-profile-photo.png")
+                      }
+                      style={styles.profilePhoto}
+                    />
+
+                    <View style={styles.chatDetail}>
+                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                        {name}
+                      </Text>
+
+                      <View style={styles.lastMessage}>
+                        <Text>{message}</Text>
+                        <Text style={{ fontSize: 9 }}>{time}</Text>
+                      </View>
+                    </View>
+
+                    {chat.unreadCount! > 0 && (
+                      <Text style={styles.unreadCount}>{chat.unreadCount}</Text>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          )}
+        </>
+      )}
     </View>
   );
 };
 
 export default UserChats;
-
-const styles = StyleSheet.create({
-  container: {
-    height: screenHeight - 200,
-  },
-
-  chat: {
-    flexDirection: "row",
-    width: screenWidth - 80,
-    gap: 10,
-    height: 80,
-    alignItems: "center",
-    paddingHorizontal: 10,
-    position: "relative",
-    marginBottom: 10,
-  },
-
-  profilePhoto: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: color.primaryColor,
-  },
-
-  chatDetail: {
-    height: "58%",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-
-  lastMessage: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  unreadCount: {
-    backgroundColor: color.primaryColor,
-    width: 20,
-    height: 20,
-    borderRadius: 50,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-    position: "absolute",
-    right: 10,
-    bottom: -5,
-  },
-});

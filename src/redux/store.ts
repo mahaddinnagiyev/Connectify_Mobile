@@ -7,6 +7,7 @@ import myProfileReducer from "./profile/myProfileSlice";
 import settingsReducer from "./settings/settingsSlice";
 import authReucer from "./auth/authSlice";
 import messageReducer from "./messages/messageSlice";
+import messengerReducer from "./messenger/messengerSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,9 @@ export const store = configureStore({
     users: usersReducer,
     myProfile: myProfileReducer,
     settings: settingsReducer,
+
+    // Chat & Messenger
+    messenger: messengerReducer,
 
     // Messages
     messages: messageReducer,

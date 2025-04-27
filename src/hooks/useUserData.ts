@@ -190,6 +190,40 @@ export function useUserData() {
     }
   };
 
+  // Get User By Id
+  const getUserByID = async (id: string) => {
+    dispatch(
+      setOtherUserData({
+        otherUserData: {
+          user: {} as User,
+          account: {} as Account,
+          privacySettings: {} as PrivacySettings,
+        },
+      })
+    );
+    try {
+      setIsOtherUserDataLoading(true);
+      const { data } = await axios.get<UserResponse>(
+        `${process.env.SERVER_URL}/user/by?id=${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${await getTokenFromSession()}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsOtherUserDataLoading(false);
+    }
+  };
+
   // SearchUser
   const searchUser = async (u: string) => {
     try {
@@ -266,6 +300,7 @@ export function useUserData() {
 
     // Get User By Username
     getUserByUsername,
+    getUserByID,
     refetchOtherUserData: getUserByUsername,
     isOtherUserDataLoading,
     searchUser,
