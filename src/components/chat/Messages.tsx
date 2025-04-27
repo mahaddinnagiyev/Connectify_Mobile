@@ -165,7 +165,12 @@ const Messages = () => {
 
             case MessageType.AUDIO:
               messageContent = (
-                <Audio message={message} bubbleStyle={bubbleStyle} />
+                <Audio
+                  message={message}
+                  bubbleStyle={bubbleStyle}
+                  duration={20}
+                  currentTime={10}
+                />
               );
               break;
 
