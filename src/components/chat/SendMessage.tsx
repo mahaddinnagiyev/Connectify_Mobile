@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   TextInput,
@@ -20,9 +20,8 @@ const SendMessage = () => {
 
   return (
     <View style={styles.container}>
-      {/* Emote və Attach File Button */}
-      <View style={styles.leftButtons}>
-        <MaterialIcons name="insert-emoticon" size={29} color="black" />
+      {/* Attach File Button */}
+      <View style={styles.leftButton}>
         <MaterialIcons name="attach-file" size={29} color="black" />
       </View>
 
@@ -69,41 +68,36 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: color.inputBgColor,
     paddingHorizontal: 8,
-    paddingTop: 10,
-    paddingBottom: 15,
+    paddingVertical: 10,
     borderTopWidth: 1,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
     borderTopColor: color.borderColor,
   },
-
-  leftButtons: {
-    width: screenWidth * 0.18,
-    flexDirection: "row",
+  leftButton: {
+    width: screenWidth * 0.12,
+    justifyContent: "center",
     alignItems: "center",
-    gap: 5,
+    paddingBottom: 4,
   },
-
   messageInput: {
-    width: screenWidth * 0.64,
+    flex: 1,
+    marginRight: 8,
     borderBottomColor: color.inputBorderColor,
     borderBottomWidth: 1,
-    justifyContent: "center",
+    minHeight: 35,
   },
-
   textInput: {
     flex: 1,
     padding: 5,
     textAlignVertical: "top",
+    fontSize: 16,
   },
-
   sendButton: {
     width: screenWidth * 0.12,
+    justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
     borderRadius: 8,
-    borderColor: color.primaryColor,
-    paddingVertical: 5,
     backgroundColor: color.primaryColor,
+    paddingVertical: 8,
+    marginLeft: 4,
   },
 });
