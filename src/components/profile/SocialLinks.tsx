@@ -142,80 +142,97 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
             </View>
 
             {/* Links */}
-            {socialLinks.map((link) => (
-              <View key={link.id} style={styles.linkCard}>
-                {/* Platform and actions */}
-                <View style={styles.linkHeader}>
-                  <Text style={styles.platformText}>{link.name}</Text>
-                  {isMyProfileScreen && (
-                    <View style={styles.actions}>
-                      <Pressable style={styles.iconButton}>
-                        <MaterialIcons
-                          name="edit-square"
-                          size={18}
-                          color={color.primaryColor}
-                          onPress={() => {
-                            setSocialLinkId(link.id);
-                            setShowEditModal(true);
-                          }}
-                        />
-                      </Pressable>
-                      <Pressable style={styles.iconButton}>
-                        <MaterialIcons
-                          name="highlight-remove"
-                          size={18}
-                          color="red"
-                          onPress={() => {
-                            setSocialLinkId(link.id);
-                            setShowRemoveModal(true);
-                          }}
-                        />
-                      </Pressable>
+            {socialLinks.length > 0 ? (
+              <>
+                {socialLinks.map((link) => (
+                  <View key={link.id} style={styles.linkCard}>
+                    {/* Platform and actions */}
+                    <View style={styles.linkHeader}>
+                      <Text style={styles.platformText}>{link.name}</Text>
+                      {isMyProfileScreen && (
+                        <View style={styles.actions}>
+                          <Pressable style={styles.iconButton}>
+                            <MaterialIcons
+                              name="edit-square"
+                              size={18}
+                              color={color.primaryColor}
+                              onPress={() => {
+                                setSocialLinkId(link.id);
+                                setShowEditModal(true);
+                              }}
+                            />
+                          </Pressable>
+                          <Pressable style={styles.iconButton}>
+                            <MaterialIcons
+                              name="highlight-remove"
+                              size={18}
+                              color="red"
+                              onPress={() => {
+                                setSocialLinkId(link.id);
+                                setShowRemoveModal(true);
+                              }}
+                            />
+                          </Pressable>
+                        </View>
+                      )}
                     </View>
-                  )}
-                </View>
 
-                {/* Name, URL, and actions */}
-                <View style={styles.linkBody}>
-                  <View>
-                    <Text style={styles.nameText}>{link.name}</Text>
-                    <Text
-                      style={styles.urlText}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                    >
-                      {link.link}
-                    </Text>
+                    {/* Name, URL, and actions */}
+                    <View style={styles.linkBody}>
+                      <View>
+                        <Text style={styles.nameText}>{link.name}</Text>
+                        <Text
+                          style={styles.urlText}
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {link.link}
+                        </Text>
+                      </View>
+
+                      <View style={styles.linkActions}>
+                        <Pressable
+                          style={styles.actionButton}
+                          onPress={() => handleCopy(link.link)}
+                        >
+                          <Ionicons
+                            name="copy"
+                            size={18}
+                            color={color.primaryColor}
+                          />
+                          <Text style={styles.actionText}>Copy</Text>
+                        </Pressable>
+
+                        <Pressable
+                          style={styles.actionButton}
+                          onPress={() => handleOpen(link.link)}
+                        >
+                          <Ionicons
+                            name="open"
+                            size={18}
+                            color={color.primaryColor}
+                          />
+                          <Text style={styles.actionText}>Open</Text>
+                        </Pressable>
+                      </View>
+                    </View>
                   </View>
-
-                  <View style={styles.linkActions}>
-                    <Pressable
-                      style={styles.actionButton}
-                      onPress={() => handleCopy(link.link)}
-                    >
-                      <Ionicons
-                        name="copy"
-                        size={18}
-                        color={color.primaryColor}
-                      />
-                      <Text style={styles.actionText}>Copy</Text>
-                    </Pressable>
-
-                    <Pressable
-                      style={styles.actionButton}
-                      onPress={() => handleOpen(link.link)}
-                    >
-                      <Ionicons
-                        name="open"
-                        size={18}
-                        color={color.primaryColor}
-                      />
-                      <Text style={styles.actionText}>Open</Text>
-                    </Pressable>
-                  </View>
-                </View>
-              </View>
-            ))}
+                ))}
+              </>
+            ) : (
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 16,
+                  color: "gray",
+                  marginTop: 10,
+                  marginBottom: 20,
+                  fontWeight: "bold",
+                }}
+              >
+                No social links yet
+              </Text>
+            )}
           </>
         )}
 
