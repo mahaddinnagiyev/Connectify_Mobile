@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
-    gap: 15
+    gap: 15,
   },
   loadingIndicator: {
     transform: [{ scale: 1.5 }],
@@ -75,7 +75,6 @@ export const styles = StyleSheet.create({
   noChatsText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: color.primaryColor,
     marginTop: 20,
     textAlign: "center",
   },

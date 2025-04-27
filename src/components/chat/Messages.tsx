@@ -1,79 +1,108 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { color } from "@/colors";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
 import { setShowBackToBottom } from "@redux/chat/chatSilce";
+import Image from "./utils/Image";
+import Video from "./utils/Video";
+import File from "./utils/File";
+import Audio from "./utils/Audio";
+import { styles } from "./styles/messages.style";
+import { MessageType } from "@services/messenger/messenger.dto";
 
 const sampleMessages = [
   {
     id: 1,
-    message_type: "TEXT",
+    message_type: MessageType.TEXT,
     text: "Salam, necəsən?",
     type: "received",
     created_at: "12:00",
   },
   {
     id: 2,
-    message_type: "TEXT",
+    message_type: MessageType.TEXT,
     text: "Salam, necəsən?",
     type: "received",
     created_at: "12:01",
   },
   {
     id: 3,
-    message_type: "TEXT",
+    message_type: MessageType.TEXT,
     text: "Çox yaxşı, sən?",
     type: "sent",
     created_at: "12:01",
   },
   {
     id: 4,
-    message_type: "TEXT",
+    message_type: MessageType.TEXT,
     text: "Mən də yaxşıyam, təşəkkürlər.",
     type: "received",
     created_at: "12:02",
   },
   {
     id: 5,
-    message_type: "TEXT",
+    message_type: MessageType.TEXT,
     text: "Görüşək, danışarıq daha ətraflı.",
     type: "sent",
     created_at: "12:03",
   },
   {
     id: 6,
-    message_type: "TEXT",
+    message_type: MessageType.TEXT,
     text: "Tamam, gözləyirəm.",
     type: "received",
     created_at: "12:04",
   },
   {
     id: 7,
-    message_type: "IMAGE",
+    message_type: MessageType.IMAGE,
     text: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsqm2FOnWM9i_0doLydjjps1z35IJr3cW6g&s",
     type: "sent",
     created_at: "12:05",
   },
   {
     id: 8,
-    message_type: "VIDEO",
+    message_type: MessageType.VIDEO,
     text: "http://stimg.cardekho.com/images/carexteriorimages/930x620/BMW/5-Series-2024/10182/1685002609273/front-left-side-47.jpg",
     type: "received",
     created_at: "12:07",
   },
   {
     id: 9,
-    message_type: "AUDIO",
+    message_type: MessageType.AUDIO,
     text: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
     type: "sent",
     created_at: "12:08",
   },
   {
     id: 10,
-    message_type: "AUDIO",
+    message_type: MessageType.AUDIO,
     text: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    type: "received",
+    created_at: "12:08",
+  },
+  {
+    id: 11,
+    message_type: MessageType.DEFAULT,
+    text: "User Johndoe created this chatroom.",
+    created_at: "12:08",
+  },
+  {
+    id: 12,
+    message_type: MessageType.FILE,
+    message_name: "file.pdf",
+    message_size: 1024,
+    text: "https://file.url.com/file.pdf",
+    type: "sent",
+    created_at: "12:08",
+  },
+  {
+    id: 13,
+    message_type: MessageType.FILE,
+    message_name: "file.pdf",
+    message_size: 1024,
+    text: "https://file.url.com/file.pdf",
     type: "received",
     created_at: "12:08",
   },
@@ -82,7 +111,6 @@ const sampleMessages = [
 const Messages = () => {
   const dispatch = useDispatch();
   const scrollViewRef = useRef<ScrollView>(null);
-
   const { showBackToBottom } = useSelector((state: RootState) => state.chat);
 
   const handleScroll = (event: any) => {
@@ -91,9 +119,9 @@ const Messages = () => {
       contentSize.height - layoutMeasurement.height - contentOffset.y;
 
     if (distanceFromBottom < 100) {
-      dispatch(dispatch(setShowBackToBottom(false)));
+      dispatch(setShowBackToBottom(false));
     } else {
-      dispatch(dispatch(setShowBackToBottom(true)));
+      dispatch(setShowBackToBottom(true));
     }
   };
 
@@ -117,63 +145,50 @@ const Messages = () => {
           const bubbleStyle =
             message.type === "sent" ? styles.sentBubble : styles.receivedBubble;
 
+          const textStyle =
+            message.type === "sent" ? styles.sentText : styles.receivedText;
+
           let messageContent = null;
 
-          if (message.message_type === "IMAGE") {
-            messageContent = (
-              <View style={[styles.imageContainer, bubbleStyle]}>
-                <Image
-                  source={{ uri: message.text }}
-                  style={styles.image}
-                  resizeMode="cover"
-                />
-              </View>
-            );
-          } else if (message.message_type === "VIDEO") {
-            messageContent = (
-              <View style={[styles.videoContainer, bubbleStyle]}>
-                <Image
-                  source={{ uri: message.text }}
-                  style={styles.videoThumbnail}
-                  resizeMode="cover"
-                />
-                <View style={styles.playIconContainer}>
-                  <MaterialIcons
-                    name="play-circle-outline"
-                    size={50}
-                    color="rgba(255,255,255,0.8)"
-                  />
+          switch (message.message_type) {
+            case MessageType.IMAGE:
+              messageContent = (
+                <Image message={message} bubbleStyle={bubbleStyle} />
+              );
+              break;
+
+            case MessageType.VIDEO:
+              messageContent = (
+                <Video message={message} bubbleStyle={bubbleStyle} />
+              );
+              break;
+
+            case MessageType.AUDIO:
+              messageContent = (
+                <Audio message={message} bubbleStyle={bubbleStyle} />
+              );
+              break;
+
+            case MessageType.FILE:
+              messageContent = (
+                <File message={message} bubbleStyle={bubbleStyle} />
+              );
+              break;
+
+            case MessageType.DEFAULT:
+              messageContent = (
+                <View style={[styles.messageBubble, styles.defaultContainer]}>
+                  <Text style={styles.defaultText}>{message.text}</Text>
                 </View>
-              </View>
-            );
-          } else if (message.message_type === "AUDIO") {
-            messageContent = (
-              <View style={[styles.audioContainer, bubbleStyle]}>
-                <MaterialIcons
-                  name="play-arrow"
-                  size={24}
-                  color={message.type === "sent" ? "white" : "black"}
-                />
-                <Text
-                  style={[
-                    { marginLeft: 8 },
-                    message.type === "sent"
-                      ? styles.sentText
-                      : styles.receivedText,
-                  ]}
-                >
-                  Audio Message
-                </Text>
-              </View>
-            );
-          } else {
-            const textStyle =
-              message.type === "sent" ? styles.sentText : styles.receivedText;
-            messageContent = (
-              <View style={[styles.messageBubble, bubbleStyle]}>
-                <Text style={textStyle}>{message.text}</Text>
-              </View>
-            );
+              );
+              break;
+
+            default:
+              messageContent = (
+                <View style={[styles.messageBubble, bubbleStyle]}>
+                  <Text style={textStyle}>{message.text}</Text>
+                </View>
+              );
           }
 
           return (
@@ -185,6 +200,11 @@ const Messages = () => {
                   {
                     alignSelf:
                       message.type === "sent" ? "flex-end" : "flex-start",
+
+                    display:
+                      message.message_type === MessageType.DEFAULT
+                        ? "none"
+                        : "flex",
                   },
                 ]}
               >
@@ -209,99 +229,3 @@ const Messages = () => {
 };
 
 export default Messages;
-
-const styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-    position: "relative",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: color.inputBorderColor,
-    paddingTop: 5,
-  },
-  contentContainer: {
-    paddingVertical: 5,
-  },
-  messageWrapper: {
-    marginBottom: 10,
-    alignSelf: "stretch",
-  },
-  messageBubble: {
-    marginHorizontal: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    maxWidth: "75%",
-    borderRadius: 15,
-  },
-  sentBubble: {
-    alignSelf: "flex-end",
-    backgroundColor: "#00ff00",
-    borderBottomRightRadius: 0,
-  },
-  receivedBubble: {
-    alignSelf: "flex-start",
-    backgroundColor: "#eee",
-    borderBottomLeftRadius: 0,
-  },
-  sentText: {
-    color: "white",
-    fontSize: 14,
-  },
-  receivedText: {
-    color: "black",
-    fontSize: 14,
-  },
-  imageContainer: {
-    marginHorizontal: 10,
-    maxWidth: "75%",
-    borderRadius: 15,
-    overflow: "hidden",
-  },
-  image: {
-    width: 200,
-    height: 200,
-  },
-  videoContainer: {
-    marginHorizontal: 10,
-    maxWidth: "75%",
-    borderRadius: 15,
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  videoThumbnail: {
-    width: 200,
-    height: 200,
-  },
-  playIconContainer: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  audioContainer: {
-    marginHorizontal: 10,
-    maxWidth: "75%",
-    borderRadius: 15,
-    overflow: "hidden",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  timeText: {
-    fontSize: 10,
-    color: "#999",
-    marginHorizontal: 15,
-    marginTop: 4,
-  },
-  backToBottom: {
-    position: "absolute",
-    bottom: 15,
-    right: 15,
-    zIndex: 50,
-    backgroundColor: "white",
-    borderRadius: 50,
-    padding: 4,
-  },
-});
