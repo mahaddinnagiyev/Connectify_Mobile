@@ -1,0 +1,131 @@
+import { color } from "@/colors";
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+    marginTop: 28,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    height: 60,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderColor: "#ececec",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+
+  headerButtonText: {
+    fontSize: 16,
+    fontWeight: 800,
+    color: color.primaryColor,
+    backgroundColor: color.inputBgColor,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 18,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: color.primaryColor,
+  },
+  content: {
+    padding: 16,
+  },
+  description: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 24,
+    textAlign: "center",
+    lineHeight: 24,
+    fontWeight: "500",
+    marginTop: 5,
+  },
+  form: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  nameRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    color: "#2D3436",
+    marginBottom: 8,
+    fontWeight: "500",
+  },
+  input: {
+    backgroundColor: color.inputBgColor,
+    borderRadius: 8,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#ececec",
+  },
+  placeholder: {
+    color: "#888",
+  },
+  sendButton: {
+    backgroundColor: color.primaryColor,
+    borderRadius: 8,
+    padding: 16,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  sendButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  socialSection: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  socialTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2D3436",
+    marginBottom: 12,
+  },
+  socialContainer: {
+    flexDirection: "column",
+    gap: 12,
+  },
+  socialRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: color.inputBgColor,
+    borderRadius: 8,
+    padding: 16,
+  },
+  website: {
+    color: color.primaryColor,
+    fontWeight: "500",
+  },
+});
