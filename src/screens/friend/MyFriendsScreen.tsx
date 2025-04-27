@@ -1,15 +1,15 @@
 import {
   View,
   Text,
-  StyleSheet,
-  Dimensions,
   TextInput,
-  ScrollView,
+  SectionList,
   Pressable,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { styles } from "./styles/myFriends.style";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,13 +17,28 @@ import { useNavigation } from "@react-navigation/native";
 import type { StackParamList } from "@navigation/Navigator";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
+import { useFriendData } from "@hooks/useFriendData";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+interface Friend {
+  first_name: string;
+  last_name: string;
+  username: string;
+  profile_picture?: string;
+}
 
 const MyFriendsScreen = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { friends } = useSelector((state: RootState) => state.myFriends);
+  const { fetchAllMyFriends } = useFriendData();
+
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchAllMyFriends().finally(() => setRefreshing(false));
+  }, []);
+
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const truncateUsername = (name: string) => {
     if (name.length > 25) {
@@ -31,6 +46,50 @@ const MyFriendsScreen = () => {
     }
     return name;
   };
+
+  // Group friends by first-letter, with sorting and filtering
+  const sections = useMemo(() => {
+    // 1. Sort by full name
+    const sorted = [...friends].sort((a, b) => {
+      const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+      const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+
+    // 2. Filter by search query
+    const filtered = searchQuery
+      ? sorted.filter((friend) => {
+          const fullName =
+            `${friend.first_name} ${friend.last_name}`.toLowerCase();
+          const username = friend.username.toLowerCase();
+          const q = searchQuery.toLowerCase();
+          return fullName.includes(q) || username.includes(q);
+        })
+      : sorted;
+
+    return filtered.reduce<Array<{ title: string; data: Friend[] }>>(
+      (acc, friend) => {
+        const letter = friend.first_name.charAt(0).toUpperCase();
+        const section = acc.find((s) => s.title === letter);
+        if (section) {
+          section.data.push(friend);
+        } else {
+          acc.push({ title: letter, data: [friend] });
+        }
+        return acc;
+      },
+      []
+    );
+  }, [friends, searchQuery]);
+
+  const refreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={handleRefresh}
+      colors={[color.primaryColor]}
+      tintColor={color.primaryColor}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,7 +112,7 @@ const MyFriendsScreen = () => {
         </Pressable>
       </View>
 
-      {/* Serach Bar */}
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Ionicons
           name="search"
@@ -65,156 +124,54 @@ const MyFriendsScreen = () => {
           style={styles.searchInput}
           placeholder="Search"
           placeholderTextColor="#888"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
 
       {/* Friend List */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {friends.map((friend, index) => (
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, index) => `${item.username}-${index}`}
+        refreshControl={refreshControl}
+        renderSectionHeader={({ section }) => (
+          <Text style={styles.sectionHeader}>{section.title}</Text>
+        )}
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.chat}
-            key={index}
             onPress={() => navigate.navigate("Chat")}
           >
-            {/* Profile Photo */}
             <Image
               source={
-                friend.profile_picture
-                  ? { uri: friend.profile_picture }
+                item.profile_picture
+                  ? { uri: item.profile_picture }
                   : require("@assets/images/no-profile-photo.png")
               }
               style={styles.profilePhoto}
             />
-            {/* Chat Detail */}
             <View style={styles.chatDetail}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
                 {truncateUsername(
-                  friend.first_name +
-                    " " +
-                    friend.last_name +
-                    " " +
-                    "|" +
-                    " " +
-                    "@" +
-                    friend.username
-                )}{" "}
+                  `${item.first_name} ${item.last_name} | @${item.username}`
+                )}
               </Text>
               <View style={styles.lastMessage}>
                 <Text>Whats's Up Man</Text>
                 <Text style={{ fontSize: 9 }}>12:00</Text>
               </View>
             </View>
-            {/* Unread Count */}
             <View>
               <Text style={styles.unreadCount}>2</Text>
             </View>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.noFriendsText}>No Friends Found</Text>
+        }
+      />
     </SafeAreaView>
   );
 };
 
 export default MyFriendsScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 10,
-    backgroundColor: "#fff",
-  },
-
-  header: {
-    width: screenWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 15,
-    height: 50,
-    marginBottom: 10,
-    position: "relative",
-  },
-
-  headerButton: {
-    fontSize: 16,
-    fontWeight: 800,
-    color: color.primaryColor,
-    backgroundColor: color.inputBgColor,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 18,
-  },
-
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: color.primaryColor,
-  },
-
-  searchContainer: {
-    width: "94%",
-    height: 40,
-    margin: "auto",
-    borderWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    color: "#333",
-  },
-
-  chat: {
-    width: screenWidth * 0.94,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    height: 80,
-    position: "relative",
-    marginVertical: 3,
-  },
-
-  profilePhoto: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: color.primaryColor,
-  },
-
-  chatDetail: {
-    flexDirection: "column",
-    gap: 4,
-    width: "80%",
-    height: "58%",
-  },
-
-  lastMessage: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  unreadCount: {
-    backgroundColor: color.primaryColor,
-    width: 20,
-    height: 20,
-    borderRadius: 50,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-    position: "absolute",
-    right: 10,
-    bottom: -5,
-  },
-});
