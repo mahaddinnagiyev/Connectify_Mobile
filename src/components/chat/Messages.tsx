@@ -145,6 +145,38 @@ const Messages: React.FC = () => {
                   </Text>
                 </View>
               )}
+
+              {message.parent_message_id && (
+                <View
+                  style={[
+                    styles.parentPreview,
+                    message.sender_id === chat.otherUser.id
+                      ? styles.parentPreviewLeft
+                      : styles.parentPreviewRight,
+                  ]}
+                >
+                  <View style={styles.parentPreviewLine} />
+                  <View style={styles.parentPreviewContent}>
+                    <Text style={styles.parentPreviewSender}>
+                      {message.parent_message_id.sender_id !== chat.otherUser.id
+                        ? "You"
+                        : `@${chat.otherUser.username}`}
+                    </Text>
+
+                    {/* Mesaj kontenti */}
+                    {message.is_parent_deleted ? (
+                      <Text style={styles.parentPreviewTextDeleted}>
+                        This message has been deleted
+                      </Text>
+                    ) : (
+                      <Text style={styles.parentPreviewText} numberOfLines={3}>
+                        {message.parent_message_id.content}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              )}
+
               <View style={styles.messageWrapper}>
                 {contentElement}
                 <Text
