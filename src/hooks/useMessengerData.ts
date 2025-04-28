@@ -20,20 +20,20 @@ export function useMessengerData() {
 
   useEffect(() => {
     if (!socket || !userData) return;
-
     socket.emit("getChatRooms");
-    socket.on("getChatRooms", async (chatRooms: ChatRoomsDTO[]) => {
+
+    const handler = async (chatRooms: ChatRoomsDTO[]) => {
       const enriched = await Promise.all(
         chatRooms.map(async (chat) => {
           const otherId = chat.user_ids.find((id) => id !== userData.user.id);
-          if (!otherId) {
+          if (!otherId)
             return {
               ...chat,
               otherUser: {} as User,
               otherUserAccount: {} as Account,
               otherUserPrivacySettings: {} as PrivacySettings,
             };
-          }
+
           try {
             const other = await getUserByID(otherId);
             if (other?.success) {
@@ -43,34 +43,26 @@ export function useMessengerData() {
                 otherUserAccount: other.account,
                 otherUserPrivacySettings: other.privacy_settings,
               };
-            } else {
-              return {
-                ...chat,
-                otherUser: {} as User,
-                otherUserAccount: {} as Account,
-                otherUserPrivacySettings: {} as PrivacySettings,
-              };
             }
           } catch (e) {
             dispatch(setErrorMessage((e as Error).message));
-            return {
-              ...chat,
-              otherUser: {} as User,
-              otherUserAccount: {} as Account,
-              otherUserPrivacySettings: {} as PrivacySettings,
-            };
-          } finally {
           }
+          return {
+            ...chat,
+            otherUser: {} as User,
+            otherUserAccount: {} as Account,
+            otherUserPrivacySettings: {} as PrivacySettings,
+          };
         })
       );
-
       dispatch(setChats(enriched));
-    });
-
-    return () => {
-      socket.off("getChatRooms");
     };
-  }, [socket, userData, dispatch, getUserByID]);
+
+    socket.on("getChatRooms", handler);
+    return () => {
+      socket.off("getChatRooms", handler);
+    };
+  }, [socket, userData]);
 
   return { fetchChats: () => socket?.emit("getChatRooms") };
 }
