@@ -1,15 +1,32 @@
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { color } from "@/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackParamList } from "@navigation/UserStack";
 
 interface Props {
-  message: any;
+  message: MessagesDTO;
   bubbleStyle: any;
 }
 
+const truncate = (text: string = "", maxLength: number): string => {
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
+
 const File: React.FC<Props> = ({ message, bubbleStyle }) => {
-  const iconColor = message.type === "sent" ? "white" : color.primaryColor;
+  const route = useRoute<RouteProp<StackParamList, "Chat">>();
+  const { chat } = route.params;
+
+  const iconColor =
+    message.sender_id !== chat.otherUser.id ? "white" : color.primaryColor;
 
   const handleDownload = async (url: string) => {
     try {
@@ -25,18 +42,20 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
       <View style={styles.fileDetails}>
         <Text
           style={{
-            ...(message.type === "sent"
+            ...(message.sender_id !== chat.otherUser.id
               ? styles.sentText
               : styles.receivedText),
           }}
           numberOfLines={1}
         >
-          {message.message_name}
+          {message.message_name
+            ? truncate(message.message_name, 20)
+            : "Imported file"}
         </Text>
         <Text
           style={[
             styles.fileSizeText,
-            message.type === "sent"
+            message.sender_id !== chat.otherUser.id
               ? styles.sentFileSize
               : styles.receivedFileSize,
           ]}
@@ -45,7 +64,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => handleDownload(message.text)}
+        onPress={() => handleDownload(message.content)}
         style={styles.downloadIconContainer}
       >
         <MaterialIcons name="file-download" size={24} color={iconColor} />

@@ -3,131 +3,66 @@ import { View, Text, ScrollView } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { setShowBackToBottom } from "@redux/chat/chatSilce";
+import { setMessages, setShowBackToBottom } from "@redux/chat/chatSilce";
 import Image from "./utils/Image";
 import Video from "./utils/Video";
 import File from "./utils/File";
 import Audio from "./utils/Audio";
 import { styles } from "./styles/messages.style";
 import { MessageType } from "@services/messenger/messenger.dto";
+import { useSocketContext } from "@context/SocketContext";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackParamList } from "@navigation/UserStack";
 
-const sampleMessages = [
-  {
-    id: 1,
-    message_type: MessageType.TEXT,
-    text: "Salam, necəsən?",
-    type: "received",
-    created_at: "12:00",
-  },
-  {
-    id: 2,
-    message_type: MessageType.TEXT,
-    text: "Salam, necəsən?",
-    type: "received",
-    created_at: "12:01",
-  },
-  {
-    id: 3,
-    message_type: MessageType.TEXT,
-    text: "Çox yaxşı, sən?",
-    type: "sent",
-    created_at: "12:01",
-  },
-  {
-    id: 4,
-    message_type: MessageType.TEXT,
-    text: "Mən də yaxşıyam, təşəkkürlər.",
-    type: "received",
-    created_at: "12:02",
-  },
-  {
-    id: 5,
-    message_type: MessageType.TEXT,
-    text: "Görüşək, danışarıq daha ətraflı.",
-    type: "sent",
-    created_at: "12:03",
-  },
-  {
-    id: 6,
-    message_type: MessageType.TEXT,
-    text: "Tamam, gözləyirəm.",
-    type: "received",
-    created_at: "12:04",
-  },
-  {
-    id: 7,
-    message_type: MessageType.IMAGE,
-    text: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqsqm2FOnWM9i_0doLydjjps1z35IJr3cW6g&s",
-    type: "sent",
-    created_at: "12:05",
-  },
-  {
-    id: 8,
-    message_type: MessageType.VIDEO,
-    text: "http://stimg.cardekho.com/images/carexteriorimages/930x620/BMW/5-Series-2024/10182/1685002609273/front-left-side-47.jpg",
-    type: "received",
-    created_at: "12:07",
-  },
-  {
-    id: 9,
-    message_type: MessageType.AUDIO,
-    text: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    type: "sent",
-    created_at: "12:08",
-  },
-  {
-    id: 10,
-    message_type: MessageType.AUDIO,
-    text: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    type: "received",
-    created_at: "12:08",
-  },
-  {
-    id: 11,
-    message_type: MessageType.DEFAULT,
-    text: "User Johndoe created this chatroom.",
-    created_at: "12:08",
-  },
-  {
-    id: 12,
-    message_type: MessageType.FILE,
-    message_name: "file.pdf",
-    message_size: 1024,
-    text: "https://file.url.com/file.pdf",
-    type: "sent",
-    created_at: "12:08",
-  },
-  {
-    id: 13,
-    message_type: MessageType.FILE,
-    message_name: "file.pdf",
-    message_size: 1024,
-    text: "https://file.url.com/file.pdf",
-    type: "received",
-    created_at: "12:08",
-  },
-];
-
-const Messages = () => {
+const Messages: React.FC = () => {
   const dispatch = useDispatch();
   const scrollViewRef = useRef<ScrollView>(null);
-  const { showBackToBottom } = useSelector((state: RootState) => state.chat);
+  const { showBackToBottom, messages } = useSelector(
+    (state: RootState) => state.chat
+  );
+
+  const socket = useSocketContext();
+  const route = useRoute<RouteProp<StackParamList, "Chat">>();
+  const { chat } = route.params;
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
+
+  useEffect(() => {
+    if (!socket) return;
+    dispatch(setMessages([]));
+    socket.emit("joinChatRoom", { user2Id: chat.otherUser.id });
+    socket.emit("setMessageRead", { roomId: chat.id });
+    socket.emit("getMessages", { roomId: chat.id, limit: 100 });
+
+    const handle = (data: { messages: any[] }) => {
+      if (data.messages[0]?.room_id === chat.id) {
+        dispatch(setMessages(data.messages));
+      }
+    };
+
+    socket.on("messages", handle);
+    return () => {
+      socket.off("messages", handle);
+    };
+  }, [socket, chat, dispatch]);
 
   const handleScroll = (event: any) => {
     const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
     const distanceFromBottom =
       contentSize.height - layoutMeasurement.height - contentOffset.y;
-
-    if (distanceFromBottom < 100) {
-      dispatch(setShowBackToBottom(false));
-    } else {
-      dispatch(setShowBackToBottom(true));
-    }
+    dispatch(setShowBackToBottom(distanceFromBottom >= 100));
   };
 
-  useEffect(() => {
-    scrollViewRef.current?.scrollToEnd({ animated: true });
-  }, []);
+  const formatDate = (dateString: Date) => {
+    const date = new Date(dateString + "Z");
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   return (
     <View style={styles.outerContainer}>
@@ -141,30 +76,38 @@ const Messages = () => {
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        {sampleMessages.map((message) => {
+        {messages.map((message, index) => {
+          const currDate = new Date(message.created_at).toDateString();
+          const prevDate =
+            index > 0
+              ? new Date(messages[index - 1].created_at).toDateString()
+              : null;
+          const showSeparator = index === 0 || currDate !== prevDate;
+
+          // Bubble styles
           const bubbleStyle =
-            message.type === "sent" ? styles.sentBubble : styles.receivedBubble;
-
+            message.sender_id === chat.otherUser.id
+              ? styles.receivedBubble
+              : styles.sentBubble;
           const textStyle =
-            message.type === "sent" ? styles.sentText : styles.receivedText;
+            message.sender_id === chat.otherUser.id
+              ? styles.receivedText
+              : styles.sentText;
 
-          let messageContent = null;
-
+          let contentElement: React.ReactNode;
           switch (message.message_type) {
             case MessageType.IMAGE:
-              messageContent = (
+              contentElement = (
                 <Image message={message} bubbleStyle={bubbleStyle} />
               );
               break;
-
             case MessageType.VIDEO:
-              messageContent = (
+              contentElement = (
                 <Video message={message} bubbleStyle={bubbleStyle} />
               );
               break;
-
             case MessageType.AUDIO:
-              messageContent = (
+              contentElement = (
                 <Audio
                   message={message}
                   bubbleStyle={bubbleStyle}
@@ -173,49 +116,59 @@ const Messages = () => {
                 />
               );
               break;
-
             case MessageType.FILE:
-              messageContent = (
+              contentElement = (
                 <File message={message} bubbleStyle={bubbleStyle} />
               );
               break;
-
             case MessageType.DEFAULT:
-              messageContent = (
+              contentElement = (
                 <View style={[styles.messageBubble, styles.defaultContainer]}>
-                  <Text style={styles.defaultText}>{message.text}</Text>
+                  <Text style={styles.defaultText}>{message.content}</Text>
                 </View>
               );
               break;
-
             default:
-              messageContent = (
+              contentElement = (
                 <View style={[styles.messageBubble, bubbleStyle]}>
-                  <Text style={textStyle}>{message.text}</Text>
+                  <Text style={textStyle}>{message.content}</Text>
                 </View>
               );
           }
 
           return (
-            <View key={message.id} style={styles.messageWrapper}>
-              {messageContent}
-              <Text
-                style={[
-                  styles.timeText,
-                  {
-                    alignSelf:
-                      message.type === "sent" ? "flex-end" : "flex-start",
-
-                    display:
-                      message.message_type === MessageType.DEFAULT
-                        ? "none"
-                        : "flex",
-                  },
-                ]}
-              >
-                {message.created_at}
-              </Text>
-            </View>
+            <React.Fragment key={message.id}>
+              {showSeparator && (
+                <View style={styles.dateSeparator}>
+                  <Text style={styles.dateText}>
+                    {formatDate(message.created_at)}
+                  </Text>
+                </View>
+              )}
+              <View style={styles.messageWrapper}>
+                {contentElement}
+                <Text
+                  style={[
+                    styles.timeText,
+                    {
+                      alignSelf:
+                        message.sender_id === chat.otherUser.id
+                          ? "flex-start"
+                          : "flex-end",
+                      display:
+                        message.message_type === MessageType.DEFAULT
+                          ? "none"
+                          : "flex",
+                    },
+                  ]}
+                >
+                  {new Date(message.created_at + "Z").toLocaleTimeString("az", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
+              </View>
+            </React.Fragment>
           );
         })}
       </ScrollView>

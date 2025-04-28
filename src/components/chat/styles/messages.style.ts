@@ -72,4 +72,19 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
   },
+  dateSeparator: {
+    alignSelf: "center",
+    backgroundColor: "#f0f0f0",
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 15,
+    marginBottom: 5,
+    borderColor: color.primaryColor,
+    borderWidth: 1,
+  },
+  dateText: {
+    color: "#666",
+    fontSize: 12,
+    textAlign: "center",
+  },
 });

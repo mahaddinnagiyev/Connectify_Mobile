@@ -1,9 +1,18 @@
+import { MessagesDTO } from "@/src/services/messenger/messenger.dto";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface ChatState {
+  isMenuVisible: boolean;
+  inputHeight: number;
+  showBackToBottom: boolean;
+  messages: MessagesDTO[];
+}
+
+const initialState: ChatState = {
   isMenuVisible: false,
   inputHeight: 35,
   showBackToBottom: false,
+  messages: [],
 };
 
 export const chatSlice = createSlice({
@@ -19,9 +28,12 @@ export const chatSlice = createSlice({
     setShowBackToBottom: (state, action) => {
       state.showBackToBottom = action.payload;
     },
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
   },
 });
 
-export const { toggleMenu, setInputHeight, setShowBackToBottom } =
+export const { toggleMenu, setInputHeight, setShowBackToBottom, setMessages } =
   chatSlice.actions;
 export default chatSlice.reducer;

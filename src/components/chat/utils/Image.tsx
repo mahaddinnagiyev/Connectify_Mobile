@@ -1,8 +1,9 @@
 import { StyleSheet, Image as RNImage, View } from "react-native";
 import React from "react";
+import { MessagesDTO } from "@services/messenger/messenger.dto";
 
 interface Props {
-  message: any;
+  message: MessagesDTO;
   bubbleStyle: any;
 }
 
@@ -10,7 +11,7 @@ const Image: React.FC<Props> = ({ message, bubbleStyle }) => {
   return (
     <View style={[styles.imageContainer, bubbleStyle]}>
       <RNImage
-        source={{ uri: message.text }}
+        source={{ uri: message.content }}
         style={styles.image}
         resizeMode="cover"
       />

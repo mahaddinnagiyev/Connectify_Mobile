@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackParamList } from "@navigation/UserStack";
 
 interface Props {
-  message: any;
+  message: MessagesDTO;
   bubbleStyle: any;
   duration?: number;
   currentTime?: number;
@@ -15,7 +18,9 @@ const Audio: React.FC<Props> = ({
   duration = 0,
   currentTime = 0,
 }) => {
-  const isSent = message.type === "sent";
+  const route = useRoute<RouteProp<StackParamList, "Chat">>();
+  const { chat } = route.params;
+
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
   const timeText = `${formatTime(currentTime)} / ${formatTime(duration)}`;
 
@@ -26,7 +31,7 @@ const Audio: React.FC<Props> = ({
         <MaterialIcons
           name={currentTime > 0 ? "pause" : "play-arrow"}
           size={24}
-          color={isSent ? "white" : "black"}
+          color={message.sender_id !== chat.otherUser.id ? "white" : "black"}
         />
       </TouchableOpacity>
 
@@ -38,12 +43,20 @@ const Audio: React.FC<Props> = ({
               styles.progressBarFill,
               {
                 width: `${progress}%`,
-                backgroundColor: isSent ? "rgba(255,255,255,0.8)" : "#666",
+                backgroundColor:
+                  message.sender_id !== chat.otherUser.id
+                    ? "rgba(255,255,255,0.8)"
+                    : "#666",
               },
             ]}
           />
         </View>
-        <Text style={[styles.timeText, isSent && styles.sentTimeText]}>
+        <Text
+          style={[
+            styles.timeText,
+            message.sender_id !== chat.otherUser.id && styles.sentTimeText,
+          ]}
+        >
           {timeText}
         </Text>
       </View>

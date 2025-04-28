@@ -1,9 +1,10 @@
 import { StyleSheet, Image, View } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import { MessagesDTO } from "@services/messenger/messenger.dto";
 
 interface Props {
-  message: any;
+  message: MessagesDTO;
   bubbleStyle: any;
 }
 
@@ -11,7 +12,7 @@ const Video: React.FC<Props> = ({ message, bubbleStyle }) => {
   return (
     <View style={[styles.videoContainer, bubbleStyle]}>
       <Image
-        source={{ uri: message.text }}
+        source={{ uri: message.content }}
         style={styles.videoThumbnail}
         resizeMode="cover"
       />

@@ -99,7 +99,7 @@ const ChatHeader = () => {
             </Text>
             <Text style={styles.lastSeen}>
               Last Seen:{" "}
-              {new Date(chat.otherUserAccount.last_login!).toLocaleDateString(
+              {new Date(chat.otherUserAccount.last_login! + "Z").toLocaleDateString(
                 "az",
                 {
                   day: "numeric",
