@@ -102,7 +102,7 @@ const FriendRequests: React.FC = () => {
         />
         <View style={styles.textContainer}>
           <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.username}>{item.username}</Text>
+          <Text style={styles.username}>@{item.username}</Text>
           <Text style={styles.timestamp}>
             {formatDistanceToNow(item.timestamp)} ago
           </Text>

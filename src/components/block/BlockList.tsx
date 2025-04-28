@@ -74,7 +74,7 @@ const BlockList = () => {
                 <Text style={styles.name}>
                   {item.first_name} {item.last_name}
                 </Text>
-                <Text style={styles.username}>{item.username}</Text>
+                <Text style={styles.username}>@{item.username}</Text>
               </View>
             </Pressable>
 
