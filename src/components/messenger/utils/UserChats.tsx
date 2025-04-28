@@ -75,7 +75,10 @@ const UserChats = () => {
       ) : (
         <>
           {filteredChats.length === 0 ? (
-            <ScrollView style={styles.emptyContainer}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              refreshControl={refreshControl}
+            >
               <Text style={styles.noChatsText}>No chats found.</Text>
             </ScrollView>
           ) : (
