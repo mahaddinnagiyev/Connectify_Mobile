@@ -13,12 +13,19 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/Navigator";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { filterChats } from "@redux/messenger/messengerSlice";
 
 const screenWidth = Dimensions.get("window").width;
 
 const MessengerHeader = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const [searchQuery, setSearchQuery] = useState("");
+
+  React.useEffect(() => {
+    dispatch(filterChats(searchQuery));
+  }, [searchQuery]);
 
   return (
     <View style={styles.header}>

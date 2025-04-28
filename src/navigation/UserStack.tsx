@@ -6,12 +6,22 @@ import SettingsScreen from "@screens/settings/SettingsScreen";
 import ContactUsScreen from "@screens/contact/ContactUsScreen";
 import MainTabsScreen from "@screens/MainTabsScreen";
 import UserProfileScreen from "@screens/profile/UserProfileScreen";
+import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
+import { User } from "@services/user/dto/user.dto";
+import { Account } from "@services/account/dto/account.dto";
+import { PrivacySettings } from "@services/account/dto/privacy.dto";
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
 export type StackParamList = {
   Home: undefined;
-  Chat: undefined;
+  Chat: {
+    chat: ChatRoomsDTO & {
+      otherUser: User;
+      otherUserAccount: Account;
+      otherUserPrivacySettings: PrivacySettings;
+    };
+  };
   MyFriends: undefined;
   Settings: undefined;
   ContactUs: undefined;
