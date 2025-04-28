@@ -10,10 +10,16 @@ interface MessengerState {
     otherUserAccount: Account;
     otherUserPrivacySettings: PrivacySettings;
   })[];
+  filteredChats: (ChatRoomsDTO & {
+    otherUser: User;
+    otherUserAccount: Account;
+    otherUserPrivacySettings: PrivacySettings;
+  })[];
 }
 
 const initialState: MessengerState = {
   chats: [],
+  filteredChats: [],
 };
 
 export const messengerSlice = createSlice({
@@ -23,8 +29,20 @@ export const messengerSlice = createSlice({
     setChats: (state, action: PayloadAction<MessengerState["chats"]>) => {
       state.chats = action.payload;
     },
+    filterChats: (state, action: PayloadAction<string>) => {
+      const q = action.payload.toLowerCase().trim();
+      if (!q) {
+        state.filteredChats = state.chats;
+      } else {
+        state.filteredChats = state.chats.filter((c) =>
+          (c.name ?? `${c.otherUser.first_name} ${c.otherUser.last_name}`)
+            .toLowerCase()
+            .includes(q)
+        );
+      }
+    },
   },
 });
 
-export const { setChats } = messengerSlice.actions;
+export const { setChats, filterChats } = messengerSlice.actions;
 export default messengerSlice.reducer;

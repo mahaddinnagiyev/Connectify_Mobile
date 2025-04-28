@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StackParamList } from "@navigation/Navigator";
+import type { StackParamList } from "@navigation/UserStack";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
-import { useMessengerData } from "@/src/hooks/useMessengerData";
+import { RootState } from "@redux/store";
+import { useMessengerData } from "@hooks/useMessengerData";
 import { styles } from "../styles/userChats.style";
 import { color } from "@/colors";
 
@@ -33,7 +33,7 @@ const formatTime = (input?: string | Date): string => {
 
 const UserChats = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const { chats } = useSelector((state: RootState) => state.messenger);
+  const { filteredChats } = useSelector((state: RootState) => state.messenger);
   const { fetchChats } = useMessengerData();
 
   const [refrehing, setRefreshing] = React.useState<boolean>(false);
@@ -74,7 +74,7 @@ const UserChats = () => {
         </View>
       ) : (
         <>
-          {chats.length === 0 ? (
+          {filteredChats.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.noChatsText}>No chats found.</Text>
             </View>
@@ -83,7 +83,7 @@ const UserChats = () => {
               showsVerticalScrollIndicator={false}
               refreshControl={refreshControl}
             >
-              {chats.map((chat) => {
+              {filteredChats.map((chat) => {
                 const name = chat.name
                   ? truncate(chat.name, 25)
                   : truncate(
@@ -99,7 +99,11 @@ const UserChats = () => {
                   <TouchableOpacity
                     key={chat.id}
                     style={styles.chat}
-                    onPress={() => navigate.navigate("Chat")}
+                    onPress={() =>
+                      navigate.navigate("Chat", {
+                        chat: chat,
+                      })
+                    }
                   >
                     <Image
                       source={

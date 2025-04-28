@@ -3,8 +3,6 @@ import {
   View,
   Text,
   Image,
-  StyleSheet,
-  Dimensions,
   Pressable,
   TouchableOpacity,
   Modal,
@@ -13,21 +11,26 @@ import {
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { color } from "@/colors";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
 import { toggleMenu } from "@redux/chat/chatSilce";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StackParamList } from "@navigation/Navigator";
-import { useNavigation } from "@react-navigation/native";
+import type { StackParamList } from "@navigation/UserStack";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { styles } from "./styles/chatHeader.style";
 
-const screenWidth = Dimensions.get("window").width;
+const truncate = (text: string = "", maxLength: number): string => {
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
 
 const ChatHeader = () => {
   const { isMenuVisible } = useSelector((state: RootState) => state.chat);
   const dispatch = useDispatch();
 
-  const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const { navigate, goBack } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const route = useRoute<RouteProp<StackParamList, "Chat">>();
+  const { chat } = route.params;
 
   const animationValue = useRef(new Animated.Value(0)).current;
 
@@ -69,7 +72,7 @@ const ChatHeader = () => {
       <View style={styles.leftHeader}>
         {/* Back Icon */}
         <View>
-          <Pressable onPress={() => navigate.goBack()}>
+          <Pressable onPress={() => goBack()}>
             <MaterialIcons name="arrow-back-ios" size={18} color="black" />
           </Pressable>
         </View>
@@ -77,13 +80,36 @@ const ChatHeader = () => {
         {/* User Details */}
         <View style={styles.userDetail}>
           <Image
-            source={require("@assets/images/no-profile-photo.png")}
+            source={
+              chat.otherUserAccount.profile_picture
+                ? { uri: chat.otherUserAccount.profile_picture }
+                : require("@assets/images/no-profile-photo.png")
+            }
             style={styles.profilePhoto}
           />
 
           <View style={{ gap: 5 }}>
-            <Text style={styles.roomName}>John Doe | @johndoe</Text>
-            <Text style={styles.lastSeen}>Last Seen: 12:00</Text>
+            <Text style={styles.roomName}>
+              {chat.name
+                ? truncate(chat.name, 25)
+                : truncate(
+                    `${chat.otherUser.first_name} ${chat.otherUser.last_name} | @${chat.otherUser.username}`,
+                    25
+                  )}
+            </Text>
+            <Text style={styles.lastSeen}>
+              Last Seen:{" "}
+              {new Date(chat.otherUserAccount.last_login!).toLocaleDateString(
+                "az",
+                {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                }
+              )}
+            </Text>
           </View>
         </View>
       </View>
@@ -105,7 +131,14 @@ const ChatHeader = () => {
             onPress={() => dispatch(toggleMenu())}
           >
             <Animated.View style={[styles.dropdownMenu, animatedStyle]}>
-              <TouchableOpacity style={styles.menuItem}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() =>
+                  navigate("OtherUserProfile", {
+                    username: chat.otherUser.username,
+                  })
+                }
+              >
                 <MaterialIcons name="person" size={24} color="black" />
                 <Text style={styles.menuText}>User Profile</Text>
               </TouchableOpacity>
@@ -126,83 +159,3 @@ const ChatHeader = () => {
 };
 
 export default ChatHeader;
-
-const styles = StyleSheet.create({
-  container: {
-    width: screenWidth,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 15,
-    borderBottomColor: color.borderColor,
-    borderBottomWidth: 1,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-    height: 75,
-    position: "relative",
-  },
-
-  leftHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  userDetail: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-
-  profilePhoto: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: color.primaryColor,
-  },
-
-  roomName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
-  lastSeen: {
-    fontSize: 11,
-  },
-
-  dropdownMenu: {
-    position: "absolute",
-    top: 75,
-    right: 15,
-    backgroundColor: "#fff",
-    borderColor: color.borderColor,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderRadius: 10,
-    borderTopRightRadius: 0,
-    zIndex: 100,
-  },
-
-  menuItem: {
-    width: 150,
-    height: 50,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderBottomColor: "#eee",
-    borderBottomWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-
-  menuText: {
-    fontSize: 15,
-    color: "black",
-    fontWeight: 600,
-  },
-
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "transparent",
-  },
-});

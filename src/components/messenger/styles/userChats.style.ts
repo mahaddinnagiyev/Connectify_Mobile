@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
-    height: height - 200,
+    height: height - 180,
   },
 
   loadingOverlay: {
