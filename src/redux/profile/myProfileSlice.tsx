@@ -35,7 +35,7 @@ const initialState: MyProfileState = {
       location: "",
       profile_picture: "",
       social_links: [],
-      last_login: "",
+      last_login: null,
     } as Account,
     privacySettings: {} as PrivacySettings,
   },

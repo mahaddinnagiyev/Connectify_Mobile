@@ -4,19 +4,19 @@ import { useUserData } from "./useUserData";
 import { setChats } from "@redux/messenger/messengerSlice";
 import { setErrorMessage } from "@redux/messages/messageSlice";
 import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
-import { useSocket } from "./useSocket";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { User } from "../services/user/dto/user.dto";
 import { Account } from "../services/account/dto/account.dto";
 import { PrivacySettings } from "../services/account/dto/privacy.dto";
+import { useSocketContext } from "@context/SocketContext";
 
 export function useMessengerData() {
   const dispatch = useDispatch();
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
-
   const { getUserByID } = useUserData();
-  const socket = useSocket();
+
+  const socket = useSocketContext();
 
   useEffect(() => {
     if (!socket || !userData) return;

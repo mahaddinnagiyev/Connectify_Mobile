@@ -1,9 +1,9 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { store, RootState } from "@redux/store";
+import { store } from "@redux/store";
 import Navigator from "@navigation/Navigator";
+import { SocketProvider } from "@context/SocketContext";
 
-// messages + hooks…
 import ErrorMessage from "@components/messages/ErrorMessage";
 import SuccessMessage from "@components/messages/SuccessMessage";
 import {
@@ -11,6 +11,7 @@ import {
   clearSuccessMessage,
 } from "@redux/messages/messageSlice";
 import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@redux/store";
 
 function AppInner() {
   const dispatch = useDispatch();
@@ -40,7 +41,9 @@ function AppInner() {
 export default function App() {
   return (
     <Provider store={store}>
-      <AppInner />
+      <SocketProvider>
+        <AppInner />
+      </SocketProvider>
     </Provider>
   );
 }

@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "strict": true,
     "baseUrl": ".",
+    "jsx": "react-native",
     "paths": {
       "@/*": [
         "./*"
@@ -20,6 +21,7 @@
       "@enums/*": ["./src/enums/*"],
       "@services/*": ["./src/services/*"],
       "@hooks/*": ["./src/hooks/*"],
+      "@context/*": ["./src/context/*"]
     }
   },
   "include": [

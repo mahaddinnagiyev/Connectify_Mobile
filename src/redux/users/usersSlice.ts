@@ -13,14 +13,23 @@ interface UsersState {
 
 const initialState: UsersState = {
   otherUserData: {
-    user: {} as User,
+    user: {
+      id: "",
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      gender: null,
+      face_descriptor: null,
+      created_at: null,
+    } as User,
     account: {
       id: "",
       bio: "",
       location: "",
       profile_picture: "",
       social_links: [],
-      last_login: "",
+      last_login: null,
     } as Account,
     privacySettings: {} as PrivacySettings,
   },
