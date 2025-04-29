@@ -7,7 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { styles } from "./styles/signupform";
 import { useNavigation } from "@react-navigation/native";
@@ -30,6 +30,8 @@ const SignupForm = () => {
   const [selectedGender, setSelectedGender] = useState<Gender | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -176,9 +178,16 @@ const SignupForm = () => {
             style={styles.input}
             placeholder="Enter password"
             placeholderTextColor="#888"
-            secureTextEntry
+            secureTextEntry={!isVisible}
             value={signupForm.password}
             onChange={(e) => handleFormChange("password", e.nativeEvent.text)}
+          />
+          <MaterialIcons
+            name={isVisible ? "visibility" : "visibility-off"}
+            onPress={() => setIsVisible(!isVisible)}
+            size={24}
+            color="black"
+            style={[styles.eyeIcon, { top: "35%" }]}
           />
           <Text style={styles.passwordHint}>
             Password must contain at least 8 characters, 1 uppercase letter, 1
@@ -193,9 +202,16 @@ const SignupForm = () => {
             style={styles.input}
             placeholder="Enter password again"
             placeholderTextColor="#888"
-            secureTextEntry
+            secureTextEntry={!isPasswordVisible}
             value={signupForm.confirm}
             onChange={(e) => handleFormChange("confirm", e.nativeEvent.text)}
+          />
+          <MaterialIcons
+            name={isPasswordVisible ? "visibility" : "visibility-off"}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            size={24}
+            color="black"
+            style={styles.eyeIcon}
           />
         </View>
 

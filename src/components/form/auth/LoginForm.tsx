@@ -20,6 +20,7 @@ import { Audio } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamList } from "@navigation/AuthStack";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const LoginForm = () => {
   const { navigate } =
@@ -28,6 +29,7 @@ const LoginForm = () => {
   const { loginForm } = useSelector((state: RootState) => state.auth);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -101,7 +103,7 @@ const LoginForm = () => {
             style={styles.input}
             placeholder="Enter your password"
             placeholderTextColor="#888"
-            secureTextEntry
+            secureTextEntry={!isVisible}
             onChange={(e) =>
               dispatch(
                 setLoginForm({ ...loginForm, password: e.nativeEvent.text })
@@ -109,6 +111,13 @@ const LoginForm = () => {
             }
             value={loginForm.password}
             editable={!isLoading}
+          />
+          <MaterialIcons
+            name={isVisible ? "visibility" : "visibility-off"}
+            onPress={() => setIsVisible(!isVisible)}
+            size={24}
+            color="black"
+            style={styles.eyeIcon}
           />
         </View>
 

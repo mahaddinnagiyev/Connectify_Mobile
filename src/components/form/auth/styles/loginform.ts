@@ -19,6 +19,12 @@ export const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 15,
+    position: "relative"
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 15,
+    top: "52%",
   },
   label: {
     fontSize: 14,
