@@ -4,32 +4,41 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+import { Audio as ExpoAudio } from "expo-av";
 
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
-  duration?: number;
-  currentTime?: number;
 }
 
-const Audio: React.FC<Props> = ({
-  message,
-  bubbleStyle,
-  duration = 0,
-  currentTime = 0,
-}) => {
+const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const timeText = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+  // const audioRef = React.useRef<ExpoAudio.Sound>(null);
+  const [audioStatus, setAudioStatus] = React.useState<"play" | "pause">(
+    "pause"
+  );
+
+  const playAudio = async () => {
+    const { sound } = await ExpoAudio.Sound.createAsync({
+      uri: message.content,
+    });
+    if (audioStatus === "play") {
+      await sound.pauseAsync();
+      setAudioStatus("pause");
+    } else {
+      await sound.playAsync();
+      setAudioStatus("play");
+    }
+  };
 
   return (
     <View style={[styles.audioContainer, bubbleStyle]}>
       {/* Play/Pause düyməsi */}
-      <TouchableOpacity style={styles.playButton}>
+      <TouchableOpacity style={styles.playButton} onPress={playAudio}>
         <MaterialIcons
-          name={currentTime > 0 ? "pause" : "play-arrow"}
+          name={audioStatus === "play" ? "pause" : "play-arrow"}
           size={24}
           color={message.sender_id !== chat.otherUser.id ? "white" : "black"}
         />
@@ -42,7 +51,6 @@ const Audio: React.FC<Props> = ({
             style={[
               styles.progressBarFill,
               {
-                width: `${progress}%`,
                 backgroundColor:
                   message.sender_id !== chat.otherUser.id
                     ? "rgba(255,255,255,0.8)"
@@ -57,14 +65,13 @@ const Audio: React.FC<Props> = ({
             message.sender_id !== chat.otherUser.id && styles.sentTimeText,
           ]}
         >
-          {timeText}
+          00:00
         </Text>
       </View>
     </View>
   );
 };
 
-// Format funksiyası eyni qalır
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);

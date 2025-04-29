@@ -108,12 +108,7 @@ const Messages: React.FC = () => {
               break;
             case MessageType.AUDIO:
               contentElement = (
-                <Audio
-                  message={message}
-                  bubbleStyle={bubbleStyle}
-                  duration={20}
-                  currentTime={10}
-                />
+                <Audio message={message} bubbleStyle={bubbleStyle} />
               );
               break;
             case MessageType.FILE:
