@@ -7,7 +7,11 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { color } from "@/colors";
 import { styles } from "./styles/signupform";
 import { useNavigation } from "@react-navigation/native";
@@ -19,9 +23,11 @@ import { setSignupForm } from "@redux/auth/authSlice";
 import { Gender } from "@enums/gender.enum";
 import {
   setErrorMessage,
+  setInfoMessage,
   setSuccessMessage,
 } from "@redux/messages/messageSlice";
 import { signup } from "@services/auth/auth.service";
+import * as Clipboard from "expo-clipboard";
 
 const SignupForm = () => {
   const dispatch = useDispatch();
@@ -74,6 +80,27 @@ const SignupForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const generatePassword = async () => {
+    const characters =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+    let password: string = "";
+    const passwordLength = Math.floor(Math.random() * 8) + 8;
+
+    for (let i = 0; i < passwordLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      password += characters.charAt(randomIndex);
+    }
+
+    await Clipboard.setStringAsync(password);
+    dispatch(setSignupForm({ password: password, confirm: password }));
+    dispatch(
+      setInfoMessage(
+        "A strong password has been created for you. We don’t keep a copy, so please remember to save it yourself. It’s been copied to your clipboard."
+      )
+    );
   };
 
   return (
@@ -182,13 +209,25 @@ const SignupForm = () => {
             value={signupForm.password}
             onChange={(e) => handleFormChange("password", e.nativeEvent.text)}
           />
-          <MaterialIcons
-            name={isVisible ? "visibility" : "visibility-off"}
-            onPress={() => setIsVisible(!isVisible)}
-            size={24}
-            color="black"
-            style={[styles.eyeIcon, { top: "35%" }]}
-          />
+          <View
+            style={[
+              styles.eyeIcon,
+              { top: "35%", flexDirection: "row", gap: 8 },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name="form-textbox-password"
+              size={24}
+              color="black"
+              onPress={generatePassword}
+            />
+            <MaterialIcons
+              name={isVisible ? "visibility" : "visibility-off"}
+              onPress={() => setIsVisible(!isVisible)}
+              size={24}
+              color="black"
+            />
+          </View>
           <Text style={styles.passwordHint}>
             Password must contain at least 8 characters, 1 uppercase letter, 1
             lowercase letter, 1 number, and 1 special character
