@@ -8,14 +8,16 @@ import ErrorMessage from "@components/messages/ErrorMessage";
 import SuccessMessage from "@components/messages/SuccessMessage";
 import {
   clearErrorMessage,
+  clearInfoMessage,
   clearSuccessMessage,
 } from "@redux/messages/messageSlice";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@redux/store";
+import InfoMessage from "@components/messages/InfoMessage";
 
 function AppInner() {
   const dispatch = useDispatch();
-  const { errorMessage, successMessage } = useSelector(
+  const { errorMessage, successMessage, infoMessage } = useSelector(
     (state: RootState) => state.messages
   );
 
@@ -31,6 +33,12 @@ function AppInner() {
         <SuccessMessage
           message={successMessage}
           onClose={() => dispatch(clearSuccessMessage())}
+        />
+      )}
+      {infoMessage && (
+        <InfoMessage
+          message={infoMessage}
+          onClose={() => dispatch(clearInfoMessage())}
         />
       )}
       <Navigator />
