@@ -13,6 +13,7 @@ import { MessageType } from "@services/messenger/messenger.dto";
 import { useSocketContext } from "@context/SocketContext";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+import ParentMessage from "./utils/ParentMessage";
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
@@ -142,34 +143,7 @@ const Messages: React.FC = () => {
               )}
 
               {message.parent_message_id && (
-                <View
-                  style={[
-                    styles.parentPreview,
-                    message.sender_id === chat.otherUser.id
-                      ? styles.parentPreviewLeft
-                      : styles.parentPreviewRight,
-                  ]}
-                >
-                  <View style={styles.parentPreviewLine} />
-                  <View style={styles.parentPreviewContent}>
-                    <Text style={styles.parentPreviewSender}>
-                      {message.parent_message_id.sender_id !== chat.otherUser.id
-                        ? "You"
-                        : `@${chat.otherUser.username}`}
-                    </Text>
-
-                    {/* Mesaj kontenti */}
-                    {message.is_parent_deleted ? (
-                      <Text style={styles.parentPreviewTextDeleted}>
-                        This message has been deleted
-                      </Text>
-                    ) : (
-                      <Text style={styles.parentPreviewText} numberOfLines={3}>
-                        {message.parent_message_id.content}
-                      </Text>
-                    )}
-                  </View>
-                </View>
+                <ParentMessage message={message} chat={chat} />
               )}
 
               <View style={styles.messageWrapper}>

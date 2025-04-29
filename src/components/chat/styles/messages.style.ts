@@ -87,47 +87,4 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
   },
-  parentPreview: {
-    marginHorizontal: 15,
-    marginVertical: 4,
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: "#f5f5f5",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    maxWidth: "75%",
-  },
-  parentPreviewContent: {
-    flexDirection: "column",
-    gap: 2,
-  },
-  parentPreviewSender: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: color.primaryColor,
-  },
-  parentPreviewLeft: {
-    alignSelf: "flex-start",
-  },
-  parentPreviewRight: {
-    alignSelf: "flex-end",
-  },
-  parentPreviewLine: {
-    width: 3,
-    height: "100%",
-    backgroundColor: "#00ff00",
-    borderRadius: 2,
-  },
-  parentPreviewText: {
-    fontSize: 12,
-    color: "#666",
-    flexShrink: 1,
-    paddingRight: 10,
-  },
-  parentPreviewTextDeleted: {
-    fontSize: 12,
-    color: "#999",
-    fontStyle: "italic",
-  },
 });
