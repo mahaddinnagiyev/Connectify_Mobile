@@ -34,19 +34,19 @@ const formatTime = (input?: string | Date): string => {
 const UserChats = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { filteredChats } = useSelector((state: RootState) => state.messenger);
-  const { fetchChats } = useMessengerData();
+  const { fetchChats, isChatsLoading } = useMessengerData();
 
   const [refrehing, setRefreshing] = React.useState<boolean>(false);
-  const [isChatsLoading, setIsChatsLoading] = React.useState<boolean>(false);
+  const [isRefreshChatsLoading, setIsRefreshChatsLoading] = React.useState<boolean>(false);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setIsChatsLoading(true);
+    setIsRefreshChatsLoading(true);
     try {
       fetchChats();
     } finally {
       setRefreshing(false);
-      setIsChatsLoading(false);
+      setIsRefreshChatsLoading(false);
     }
   };
 
@@ -61,7 +61,7 @@ const UserChats = () => {
 
   return (
     <View style={styles.container}>
-      {isChatsLoading ? (
+      {isChatsLoading || isRefreshChatsLoading ? (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator
             size="small"

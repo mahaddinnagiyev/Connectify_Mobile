@@ -4,7 +4,7 @@ import { useUserData } from "./useUserData";
 import { setChats } from "@redux/messenger/messengerSlice";
 import { setErrorMessage } from "@redux/messages/messageSlice";
 import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../services/user/dto/user.dto";
 import { Account } from "../services/account/dto/account.dto";
 import { PrivacySettings } from "../services/account/dto/privacy.dto";
@@ -18,7 +18,10 @@ export function useMessengerData() {
 
   const socket = useSocketContext();
 
+  const [isChatsLoading, setIsChatsLoading] = useState<boolean>(false);
+
   useEffect(() => {
+    setIsChatsLoading(true);
     if (!socket || !userData) return;
     socket.emit("getChatRooms");
 
@@ -56,6 +59,7 @@ export function useMessengerData() {
         })
       );
       dispatch(setChats(enriched));
+      setIsChatsLoading(false);
     };
 
     socket.on("getChatRooms", handler);
@@ -64,5 +68,5 @@ export function useMessengerData() {
     };
   }, [socket, userData]);
 
-  return { fetchChats: () => socket?.emit("getChatRooms") };
+  return { fetchChats: () => socket?.emit("getChatRooms"), isChatsLoading };
 }
