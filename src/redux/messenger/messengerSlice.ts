@@ -28,6 +28,7 @@ export const messengerSlice = createSlice({
   reducers: {
     setChats: (state, action: PayloadAction<MessengerState["chats"]>) => {
       state.chats = action.payload;
+      state.filteredChats = action.payload;
     },
     filterChats: (state, action: PayloadAction<string>) => {
       const q = action.payload.toLowerCase().trim();
