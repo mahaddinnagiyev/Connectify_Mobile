@@ -1,33 +1,39 @@
-import { StyleSheet, Image, View } from "react-native";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { ResizeMode, Video } from "expo-av";
+import { color } from "@/colors";
 
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
 }
 
-const Video: React.FC<Props> = ({ message, bubbleStyle }) => {
+const VideoMessage: React.FC<Props> = ({ message, bubbleStyle }) => {
   return (
     <View style={[styles.videoContainer, bubbleStyle]}>
-      <Image
+      <Video
         source={{ uri: message.content }}
-        style={styles.videoThumbnail}
-        resizeMode="cover"
+        style={styles.videoPreview}
+        resizeMode={ResizeMode.COVER}
+        shouldPlay={false}
+        isMuted={true}
+        useNativeControls={false}
       />
+
       <View style={styles.playIconContainer}>
         <MaterialIcons
           name="play-circle-outline"
           size={50}
-          color="rgba(255,255,255,0.8)"
+          color={color.primaryColor}
         />
       </View>
     </View>
   );
 };
 
-export default Video;
+export default VideoMessage;
 
 const styles = StyleSheet.create({
   videoContainer: {
@@ -37,8 +43,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#000",
   },
-  videoThumbnail: {
+  videoPreview: {
     width: 200,
     height: 200,
   },
