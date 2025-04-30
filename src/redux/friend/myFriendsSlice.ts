@@ -13,6 +13,7 @@ interface MyFriendsState {
 
   // Block List
   blockList: BlockListDTO[];
+  blockerList: BlockListDTO[];
 }
 
 const initialState: MyFriendsState = {
@@ -20,6 +21,7 @@ const initialState: MyFriendsState = {
   sentFriendshipRequests: [],
   receivedFriendshipRequests: [],
   blockList: [],
+  blockerList: [],
 };
 
 export const myFriendsSlice = createSlice({
@@ -58,6 +60,9 @@ export const myFriendsSlice = createSlice({
     setBlockList: (state, action) => {
       state.blockList = action.payload;
     },
+    setBlockerList: (state, action) => {
+      state.blockerList = action.payload;
+    },
     removeBlockUser: (state, action) => {
       state.blockList = state.blockList.filter(
         (block) => block.id !== action.payload
@@ -75,5 +80,6 @@ export const {
 
   // Block List
   setBlockList,
+  setBlockerList,
 } = myFriendsSlice.actions;
 export default myFriendsSlice.reducer;

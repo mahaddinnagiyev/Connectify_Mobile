@@ -2,10 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import { Response } from "./useUpdateProfile";
 import { getTokenFromSession } from "@services/auth/token.service";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   acceptFriendshipRequest,
   rejectFriendshipRequest,
+  setBlockerList,
   setBlockList,
   setMyFriends,
   setReceivedFriendshipRequests,
@@ -22,6 +23,7 @@ import {
 } from "@redux/messages/messageSlice";
 import { BlockAction, BlockListDTO } from "@services/friends/blockList.dto";
 import { FriendshipAction } from "@enums/friendship.enum";
+import { RootState } from "../redux/store";
 
 interface MyFriendsReponse {
   success: boolean;
@@ -44,6 +46,12 @@ interface BlockListResponse {
   response: { success: boolean; error?: string; message?: string };
 }
 
+interface BlockerListResponse {
+  success: boolean;
+  blockerList: BlockListDTO[];
+  response: { success: boolean; error?: string; message?: string };
+}
+
 async function getToken() {
   const token = await getTokenFromSession();
   return token ?? null;
@@ -54,6 +62,9 @@ export function useFriendData() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [isBlockerListLoading, setIsBlockerListLoading] = useState(false);
+
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const fetchAllMyFriends = async () => {
     try {
@@ -298,6 +309,42 @@ export function useFriendData() {
     }
   };
 
+  const fetchBlockerList = async () => {
+    try {
+      setIsBlockerListLoading(true);
+
+      const { data } = await axios.get<BlockerListResponse>(
+        `${process.env.SERVER_URL}/user/block-list?by=${userData.user.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getToken()}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        dispatch(setBlockerList(data.blockerList!));
+      } else {
+        dispatch(
+          setErrorMessage(
+            data.response?.message ??
+              data.response?.error ??
+              "Something went wrong"
+          )
+        );
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsBlockerListLoading(false);
+    }
+  };
+
   const blockAndUnblockUser = async (id: string, block_action: BlockAction) => {
     try {
       setIsLoading(true);
@@ -359,9 +406,7 @@ export function useFriendData() {
 
     // Block List
     fetchBlockList,
+    fetchBlockerList,
     blockAndUnblockUser,
   };
-}
-function unblockUser(id: string): any {
-  throw new Error("Function not implemented.");
 }

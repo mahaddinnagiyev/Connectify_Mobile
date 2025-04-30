@@ -19,12 +19,15 @@ import { setActiveIndex, setUserData } from "@redux/profile/myProfileSlice";
 import { setErrorMessage } from "@redux/messages/messageSlice";
 import { useUserData } from "@hooks/useUserData";
 import { color } from "@/colors";
+import { useFriendData } from "@/src/hooks/useFriendData";
 
 export default function MyProfileScreen() {
   const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const { activeIndex } = useSelector((state: RootState) => state.myProfile);
   const { userResponse, isLoading, refetch } = useUserData();
+  const { fetchBlockList, fetchBlockerList, fetchAllFriendReuqest } =
+    useFriendData();
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -39,29 +42,38 @@ export default function MyProfileScreen() {
 
   // Fetch User Datas
   useEffect(() => {
-    if (userResponse) {
-      if (userResponse.success) {
-        dispatch(
-          setUserData({
-            user: userResponse.user,
-            account: userResponse.account,
-            privacySettings: userResponse.privacy_settings,
-          })
-        );
-      } else {
-        dispatch(
-          setErrorMessage(
-            Array.isArray(userResponse.response?.message)
-              ? userResponse.response!.message![0]
-              : userResponse.response?.message ||
-                  userResponse.response?.error ||
-                  userResponse.message ||
-                  userResponse.error ||
-                  "Something went wrong"
-          )
-        );
+    const fetchMyData = async () => {
+      if (userResponse) {
+        if (userResponse.success) {
+          await Promise.all([
+            fetchBlockList(),
+            fetchBlockerList(),
+            fetchAllFriendReuqest(),
+          ]);
+          dispatch(
+            setUserData({
+              user: userResponse.user,
+              account: userResponse.account,
+              privacySettings: userResponse.privacy_settings,
+            })
+          );
+        } else {
+          dispatch(
+            setErrorMessage(
+              Array.isArray(userResponse.response?.message)
+                ? userResponse.response!.message![0]
+                : userResponse.response?.message ||
+                    userResponse.response?.error ||
+                    userResponse.message ||
+                    userResponse.error ||
+                    "Something went wrong"
+            )
+          );
+        }
       }
-    }
+    };
+
+    fetchMyData();
   }, [userResponse, dispatch]);
 
   const routes = [
