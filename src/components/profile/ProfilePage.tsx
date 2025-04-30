@@ -9,7 +9,7 @@ import {
   PrivacySettingsChoice,
 } from "@services/account/dto/privacy.dto";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
 
 interface ProfilePageProps {
   isMyProfileScreen: boolean;

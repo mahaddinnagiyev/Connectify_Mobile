@@ -10,7 +10,7 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StackParamList } from "@/src/navigation/UserStack";
+import type { StackParamList } from "@navigation/UserStack";
 import { color } from "@/colors";
 
 interface PrivacyLegendModalProps {

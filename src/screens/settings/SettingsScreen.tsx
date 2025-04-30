@@ -15,7 +15,7 @@ import { PrivacySettings as Privacy } from "@services/account/dto/privacy.dto";
 import ConfirmModal from "@components/modals/confirm/ConfirmModal";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { styles } from "./style/settingScreen.styles";
-import FaceIDModal from "@/src/components/modals/auth/FaceIDModal";
+import FaceIDModal from "@components/modals/auth/FaceIDModal";
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();

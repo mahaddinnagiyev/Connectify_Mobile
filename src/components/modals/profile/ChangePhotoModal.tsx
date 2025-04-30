@@ -10,7 +10,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { color } from "@/colors";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useUpdateProfile, UploadFile } from "@/src/hooks/useUpdateProfile";
+import { useUpdateProfile, UploadFile } from "@hooks/useUpdateProfile";
 
 interface ChangePhotoModalProps {
   visible: boolean;

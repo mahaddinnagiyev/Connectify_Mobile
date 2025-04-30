@@ -11,7 +11,7 @@ import React from "react";
 import { styles } from "./styles/addSocialLinkModal";
 import { color } from "@/colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
+import { useUpdateProfile } from "@hooks/useUpdateProfile";
 
 interface Props {
   visible: boolean;

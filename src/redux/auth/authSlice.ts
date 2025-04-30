@@ -1,5 +1,5 @@
-import { Gender } from "@/src/enums/gender.enum";
-import { SignupDTO } from "@/src/services/auth/dto/auth.dto";
+import { Gender } from "@enums/gender.enum";
+import { SignupDTO } from "@services/auth/dto/auth.dto";
 import { AuthPage, AuthType } from "@enums/auth.enum";
 import { createSlice } from "@reduxjs/toolkit";
 

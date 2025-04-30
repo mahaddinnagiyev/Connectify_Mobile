@@ -9,11 +9,11 @@ import {
 } from "react-native";
 import React from "react";
 import ProfilePage from "@components/profile/ProfilePage";
-import { useUserData } from "@/src/hooks/useUserData";
+import { useUserData } from "@hooks/useUserData";
 import { color } from "@/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { StackParamList } from "@/src/navigation/UserStack";
+import { StackParamList } from "@navigation/UserStack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const UserProfileScreen = () => {

@@ -22,9 +22,9 @@ import { UserData } from "./ProfilePage";
 import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
 import PrivacyLegendModal from "../modals/profile/PrivacyLegendModal";
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
-import { BlockAction } from "@/src/services/friends/blockList.dto";
-import { useFriendData } from "@/src/hooks/useFriendData";
+import { RootState } from "@redux/store";
+import { BlockAction } from "@services/friends/blockList.dto";
+import { useFriendData } from "@hooks/useFriendData";
 import ConfirmModal from "../modals/confirm/ConfirmModal";
 
 interface PersonalInfoProps {

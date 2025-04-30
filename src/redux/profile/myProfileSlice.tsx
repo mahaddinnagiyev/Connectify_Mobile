@@ -2,7 +2,7 @@ import { Account } from "@services/account/dto/account.dto";
 import { PrivacySettings } from "@services/account/dto/privacy.dto";
 import { User } from "@services/user/dto/user.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Gender } from "@/src/enums/gender.enum";
+import { Gender } from "@enums/gender.enum";
 
 interface MyProfileState {
   activeIndex: number;

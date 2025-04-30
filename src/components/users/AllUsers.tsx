@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
-import { useUserData } from "@/src/hooks/useUserData";
+import { useUserData } from "@hooks/useUserData";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StackParamList } from "@/src/navigation/UserStack";
+import type { StackParamList } from "@navigation/UserStack";
 
 interface IUserItem {
   id: string;

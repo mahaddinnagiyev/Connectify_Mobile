@@ -2,8 +2,8 @@ import { color } from "@/colors";
 import {
   setErrorMessage,
   setSuccessMessage,
-} from "@/src/redux/messages/messageSlice";
-import { confirmAccount, signup } from "@/src/services/auth/auth.service";
+} from "@redux/messages/messageSlice";
+import { confirmAccount, signup } from "@services/auth/auth.service";
 import {
   setCode,
   setIsAuthenticated,

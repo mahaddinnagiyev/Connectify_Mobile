@@ -1,4 +1,4 @@
-import { MessagesDTO } from "@/src/services/messenger/messenger.dto";
+import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface ChatState {

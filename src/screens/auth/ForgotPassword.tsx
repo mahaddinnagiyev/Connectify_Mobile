@@ -20,8 +20,8 @@ import { useDispatch } from "react-redux";
 import {
   setErrorMessage,
   setSuccessMessage,
-} from "@/src/redux/messages/messageSlice";
-import { forgotPassoword } from "@/src/services/auth/auth.service";
+} from "@redux/messages/messageSlice";
+import { forgotPassoword } from "@services/auth/auth.service";
 
 type Props = StackScreenProps<StackParamList, "ForgotPassword">;
 

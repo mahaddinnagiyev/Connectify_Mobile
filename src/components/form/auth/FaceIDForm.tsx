@@ -2,11 +2,11 @@ import { View, Text, Pressable, TextInput } from "react-native";
 import React from "react";
 import { styles } from "./styles/faceidform";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
 import {
   setIsFaceIDModalOpen,
   setFaceIdLoginForm,
-} from "@/src/redux/auth/authSlice";
+} from "@redux/auth/authSlice";
 import FaceIDModal from "../../modals/auth/FaceIDModal";
 
 const FaceIDForm = () => {

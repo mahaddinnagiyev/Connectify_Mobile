@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { color } from "@/colors";
 import { Gender } from "@enums/gender.enum";
-import { useUpdateProfile } from "@/src/hooks/useUpdateProfile";
+import { useUpdateProfile } from "@hooks/useUpdateProfile";
 
 interface ProfileModalProps {
   type: "personal" | "profile" | "social-link";

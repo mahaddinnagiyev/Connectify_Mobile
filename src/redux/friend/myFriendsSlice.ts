@@ -1,4 +1,4 @@
-import { BlockListDTO } from "@/src/services/friends/blockList.dto";
+import { BlockListDTO } from "@services/friends/blockList.dto";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   FriendshipRecieveRequestDTO,

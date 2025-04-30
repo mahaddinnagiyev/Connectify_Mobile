@@ -6,16 +6,16 @@ import ConfirmModal from "../modals/confirm/ConfirmModal";
 import {
   forgotPassoword,
   removeAccount,
-} from "@/src/services/auth/auth.service";
+} from "@services/auth/auth.service";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setErrorMessage,
   setSuccessMessage,
-} from "@/src/redux/messages/messageSlice";
+} from "@redux/messages/messageSlice";
 import { styles } from "./styles/accountSettings.style";
 import FaceIDModal from "../modals/auth/FaceIDModal";
-import { setIsFaceIDModalOpen } from "@/src/redux/auth/authSlice";
-import { RootState } from "@/src/redux/store";
+import { setIsFaceIDModalOpen } from "@redux/auth/authSlice";
+import { RootState } from "@redux/store";
 
 type Props = {
   email: string;
