@@ -92,4 +92,32 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
   },
+  loadMoreMessagesContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    backgroundColor: "white",
+    borderRadius: 15,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: color.primaryColor,
+    // Kölgəni daha incə edək
+    shadowColor: color.primaryColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  loadMoreMessagesText: {
+    color: color.primaryColor,
+    fontSize: 13,
+    fontWeight: "600",
+    marginTop: 1, // Mətni ikonla düzgün hizalamaq üçün
+  },
+  arrowIcon: {
+    marginTop: 2, // İkonu mətnlə daha uyğun düzəltmək üçün
+  },
 });

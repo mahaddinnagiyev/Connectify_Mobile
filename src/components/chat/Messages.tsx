@@ -1,9 +1,15 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { setMessages, setShowBackToBottom } from "@redux/chat/chatSilce";
+import { setMessages } from "@redux/chat/chatSilce";
 import Image from "./utils/Image";
 import Video from "./utils/Video";
 import File from "./utils/File";
@@ -15,6 +21,8 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
 import ParentMessage from "./utils/ParentMessage";
 import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
+import { AntDesign } from "@expo/vector-icons";
+import { color } from "@/colors";
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,6 +34,10 @@ const Messages: React.FC = () => {
   const socket = useSocketContext();
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
+
+  const [hasMoreMessages, setHasMoreMessages] = useState<boolean>(false);
+  const [hasMoreMessagesLoading, setHasMoreMessagesLoading] =
+    useState<boolean>(false);
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -42,6 +54,9 @@ const Messages: React.FC = () => {
       if (data.messages[0]?.room_id === chat.id) {
         dispatch(setMessages(data.messages));
       }
+
+      if (data.messages.length < 100) setHasMoreMessages(false);
+      else setHasMoreMessages(true);
     };
 
     socket.on("messages", handle);
@@ -49,6 +64,31 @@ const Messages: React.FC = () => {
       socket.off("messages", handle);
     };
   }, [socket, chat, dispatch]);
+
+  const loadMoreMessages = useCallback(
+    async (newLimit: number) => {
+      if (!hasMoreMessagesLoading && hasMoreMessages) {
+        try {
+          setHasMoreMessagesLoading(true);
+
+          socket?.off("messages");
+
+          socket?.once("messages", (data) => {
+            if (data.messages[0]?.room_id === chat.id) {
+              dispatch(setMessages([...data.messages]));
+            }
+            setHasMoreMessages(data.messages.length >= newLimit);
+            setHasMoreMessagesLoading(false);
+          });
+
+          socket?.emit("getMessages", { roomId: chat.id, limit: newLimit });
+        } catch (error) {
+          setHasMoreMessagesLoading(false);
+        }
+      }
+    },
+    [hasMoreMessages, chat.id, socket, dispatch]
+  );
 
   return (
     <View style={styles.outerContainer}>
@@ -62,6 +102,23 @@ const Messages: React.FC = () => {
         onScroll={(event) => handleScroll(event, dispatch)}
         scrollEventThrottle={16}
       >
+        {hasMoreMessages && (
+          <View style={{ alignItems: "center" }}>
+            {hasMoreMessagesLoading ? (
+              <Pressable style={styles.loadMoreMessagesContainer}>
+                <ActivityIndicator color={color.primaryColor} size="small" />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => loadMoreMessages(messages.length + 100)}
+                style={styles.loadMoreMessagesContainer}
+              >
+                <AntDesign name="down" size={16} color={color.primaryColor} />
+                <Text style={styles.loadMoreMessagesText}>More</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
         {messages.map((message, index) => {
           const currDate = new Date(message.created_at).toDateString();
           const prevDate =
