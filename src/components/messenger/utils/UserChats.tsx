@@ -16,20 +16,8 @@ import { RootState } from "@redux/store";
 import { useMessengerData } from "@hooks/useMessengerData";
 import { styles } from "../styles/userChats.style";
 import { color } from "@/colors";
-
-const truncate = (text: string = "", maxLength: number): string => {
-  return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
-};
-
-const formatTime = (input?: string | Date): string => {
-  if (!input) return "";
-  const date = typeof input === "string" ? new Date(input) : input;
-  let h = date.getHours();
-  const m = date.getMinutes().toString().padStart(2, "0");
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${h}:${m} ${ampm}`;
-};
+import { truncate } from "@functions/messages.function";
+import { formatTime } from "@functions/chat.functions";
 
 const UserChats = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -37,7 +25,8 @@ const UserChats = () => {
   const { fetchChats, isChatsLoading } = useMessengerData();
 
   const [refrehing, setRefreshing] = React.useState<boolean>(false);
-  const [isRefreshChatsLoading, setIsRefreshChatsLoading] = React.useState<boolean>(false);
+  const [isRefreshChatsLoading, setIsRefreshChatsLoading] =
+    React.useState<boolean>(false);
 
   const handleRefresh = () => {
     setRefreshing(true);

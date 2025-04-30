@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
@@ -14,6 +14,7 @@ import { useSocketContext } from "@context/SocketContext";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
 import ParentMessage from "./utils/ParentMessage";
+import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
@@ -49,22 +50,6 @@ const Messages: React.FC = () => {
     };
   }, [socket, chat, dispatch]);
 
-  const handleScroll = (event: any) => {
-    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
-    const distanceFromBottom =
-      contentSize.height - layoutMeasurement.height - contentOffset.y;
-    dispatch(setShowBackToBottom(distanceFromBottom >= 100));
-  };
-
-  const formatDate = (dateString: Date) => {
-    const date = new Date(dateString + "Z");
-    return date.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
   return (
     <View style={styles.outerContainer}>
       <ScrollView
@@ -74,7 +59,7 @@ const Messages: React.FC = () => {
         onContentSizeChange={() =>
           scrollViewRef.current?.scrollToEnd({ animated: true })
         }
-        onScroll={handleScroll}
+        onScroll={(event) => handleScroll(event, dispatch)}
         scrollEventThrottle={16}
       >
         {messages.map((message, index) => {
@@ -127,7 +112,13 @@ const Messages: React.FC = () => {
             default:
               contentElement = (
                 <View style={[styles.messageBubble, bubbleStyle]}>
-                  <Text style={textStyle}>{message.content}</Text>
+                  {isUrl(message.content) ? (
+                    <Pressable>
+                      <Text style={styles.url}>{message.content}</Text>
+                    </Pressable>
+                  ) : (
+                    <Text style={textStyle}>{message.content}</Text>
+                  )}
                 </View>
               );
           }

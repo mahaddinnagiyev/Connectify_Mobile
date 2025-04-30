@@ -11,15 +11,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+import { truncate } from "@functions/messages.function";
 
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
 }
-
-const truncate = (text: string = "", maxLength: number): string => {
-  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-};
 
 const File: React.FC<Props> = ({ message, bubbleStyle }) => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();

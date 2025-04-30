@@ -10,6 +10,7 @@ import { Account } from "@services/account/dto/account.dto";
 import { PrivacySettings } from "@services/account/dto/privacy.dto";
 import { color } from "@/colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { isUrl } from "@functions/messages.function";
 
 interface Props {
   message: MessagesDTO;
@@ -69,9 +70,28 @@ const ParentMessage: React.FC<Props> = ({ message, chat }) => {
 
       default:
         return (
-          <Text style={styles.parentPreviewText} numberOfLines={3}>
-            {message.parent_message_id.content}
-          </Text>
+          <>
+            {isUrl(message.parent_message_id.content) ? (
+              <Text
+                style={[
+                  styles.parentPreviewText,
+                  {
+                    color: "blue",
+                    fontWeight: "bold",
+                    textDecorationLine: "underline",
+                    textDecorationColor: "blue",
+                  },
+                ]}
+                numberOfLines={3}
+              >
+                {message.parent_message_id.content}
+              </Text>
+            ) : (
+              <Text style={styles.parentPreviewText} numberOfLines={3}>
+                {message.parent_message_id.content}
+              </Text>
+            )}
+          </>
         );
     }
   };

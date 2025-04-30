@@ -21,7 +21,8 @@
       "@enums/*": ["./src/enums/*"],
       "@services/*": ["./src/services/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@context/*": ["./src/context/*"]
+      "@context/*": ["./src/context/*"],
+      "@functions/*": ["./src/functions/*"]
     }
   },
   "include": [

@@ -18,10 +18,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { styles } from "./styles/chatHeader.style";
-
-const truncate = (text: string = "", maxLength: number): string => {
-  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-};
+import { truncate } from "@functions/messages.function";
 
 const ChatHeader = () => {
   const { isMenuVisible } = useSelector((state: RootState) => state.chat);

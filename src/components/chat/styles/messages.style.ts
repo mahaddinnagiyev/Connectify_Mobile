@@ -43,7 +43,12 @@ export const styles = StyleSheet.create({
     color: "black",
     fontSize: 14,
   },
-
+  url: {
+    fontWeight: "bold",
+    color: "blue",
+    textDecorationLine: "underline",
+    textDecorationColor: "blue",
+  },
   timeText: {
     fontSize: 10,
     color: "#999",
