@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  Pressable,
-  Platform,
-} from "react-native";
+import { Text, View, Animated, Pressable, Platform } from "react-native";
 import React, { useEffect, useRef } from "react";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { MessageType } from "@services/messenger/messenger.dto";
@@ -106,11 +99,51 @@ const ContextMenu: React.FC<Props> = ({
     }
   };
 
-  const menuItems = [
-    { id: "reply", title: "Reply", icon: "reply" },
-    { id: "copy", title: "Copy", icon: "copy-all" },
-    { id: "delete", title: "Delete", icon: "delete", color: "red" },
-  ];
+  let menuItems: { id: string; title: string; icon: string; color?: string }[] =
+    [];
+
+  (function renderMenuItems() {
+    menuItems.push({ id: "reply", title: "Reply", icon: "reply" });
+
+    switch (message.message_type) {
+      case MessageType.TEXT:
+        menuItems.push({ id: "copy", title: "Copy", icon: "copy-all" });
+        break;
+
+      case MessageType.IMAGE:
+      case MessageType.VIDEO:
+      case MessageType.FILE:
+        menuItems.push({
+          id: "Download",
+          title: `Download ${
+            message.message_type === MessageType.FILE
+              ? "File"
+              : message.message_type === MessageType.IMAGE
+              ? "Image"
+              : "Video"
+          }`,
+          icon: "download",
+        });
+        break;
+    }
+
+    menuItems.push({
+      id: "details",
+      title: "Details",
+      icon: "info",
+      color: "#2196F3",
+    });
+    if (message.sender_id === userId) {
+      menuItems.push({
+        id: "delete",
+        title: "Unsend",
+        icon: "delete",
+        color: "red",
+      });
+    }
+
+    return menuItems;
+  })();
 
   return (
     <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>

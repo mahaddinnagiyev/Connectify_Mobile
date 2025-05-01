@@ -59,6 +59,7 @@ export const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 16,
     marginLeft: 16,
+    fontWeight: "700",
   },
   url: {
     color: color.primaryColor,
