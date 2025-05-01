@@ -19,7 +19,7 @@ import { setActiveIndex, setUserData } from "@redux/profile/myProfileSlice";
 import { setErrorMessage } from "@redux/messages/messageSlice";
 import { useUserData } from "@hooks/useUserData";
 import { color } from "@/colors";
-import { useFriendData } from "@/src/hooks/useFriendData";
+import { useFriendData } from "@hooks/useFriendData";
 
 export default function MyProfileScreen() {
   const layout = useWindowDimensions();

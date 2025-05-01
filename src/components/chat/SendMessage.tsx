@@ -13,8 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setInputHeight } from "@redux/chat/chatSilce";
 import { RootState } from "@redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { StackParamList } from "@/src/navigation/UserStack";
-import { setInfoMessage } from "@/src/redux/messages/messageSlice";
+import { StackParamList } from "@navigation/UserStack";
 
 const screenWidth = Dimensions.get("window").width;
 
