@@ -13,14 +13,19 @@ import { MessagesDTO } from "@services/messenger/messenger.dto";
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
+  onLongPress?: () => void;
 }
 
-const Image: React.FC<Props> = ({ message, bubbleStyle }) => {
+const Image: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <>
-      <Pressable onPress={() => setModalVisible(true)} hitSlop={10}>
+      <Pressable
+        onPress={() => setModalVisible(true)}
+        hitSlop={10}
+        onLongPress={onLongPress}
+      >
         <View style={[styles.imageContainer, bubbleStyle]}>
           <RNImage
             source={{ uri: message.content }}

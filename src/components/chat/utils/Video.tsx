@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Pressable, Dimensions } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import Modal from "react-native-modal";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -10,22 +10,18 @@ import CustomVideoPlayer from "../../modals/chat/CustomVideoPlayer";
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
+  onLongPress?: () => void;
 }
 
-const { width, height } = Dimensions.get("window");
-
-const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle }) => {
+const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [status, setStatus] = useState<AVPlaybackStatus>(
-    {} as AVPlaybackStatus
-  );
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
   return (
     <>
-      <Pressable onPress={openModal} hitSlop={10}>
+      <Pressable onPress={openModal} onLongPress={onLongPress} hitSlop={10}>
         <View style={[styles.videoContainer, bubbleStyle]}>
           <Video
             source={{ uri: message.content }}
@@ -34,7 +30,6 @@ const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle }) => {
             shouldPlay={false}
             isMuted={true}
             useNativeControls={false}
-            onPlaybackStatusUpdate={setStatus}
           />
           <View style={styles.playIconContainer}>
             <MaterialIcons

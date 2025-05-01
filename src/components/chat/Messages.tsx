@@ -15,7 +15,7 @@ import Video from "./utils/Video";
 import File from "./utils/File";
 import Audio from "./utils/Audio";
 import { styles } from "./styles/messages.style";
-import { MessageType } from "@services/messenger/messenger.dto";
+import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 import { useSocketContext } from "@context/SocketContext";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
@@ -23,6 +23,7 @@ import ParentMessage from "./utils/ParentMessage";
 import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
 import { AntDesign } from "@expo/vector-icons";
 import { color } from "@/colors";
+import ContextMenu from "./utils/ContextMenu";
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const Messages: React.FC = () => {
   const { showBackToBottom, messages } = useSelector(
     (state: RootState) => state.chat
   );
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const socket = useSocketContext();
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
@@ -38,6 +40,10 @@ const Messages: React.FC = () => {
   const [hasMoreMessages, setHasMoreMessages] = useState<boolean>(false);
   const [hasMoreMessagesLoading, setHasMoreMessagesLoading] =
     useState<boolean>(false);
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<MessagesDTO | null>(
+    null
+  );
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -141,22 +147,50 @@ const Messages: React.FC = () => {
           switch (message.message_type) {
             case MessageType.IMAGE:
               contentElement = (
-                <Image message={message} bubbleStyle={bubbleStyle} />
+                <Image
+                  message={message}
+                  bubbleStyle={bubbleStyle}
+                  onLongPress={() => {
+                    setSelectedMessage(message);
+                    setContextMenuVisible(true);
+                  }}
+                />
               );
               break;
             case MessageType.VIDEO:
               contentElement = (
-                <Video message={message} bubbleStyle={bubbleStyle} />
+                <Video
+                  message={message}
+                  bubbleStyle={bubbleStyle}
+                  onLongPress={() => {
+                    setSelectedMessage(message);
+                    setContextMenuVisible(true);
+                  }}
+                />
               );
               break;
             case MessageType.AUDIO:
               contentElement = (
-                <Audio message={message} bubbleStyle={bubbleStyle} />
+                <Pressable
+                  onLongPress={() => {
+                    setSelectedMessage(message);
+                    setContextMenuVisible(true);
+                  }}
+                >
+                  <Audio message={message} bubbleStyle={bubbleStyle} />
+                </Pressable>
               );
               break;
             case MessageType.FILE:
               contentElement = (
-                <File message={message} bubbleStyle={bubbleStyle} />
+                <Pressable
+                  onLongPress={() => {
+                    setSelectedMessage(message);
+                    setContextMenuVisible(true);
+                  }}
+                >
+                  <File message={message} bubbleStyle={bubbleStyle} />
+                </Pressable>
               );
               break;
             case MessageType.DEFAULT:
@@ -168,15 +202,22 @@ const Messages: React.FC = () => {
               break;
             default:
               contentElement = (
-                <View style={[styles.messageBubble, bubbleStyle]}>
-                  {isUrl(message.content) ? (
-                    <Pressable>
-                      <Text style={styles.url}>{message.content}</Text>
-                    </Pressable>
-                  ) : (
-                    <Text style={textStyle}>{message.content}</Text>
-                  )}
-                </View>
+                <Pressable
+                  onLongPress={() => {
+                    setSelectedMessage(message);
+                    setContextMenuVisible(true);
+                  }}
+                >
+                  <View style={[styles.messageBubble, bubbleStyle]}>
+                    {isUrl(message.content) ? (
+                      <Pressable>
+                        <Text style={styles.url}>{message.content}</Text>
+                      </Pressable>
+                    ) : (
+                      <Text style={textStyle}>{message.content}</Text>
+                    )}
+                  </View>
+                </Pressable>
               );
           }
 
@@ -196,6 +237,7 @@ const Messages: React.FC = () => {
 
               <View style={styles.messageWrapper}>
                 {contentElement}
+
                 <Text
                   style={[
                     styles.timeText,
@@ -229,6 +271,17 @@ const Messages: React.FC = () => {
           color="black"
           style={styles.backToBottom}
           onPress={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+        />
+      )}
+
+      {contextMenuVisible && selectedMessage && (
+        <ContextMenu
+          message={selectedMessage}
+          onClose={() => setContextMenuVisible(false)}
+          onReply={() => console.log("Reply")}
+          onCopy={() => console.log("Copy")}
+          onDelete={() => console.log("Delete")}
+          userId={userData.user.id}
         />
       )}
     </View>
