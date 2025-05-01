@@ -1,39 +1,72 @@
-import { StyleSheet, View, ActivityIndicator } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { StyleSheet, View, Pressable, Dimensions } from "react-native";
+import Modal from "react-native-modal";
+import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
-import { ResizeMode, Video } from "expo-av";
 import { color } from "@/colors";
+import CustomVideoPlayer from "../../modals/chat/CustomVideoPlayer";
 
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
 }
 
-const VideoMessage: React.FC<Props> = ({ message, bubbleStyle }) => {
-  return (
-    <View style={[styles.videoContainer, bubbleStyle]}>
-      <Video
-        source={{ uri: message.content }}
-        style={styles.videoPreview}
-        resizeMode={ResizeMode.COVER}
-        shouldPlay={false}
-        isMuted={true}
-        useNativeControls={false}
-      />
+const { width, height } = Dimensions.get("window");
 
-      <View style={styles.playIconContainer}>
-        <MaterialIcons
-          name="play-circle-outline"
-          size={50}
-          color={color.primaryColor}
+const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [status, setStatus] = useState<AVPlaybackStatus>(
+    {} as AVPlaybackStatus
+  );
+
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
+  return (
+    <>
+      <Pressable onPress={openModal} hitSlop={10}>
+        <View style={[styles.videoContainer, bubbleStyle]}>
+          <Video
+            source={{ uri: message.content }}
+            style={styles.videoPreview}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay={false}
+            isMuted={true}
+            useNativeControls={false}
+            onPlaybackStatusUpdate={setStatus}
+          />
+          <View style={styles.playIconContainer}>
+            <MaterialIcons
+              name="play-circle-outline"
+              size={50}
+              color={color.primaryColor}
+            />
+          </View>
+        </View>
+      </Pressable>
+
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={closeModal}
+        onBackButtonPress={closeModal}
+        propagateSwipe={true}
+        swipeDirection={["down"]}
+        onSwipeComplete={closeModal}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        useNativeDriver
+        style={styles.modal}
+      >
+        <CustomVideoPlayer
+          uri={message.content}
+          autoPlay={modalVisible}
+          onClose={closeModal}
         />
-      </View>
-    </View>
+      </Modal>
+    </>
   );
 };
-
-export default VideoMessage;
 
 const styles = StyleSheet.create({
   videoContainer: {
@@ -54,4 +87,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  modal: {
+    margin: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
 });
+
+export default VideoWithModal;

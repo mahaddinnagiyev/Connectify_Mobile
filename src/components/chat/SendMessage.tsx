@@ -21,7 +21,7 @@ const SendMessage = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { inputHeight } = useSelector((state: RootState) => state.chat);
-  const { blockList, blockerList } = useSelector(
+  const { blockList = [], blockerList = [] } = useSelector(
     (state: RootState) => state.myFriends
   );
 
