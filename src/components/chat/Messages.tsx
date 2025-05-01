@@ -9,7 +9,7 @@ import {
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { setMessages } from "@redux/chat/chatSilce";
+import { setMessages, setReplyMessage } from "@/src/redux/chat/chatSlice";
 import Image from "./utils/Image";
 import Video from "./utils/Video";
 import File from "./utils/File";
@@ -24,6 +24,7 @@ import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
 import { AntDesign } from "@expo/vector-icons";
 import { color } from "@/colors";
 import ContextMenu from "./utils/ContextMenu";
+import { SwipeableMessage } from "./utils/swipeUtils";
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const Messages: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
     dispatch(setMessages([]));
+    dispatch(setReplyMessage(null));
     socket.emit("joinChatRoom", { user2Id: chat.otherUser.id });
     socket.emit("setMessageRead", { roomId: chat.id });
     socket.emit("getMessages", { roomId: chat.id, limit: 100 });
@@ -236,7 +238,9 @@ const Messages: React.FC = () => {
               )}
 
               <View style={styles.messageWrapper}>
-                {contentElement}
+                <SwipeableMessage message={message}>
+                  {contentElement}
+                </SwipeableMessage>
 
                 <Text
                   style={[
@@ -278,8 +282,6 @@ const Messages: React.FC = () => {
         <ContextMenu
           message={selectedMessage}
           onClose={() => setContextMenuVisible(false)}
-          onReply={() => console.log("Reply")}
-          onCopy={() => console.log("Copy")}
           onDelete={() => console.log("Delete")}
           userId={userData.user.id}
         />

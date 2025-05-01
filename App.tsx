@@ -14,6 +14,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@redux/store";
 import InfoMessage from "@components/messages/InfoMessage";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function AppInner() {
   const dispatch = useDispatch();
@@ -48,10 +49,12 @@ function AppInner() {
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <SocketProvider>
-        <AppInner />
-      </SocketProvider>
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider store={store}>
+        <SocketProvider>
+          <AppInner />
+        </SocketProvider>
+      </Provider>
+    </GestureHandlerRootView>
   );
 }

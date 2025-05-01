@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import headerReducer from "./header/headerSlice";
-import chatReducer from "./chat/chatSilce";
+import chatReducer from "./chat/chatSlice";
 import myFriendsReducer from "./friend/myFriendsSlice";
 import usersReducer from "./users/usersSlice";
 import myProfileReducer from "./profile/myProfileSlice";

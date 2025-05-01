@@ -13,7 +13,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { toggleMenu } from "@redux/chat/chatSilce";
+import { toggleMenu } from "@/src/redux/chat/chatSlice";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";

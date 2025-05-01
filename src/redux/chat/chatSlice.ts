@@ -6,6 +6,7 @@ interface ChatState {
   inputHeight: number;
   showBackToBottom: boolean;
   messages: MessagesDTO[];
+  replyMessage: MessagesDTO | null;
 }
 
 const initialState: ChatState = {
@@ -13,6 +14,7 @@ const initialState: ChatState = {
   inputHeight: 35,
   showBackToBottom: false,
   messages: [],
+  replyMessage: null,
 };
 
 export const chatSlice = createSlice({
@@ -31,9 +33,17 @@ export const chatSlice = createSlice({
     setMessages: (state, action) => {
       state.messages = action.payload;
     },
+    setReplyMessage: (state, action) => {
+      state.replyMessage = action.payload;
+    },
   },
 });
 
-export const { toggleMenu, setInputHeight, setShowBackToBottom, setMessages } =
-  chatSlice.actions;
+export const {
+  toggleMenu,
+  setInputHeight,
+  setShowBackToBottom,
+  setMessages,
+  setReplyMessage,
+} = chatSlice.actions;
 export default chatSlice.reducer;

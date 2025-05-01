@@ -17,6 +17,8 @@ export const styles = StyleSheet.create({
   messageWrapper: {
     marginBottom: 10,
     alignSelf: "stretch",
+    overflow: "visible",
+    zIndex: 1,
   },
   messageBubble: {
     marginHorizontal: 10,
@@ -104,7 +106,6 @@ export const styles = StyleSheet.create({
     gap: 6,
     borderWidth: 1,
     borderColor: color.primaryColor,
-    // Kölgəni daha incə edək
     shadowColor: color.primaryColor,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -115,9 +116,9 @@ export const styles = StyleSheet.create({
     color: color.primaryColor,
     fontSize: 13,
     fontWeight: "600",
-    marginTop: 1, // Mətni ikonla düzgün hizalamaq üçün
+    marginTop: 1,
   },
   arrowIcon: {
-    marginTop: 2, // İkonu mətnlə daha uyğun düzəltmək üçün
+    marginTop: 2,
   },
 });

@@ -1,5 +1,6 @@
 import { Text, View, Animated, Pressable, Platform } from "react-native";
 import React, { useEffect, useRef } from "react";
+import * as Clipboard from "expo-clipboard";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { MessageType } from "@services/messenger/messenger.dto";
 import Image from "./Image";
@@ -9,12 +10,13 @@ import Audio from "./Audio";
 import { MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { styles } from "../styles/contextMenu.style";
+import { useChatData } from "@hooks/useChatData";
+import { setSuccessMessage } from "@redux/messages/messageSlice";
+import { useDispatch } from "react-redux";
 
 interface Props {
   message: MessagesDTO;
   onClose: () => void;
-  onReply?: () => void;
-  onCopy?: () => void;
   onDelete?: () => void;
   userId: string;
 }
@@ -22,8 +24,6 @@ interface Props {
 const ContextMenu: React.FC<Props> = ({
   message,
   onClose,
-  onReply,
-  onCopy,
   onDelete,
   userId,
 }) => {
@@ -145,6 +145,10 @@ const ContextMenu: React.FC<Props> = ({
     return menuItems;
   })();
 
+  /// Other Functions
+  const dispatch = useDispatch();
+  const { handleReplyMessage } = useChatData();
+
   return (
     <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
       <Pressable style={styles.backdropPressable} onPress={closeMenu}>
@@ -179,14 +183,15 @@ const ContextMenu: React.FC<Props> = ({
                   styles.menuItem,
                   { backgroundColor: pressed ? "#f0f0f0" : "white" },
                 ]}
-                onPress={() => {
+                onPress={async () => {
                   closeMenu();
                   switch (item.id) {
                     case "reply":
-                      onReply?.();
+                      handleReplyMessage(message);
                       break;
                     case "copy":
-                      onCopy?.();
+                      await Clipboard.setStringAsync(message.content);
+                      dispatch(setSuccessMessage("Message copied"));
                       break;
                     case "delete":
                       onDelete?.();
