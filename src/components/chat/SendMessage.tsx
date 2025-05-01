@@ -33,11 +33,13 @@ const SendMessage = () => {
   const [isBlockedBy, setIsBlockedBy] = React.useState(false);
 
   useEffect(() => {
-    if (blockList.find((list) => list.blocked_id === chat.otherUser.id))
+    if (blockList.find((b) => b.blocked_id === chat.otherUser.id)) {
       setIsBlocked(true);
-    if (blockerList.find((list) => list.blocked_id === userData.user.id))
+    }
+    if (blockerList.find((b) => b.blocked_id === userData.user.id)) {
       setIsBlockedBy(true);
-  }, [blockList, blockerList]);
+    }
+  }, [blockList, blockerList, chat.otherUser.id, userData.user.id]);
 
   return (
     <React.Fragment>
