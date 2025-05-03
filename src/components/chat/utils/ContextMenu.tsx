@@ -1,5 +1,5 @@
 import { Text, View, Animated, Pressable, Platform } from "react-native";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { MessageType } from "@services/messenger/messenger.dto";
@@ -18,6 +18,7 @@ interface Props {
   message: MessagesDTO;
   onClose: () => void;
   onDelete?: () => void;
+  onDetail?: () => void;
   userId: string;
 }
 
@@ -25,6 +26,7 @@ const ContextMenu: React.FC<Props> = ({
   message,
   onClose,
   onDelete,
+  onDetail,
   userId,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -145,79 +147,84 @@ const ContextMenu: React.FC<Props> = ({
     return menuItems;
   })();
 
-  /// Other Functions
+  // Other Functions
   const dispatch = useDispatch();
   const { handleReplyMessage } = useChatData();
 
   return (
-    <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
-      <Pressable style={styles.backdropPressable} onPress={closeMenu}>
-        <Animated.View
-          style={[
-            styles.modalContent,
-            {
-              transform: [{ translateY: slideAnim }],
-              ...Platform.select({
-                ios: {
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                },
-                android: {
-                  elevation: 5,
-                },
-              }),
-            },
-          ]}
-        >
-          <View style={styles.messagePreviewContainer}>
-            {renderMessageContent()}
-          </View>
+    <React.Fragment>
+      <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
+        <Pressable style={styles.backdropPressable} onPress={closeMenu}>
+          <Animated.View
+            style={[
+              styles.modalContent,
+              {
+                transform: [{ translateY: slideAnim }],
+                ...Platform.select({
+                  ios: {
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
+              },
+            ]}
+          >
+            <View style={styles.messagePreviewContainer}>
+              {renderMessageContent()}
+            </View>
 
-          <View style={styles.menuItemsContainer}>
-            {menuItems.map((item) => (
-              <Pressable
-                key={item.id}
-                style={({ pressed }) => [
-                  styles.menuItem,
-                  { backgroundColor: pressed ? "#f0f0f0" : "white" },
-                ]}
-                onPress={async () => {
-                  closeMenu();
-                  switch (item.id) {
-                    case "reply":
-                      handleReplyMessage(message);
-                      break;
-                    case "copy":
-                      await Clipboard.setStringAsync(message.content);
-                      dispatch(setSuccessMessage("Message copied"));
-                      break;
-                    case "delete":
-                      onDelete?.();
-                      break;
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name={item.icon as any}
-                  size={24}
-                  color={item.color || color.primaryColor}
-                />
-                <Text
-                  style={[
-                    styles.menuItemText,
-                    { color: item.color || color.primaryColor },
+            <View style={styles.menuItemsContainer}>
+              {menuItems.map((item) => (
+                <Pressable
+                  key={item.id}
+                  style={({ pressed }) => [
+                    styles.menuItem,
+                    { backgroundColor: pressed ? "#f0f0f0" : "white" },
                   ]}
+                  onPress={async () => {
+                    closeMenu();
+                    switch (item.id) {
+                      case "reply":
+                        handleReplyMessage(message);
+                        break;
+                      case "copy":
+                        await Clipboard.setStringAsync(message.content);
+                        dispatch(setSuccessMessage("Message copied"));
+                        break;
+                      case "delete":
+                        onDelete?.();
+                        break;
+                      case "details":
+                        onDetail?.();
+                        break;
+                    }
+                  }}
                 >
-                  {item.title}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </Animated.View>
-      </Pressable>
-    </Animated.View>
+                  <MaterialIcons
+                    name={item.icon as any}
+                    size={24}
+                    color={item.color || color.primaryColor}
+                  />
+                  <Text
+                    style={[
+                      styles.menuItemText,
+                      { color: item.color || color.primaryColor },
+                    ]}
+                  >
+                    {item.title}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </Animated.View>
+        </Pressable>
+      </Animated.View>
+    </React.Fragment>
   );
 };
 

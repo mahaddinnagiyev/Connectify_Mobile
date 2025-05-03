@@ -9,13 +9,15 @@ import { StyleSheet } from "react-native";
 
 interface SwipeableMessageProps {
   message: MessagesDTO;
+  setIsDetailMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
 }
 
-export const SwipeableMessage: React.FC<{
-  message: MessagesDTO;
-  children: React.ReactNode;
-}> = ({ message, children }) => {
+export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
+  message,
+  setIsDetailMenuVisible,
+  children,
+}) => {
   const dispatch = useDispatch();
   const swipeableRef = useRef<Swipeable>(null);
 
@@ -25,8 +27,19 @@ export const SwipeableMessage: React.FC<{
     </View>
   );
 
+  const renderDtailAction = () => (
+    <View style={styles.detailAction}>
+      <MaterialIcons name="info" size={24} color="white" />
+    </View>
+  );
+
   const handleLeftOpen = () => {
     dispatch(setReplyMessage(message));
+    swipeableRef.current?.close();
+  };
+
+  const handleRightOpen = () => {
+    setIsDetailMenuVisible(true);
     swipeableRef.current?.close();
   };
 
@@ -35,8 +48,13 @@ export const SwipeableMessage: React.FC<{
       ref={swipeableRef}
       friction={1}
       leftThreshold={15}
+      rightThreshold={15}
       renderLeftActions={renderReplyAction}
-      onSwipeableLeftOpen={handleLeftOpen}
+      renderRightActions={renderDtailAction}
+      onSwipeableOpen={(direction) => {
+        if (direction === "left") handleLeftOpen();
+        if (direction === "right") handleRightOpen();
+      }}
     >
       {children}
     </Swipeable>
@@ -53,6 +71,18 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
+    marginVertical: 5,
+  },
+
+  detailAction: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+    width: 60,
+    paddingRight: 8,
+    marginLeft: -15,
+    backgroundColor: "transparent",
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
     marginVertical: 5,
   },
 });

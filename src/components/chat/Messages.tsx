@@ -5,25 +5,38 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
+  Linking,
 } from "react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { color } from "@/colors";
+import { styles } from "./styles/messages.style";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+
+// Services
+import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+
+// Redux
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { setMessages, setReplyMessage } from "@/src/redux/chat/chatSlice";
+import { setMessages, setReplyMessage } from "@redux/chat/chatSlice";
+
+// Navigation
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackParamList } from "@navigation/UserStack";
+
+// Context
+import { useSocketContext } from "@context/SocketContext";
+
+// Functions
+import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
+
+// Utils
 import Image from "./utils/Image";
 import Video from "./utils/Video";
 import File from "./utils/File";
 import Audio from "./utils/Audio";
-import { styles } from "./styles/messages.style";
-import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
-import { useSocketContext } from "@context/SocketContext";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { StackParamList } from "@navigation/UserStack";
 import ParentMessage from "./utils/ParentMessage";
-import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
-import { AntDesign } from "@expo/vector-icons";
-import { color } from "@/colors";
 import ContextMenu from "./utils/ContextMenu";
+import DetailMenu from "./utils/DetailMenu";
 import { SwipeableMessage } from "./utils/swipeUtils";
 
 const Messages: React.FC = () => {
@@ -45,6 +58,7 @@ const Messages: React.FC = () => {
   const [selectedMessage, setSelectedMessage] = useState<MessagesDTO | null>(
     null
   );
+  const [isDetailMenuVisible, setIsDetailMenuVisible] = useState(false);
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -212,7 +226,9 @@ const Messages: React.FC = () => {
                 >
                   <View style={[styles.messageBubble, bubbleStyle]}>
                     {isUrl(message.content) ? (
-                      <Pressable>
+                      <Pressable
+                        onPress={() => Linking.openURL(message.content)}
+                      >
                         <Text style={styles.url}>{message.content}</Text>
                       </Pressable>
                     ) : (
@@ -238,7 +254,10 @@ const Messages: React.FC = () => {
               )}
 
               <View style={styles.messageWrapper}>
-                <SwipeableMessage message={message}>
+                <SwipeableMessage
+                  message={message}
+                  setIsDetailMenuVisible={setIsDetailMenuVisible}
+                >
                   {contentElement}
                 </SwipeableMessage>
 
@@ -283,7 +302,16 @@ const Messages: React.FC = () => {
           message={selectedMessage}
           onClose={() => setContextMenuVisible(false)}
           onDelete={() => console.log("Delete")}
+          onDetail={() => setIsDetailMenuVisible(true)}
           userId={userData.user.id}
+        />
+      )}
+
+      {isDetailMenuVisible && (
+        <DetailMenu
+          visible={isDetailMenuVisible}
+          onClose={() => setIsDetailMenuVisible(false)}
+          message={selectedMessage!}
         />
       )}
     </View>
