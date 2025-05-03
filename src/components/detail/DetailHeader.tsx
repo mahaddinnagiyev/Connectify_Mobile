@@ -1,33 +1,99 @@
-import { Text, TouchableOpacity, View, Image } from "react-native";
-import React, { useState } from "react";
+import { Text, TouchableOpacity, View, Image, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
 import { styles } from "./styles/detailHeader.style";
 import { Ionicons } from "@expo/vector-icons";
 
-const DetailHeader = () => {
-  const [roomName] = useState("Design Team");
+// Services
+import { Chat } from "@services/messenger/messenger.dto";
+
+// Navigation
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { StackParamList } from "@navigation/UserStack";
+import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
+import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
+
+interface Props {
+  chat: Chat;
+}
+
+const DetailHeader: React.FC<Props> = ({ chat }) => {
+  const { goBack } = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const { friends = [] } = useSelector((state: RootState) => state.myFriends);
+
+  const [showImageModal, setShowImageModal] = useState<boolean>(false);
+  const [isFriend, setIsFriend] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isFriend = friends.some(
+      (friend) => friend.friend_id === chat.otherUser.id
+    );
+    setIsFriend(isFriend);
+  }, [friends]);
+
+  const renderBio = () => {
+    switch (chat.otherUserPrivacySettings.bio) {
+      case PrivacySettingsChoice.everyone:
+        return chat.otherUserAccount.bio ?? "No bio yet";
+      case PrivacySettingsChoice.my_friends:
+        if (isFriend) return chat.otherUserAccount.bio ?? "No bio yet";
+        return "";
+      case PrivacySettingsChoice.nobody:
+        return "";
+    }
+  };
 
   return (
     <>
       {/* Header */}
-      <View style={styles.topHeader}>
+      <Pressable style={styles.topHeader} onPress={goBack}>
         <TouchableOpacity style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#00ff00" />
         </TouchableOpacity>
         <Text style={styles.roomName} numberOfLines={1}>
-          {roomName || "No Room Name"}
+          {chat.name ?? "No Room Name"}
         </Text>
-      </View>
+      </Pressable>
 
       {/* User Profile */}
       <View style={styles.profileSection}>
-        <Image
-          source={{ uri: "https://picsum.photos/200" }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.fullName}>Emma Watson</Text>
-        <Text style={styles.username}>@emmawatson</Text>
-        <Text style={styles.bio}>📚 Book lover | ✨ Actress | 🌍 Activist</Text>
+        <Pressable onPress={() => setShowImageModal(true)}>
+          <Image
+            source={
+              chat.otherUserAccount.profile_picture
+                ? { uri: chat.otherUserAccount.profile_picture }
+                : require("@assets/images/no-profile-photo.png")
+            }
+            style={styles.profileImage}
+          />
+        </Pressable>
+        <Text style={styles.fullName}>
+          {chat.otherUser.first_name} {chat.otherUser.last_name}
+        </Text>
+        <Text style={styles.username}>@{chat.otherUser.username}</Text>
+        <Text
+          style={[
+            styles.bio,
+            { fontStyle: chat.otherUserAccount.bio ? "normal" : "italic" },
+          ]}
+        >
+          {renderBio()}
+        </Text>
       </View>
+
+      {showImageModal && (
+        <ProfilePhotoModal
+          visible={showImageModal}
+          onClose={() => setShowImageModal(false)}
+          imageSource={
+            chat.otherUserAccount.profile_picture
+              ? { uri: chat.otherUserAccount.profile_picture }
+              : require("@assets/images/no-profile-photo.png")
+          }
+        />
+      )}
     </>
   );
 };

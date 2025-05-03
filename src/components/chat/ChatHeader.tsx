@@ -41,7 +41,7 @@ const ChatHeader = () => {
         {/* User Details */}
         <Pressable
           style={styles.userDetail}
-          onPress={() => navigate("ChatDetail")}
+          onPress={() => navigate("ChatDetail", { chat: chat })}
         >
           <Image
             source={

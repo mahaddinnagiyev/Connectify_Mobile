@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator<StackParamList>();
 export type StackParamList = {
   Home: undefined;
   Chat: { chat: Chat };
-  ChatDetail: undefined;
+  ChatDetail: { chat: Chat };
   MyFriends: undefined;
   Settings: undefined;
   ContactUs: undefined;

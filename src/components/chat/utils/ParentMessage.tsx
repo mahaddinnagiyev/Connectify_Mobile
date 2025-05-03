@@ -1,24 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import {
-  ChatRoomsDTO,
+  Chat,
   MessagesDTO,
   MessageType,
 } from "@services/messenger/messenger.dto";
-import { User } from "@services/user/dto/user.dto";
-import { Account } from "@services/account/dto/account.dto";
-import { PrivacySettings } from "@services/account/dto/privacy.dto";
 import { color } from "@/colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { isUrl } from "@functions/messages.function";
 
 interface Props {
   message: MessagesDTO;
-  chat: ChatRoomsDTO & {
-    otherUser: User;
-    otherUserAccount: Account;
-    otherUserPrivacySettings: PrivacySettings;
-  };
+  chat: Chat;
 }
 
 const ParentMessage: React.FC<Props> = ({ message, chat }) => {

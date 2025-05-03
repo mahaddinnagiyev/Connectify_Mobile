@@ -1,3 +1,4 @@
+import { color } from "@/colors";
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -29,6 +30,8 @@ export const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: color.primaryColor,
   },
   fullName: {
     fontSize: 24,
