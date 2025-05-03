@@ -257,6 +257,7 @@ const Messages: React.FC = () => {
                 <SwipeableMessage
                   message={message}
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
+                  setSelectedMessage={setSelectedMessage}
                 >
                   {contentElement}
                 </SwipeableMessage>

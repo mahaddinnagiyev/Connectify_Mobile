@@ -10,12 +10,14 @@ import { StyleSheet } from "react-native";
 interface SwipeableMessageProps {
   message: MessagesDTO;
   setIsDetailMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedMessage: React.Dispatch<React.SetStateAction<MessagesDTO | null>>;
   children: React.ReactNode;
 }
 
 export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   message,
   setIsDetailMenuVisible,
+  setSelectedMessage,
   children,
 }) => {
   const dispatch = useDispatch();
@@ -39,6 +41,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   };
 
   const handleRightOpen = () => {
+    setSelectedMessage(message);
     setIsDetailMenuVisible(true);
     swipeableRef.current?.close();
   };
