@@ -1,3 +1,7 @@
+import { User } from "../user/dto/user.dto";
+import { Account } from "../account/dto/account.dto";
+import { PrivacySettings } from "../account/dto/privacy.dto";
+
 export enum MessageType {
   TEXT = "text",
   IMAGE = "image",
@@ -38,4 +42,18 @@ export interface ChatRoomsDTO {
   lastMessage?: MessagesDTO;
   unreadCount?: number;
   lastMessageDate?: Date;
+}
+
+export interface Chat {
+  id: string;
+  name?: string;
+  user_ids: string[];
+  created_at: Date;
+  updated_at: Date;
+  lastMessage?: MessagesDTO;
+  unreadCount?: number;
+  lastMessageDate?: Date;
+  otherUser: User;
+  otherUserAccount: Account;
+  otherUserPrivacySettings: PrivacySettings;
 }

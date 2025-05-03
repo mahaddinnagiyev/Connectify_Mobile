@@ -1,20 +1,9 @@
-import { Account } from "@services/account/dto/account.dto";
-import { PrivacySettings } from "@services/account/dto/privacy.dto";
-import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
-import { User } from "@services/user/dto/user.dto";
+import { Chat } from "@services/messenger/messenger.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface MessengerState {
-  chats: (ChatRoomsDTO & {
-    otherUser: User;
-    otherUserAccount: Account;
-    otherUserPrivacySettings: PrivacySettings;
-  })[];
-  filteredChats: (ChatRoomsDTO & {
-    otherUser: User;
-    otherUserAccount: Account;
-    otherUserPrivacySettings: PrivacySettings;
-  })[];
+  chats: Chat[];
+  filteredChats: Chat[];
 }
 
 const initialState: MessengerState = {
