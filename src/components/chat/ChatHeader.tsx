@@ -19,17 +19,12 @@ import type { StackParamList } from "@navigation/UserStack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { styles } from "./styles/chatHeader.style";
 import { truncate } from "@functions/messages.function";
+import { useSocketContext } from "@/src/context/SocketContext";
 
 const ChatHeader = () => {
-  const { isMenuVisible } = useSelector((state: RootState) => state.chat);
-  const dispatch = useDispatch();
-
-  const { navigate, goBack } =
-    useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const route = useRoute<RouteProp<StackParamList, "Chat">>();
-  const { chat } = route.params;
-
+  // Animations
   const animationValue = useRef(new Animated.Value(0)).current;
+  const { isMenuVisible } = useSelector((state: RootState) => state.chat);
 
   useEffect(() => {
     if (isMenuVisible) {
@@ -64,12 +59,27 @@ const ChatHeader = () => {
     }),
   };
 
+  // Functions
+  const dispatch = useDispatch();
+
+  const { navigate, goBack } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const route = useRoute<RouteProp<StackParamList, "Chat">>();
+  const { chat } = route.params;
+
+  const socket = useSocketContext();
+
+  const handleBack = () => {
+    socket?.emit("leaveRoom", { roomId: chat.id });
+    goBack();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.leftHeader}>
         {/* Back Icon */}
         <View>
-          <Pressable onPress={() => goBack()}>
+          <Pressable onPress={handleBack}>
             <MaterialIcons name="arrow-back-ios" size={18} color="black" />
           </Pressable>
         </View>
