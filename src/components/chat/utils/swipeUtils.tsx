@@ -4,7 +4,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Swipeable } from "react-native-gesture-handler";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { useDispatch } from "react-redux";
-import { setReplyMessage } from "@/src/redux/chat/chatSlice";
+import { setReplyMessage } from "@redux/chat/chatSlice";
 import { StyleSheet } from "react-native";
 
 interface SwipeableMessageProps {

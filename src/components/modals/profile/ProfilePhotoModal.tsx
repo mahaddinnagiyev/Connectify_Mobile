@@ -1,8 +1,5 @@
-// ProfilePhotoModal.tsx
 import { View, StyleSheet, Image, Modal, Pressable } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { color } from "@/colors";
 
 interface ProfilePhotoModalProps {
   visible: boolean;

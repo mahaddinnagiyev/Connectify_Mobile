@@ -3,7 +3,7 @@ import { View, Text, TextInput, Pressable, Animated } from "react-native";
 import { styles } from "./styles/sendMessage.style";
 import { color } from "@/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { setInputHeight } from "@/src/redux/chat/chatSlice";
+import { setInputHeight } from "@redux/chat/chatSlice";
 import { RootState } from "@redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";

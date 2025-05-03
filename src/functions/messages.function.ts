@@ -1,4 +1,4 @@
-import { setShowBackToBottom } from "@/src/redux/chat/chatSlice";
+import { setShowBackToBottom } from "@redux/chat/chatSlice";
 
 export const handleScroll = (event: any, dispatch: any) => {
   const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
