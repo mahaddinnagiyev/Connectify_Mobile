@@ -1,67 +1,21 @@
-import React, { useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  Pressable,
-  TouchableOpacity,
-  Modal,
-  Animated,
-  Easing,
-} from "react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@redux/store";
-import { toggleMenu } from "@/src/redux/chat/chatSlice";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StackParamList } from "@navigation/UserStack";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import React from "react";
+import { View, Text, Image, Pressable } from "react-native";
 import { styles } from "./styles/chatHeader.style";
+import { MaterialIcons } from "@expo/vector-icons";
+
+// Navigation
+import type { StackParamList } from "@navigation/UserStack";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+
+// Context
+import { useSocketContext } from "@context/SocketContext";
+
+// Functions
 import { truncate } from "@functions/messages.function";
-import { useSocketContext } from "@/src/context/SocketContext";
 
 const ChatHeader = () => {
-  // Animations
-  const animationValue = useRef(new Animated.Value(0)).current;
-  const { isMenuVisible } = useSelector((state: RootState) => state.chat);
-
-  useEffect(() => {
-    if (isMenuVisible) {
-      Animated.timing(animationValue, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.out(Easing.ease),
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(animationValue, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.in(Easing.ease),
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isMenuVisible, animationValue]);
-
-  const animatedStyle = {
-    transform: [
-      {
-        translateY: animationValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-10, 0],
-        }),
-      },
-    ],
-    opacity: animationValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 1],
-    }),
-  };
-
   // Functions
-  const dispatch = useDispatch();
-
   const { navigate, goBack } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
@@ -85,7 +39,10 @@ const ChatHeader = () => {
         </View>
 
         {/* User Details */}
-        <View style={styles.userDetail}>
+        <Pressable
+          style={styles.userDetail}
+          onPress={() => navigate("ChatDetail")}
+        >
           <Image
             source={
               chat.otherUserAccount.profile_picture
@@ -98,10 +55,10 @@ const ChatHeader = () => {
           <View style={{ gap: 5 }}>
             <Text style={styles.roomName}>
               {chat.name
-                ? truncate(chat.name, 25)
+                ? truncate(chat.name, 30)
                 : truncate(
                     `${chat.otherUser.first_name} ${chat.otherUser.last_name} | @${chat.otherUser.username}`,
-                    25
+                    30
                   )}
             </Text>
             <Text style={styles.lastSeen}>
@@ -117,49 +74,8 @@ const ChatHeader = () => {
               })}
             </Text>
           </View>
-        </View>
+        </Pressable>
       </View>
-
-      {/* More Options Icon */}
-      <Pressable onPress={() => dispatch(toggleMenu())}>
-        <MaterialIcons name="more-vert" size={24} color="black" />
-      </Pressable>
-
-      {/* Dropdown Menu */}
-      {isMenuVisible && (
-        <Modal
-          visible={isMenuVisible}
-          transparent={true}
-          onRequestClose={() => dispatch(toggleMenu())}
-        >
-          <Pressable
-            style={styles.modalOverlay}
-            onPress={() => dispatch(toggleMenu())}
-          >
-            <Animated.View style={[styles.dropdownMenu, animatedStyle]}>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() =>
-                  navigate("OtherUserProfile", {
-                    username: chat.otherUser.username,
-                  })
-                }
-              >
-                <MaterialIcons name="person" size={24} color="black" />
-                <Text style={styles.menuText}>User Profile</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menuItem}>
-                <MaterialIcons name="image" size={24} color="black" />
-                <Text style={styles.menuText}>Media</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menuItem}>
-                <FontAwesome6 name="address-card" size={24} color="black" />
-                <Text style={styles.menuText}>Room Name</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </Pressable>
-        </Modal>
-      )}
     </View>
   );
 };

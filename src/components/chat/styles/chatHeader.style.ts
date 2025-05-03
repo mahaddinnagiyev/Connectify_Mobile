@@ -44,40 +44,4 @@ export const styles = StyleSheet.create({
   lastSeen: {
     fontSize: 11,
   },
-
-  dropdownMenu: {
-    position: "absolute",
-    top: 75,
-    right: 15,
-    backgroundColor: "#fff",
-    borderColor: color.borderColor,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderRadius: 10,
-    borderTopRightRadius: 0,
-    zIndex: 100,
-  },
-
-  menuItem: {
-    width: 150,
-    height: 50,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderBottomColor: "#eee",
-    borderBottomWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-
-  menuText: {
-    fontSize: 15,
-    color: "black",
-    fontWeight: 600,
-  },
-
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "transparent",
-  },
 });

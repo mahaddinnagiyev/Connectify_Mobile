@@ -2,7 +2,6 @@ import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface ChatState {
-  isMenuVisible: boolean;
   inputHeight: number;
   showBackToBottom: boolean;
   messages: MessagesDTO[];
@@ -10,7 +9,6 @@ interface ChatState {
 }
 
 const initialState: ChatState = {
-  isMenuVisible: false,
   inputHeight: 35,
   showBackToBottom: false,
   messages: [],
@@ -21,9 +19,6 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    toggleMenu: (state) => {
-      state.isMenuVisible = !state.isMenuVisible;
-    },
     setInputHeight: (state, action) => {
       state.inputHeight = action.payload;
     },
@@ -40,7 +35,6 @@ export const chatSlice = createSlice({
 });
 
 export const {
-  toggleMenu,
   setInputHeight,
   setShowBackToBottom,
   setMessages,
