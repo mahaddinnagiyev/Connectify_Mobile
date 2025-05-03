@@ -134,9 +134,7 @@ const DetailMenu = ({ visible, onClose, message }: Props) => {
             {message.parent_message_id && (
               <View style={styles.replySection}>
                 <Text style={styles.sectionLabel}>Reply to</Text>
-                <Text style={styles.replyText}>
-                  {truncate(message.parent_message_id.content, 50)}
-                </Text>
+                <MessageContent message={message.parent_message_id} />
               </View>
             )}
           </View>
@@ -183,6 +181,52 @@ const DetailRow = ({
       >
         {value || "N/A"}
       </Text>
+    </View>
+  );
+};
+
+const MessageContent = ({ message }: { message: MessagesDTO }) => {
+  const getFileTypeIcon = (type: MessageType) => {
+    switch (type) {
+      case MessageType.IMAGE:
+        return "image";
+      case MessageType.VIDEO:
+        return "video-collection";
+      case MessageType.AUDIO:
+        return "audiotrack";
+      case MessageType.FILE:
+        return "description";
+      default:
+        return "text-fields";
+    }
+  };
+
+  if (message.message_type === MessageType.TEXT) {
+    return (
+      <Text style={styles.contentText}>{truncate(message.content, 40)}</Text>
+    );
+  }
+
+  return (
+    <View style={styles.fileContainer}>
+      <View style={styles.fileIconContainer}>
+        <MaterialIcons
+          name={getFileTypeIcon(message.message_type)}
+          size={24}
+          color={color.primaryColor}
+        />
+      </View>
+      <View style={styles.fileDetails}>
+        <Text style={styles.fileName} numberOfLines={1}>
+          {truncate(message.message_name ?? "Imported File", 20) ||
+            "Imported file"}
+        </Text>
+        {message.message_size && (
+          <Text style={styles.fileSize}>
+            {formatFileSize(message.message_size)}
+          </Text>
+        )}
+      </View>
     </View>
   );
 };

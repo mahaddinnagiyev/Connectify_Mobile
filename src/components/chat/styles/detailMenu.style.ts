@@ -1,4 +1,3 @@
-// detailMenu.style.ts
 import { StyleSheet } from "react-native";
 import { color } from "@/colors";
 
@@ -69,13 +68,6 @@ export const styles = StyleSheet.create({
     borderBottomColor: "#f0f0f0",
     marginBottom: 8,
   },
-  sectionLabel: {
-    fontSize: 13,
-    color: color.primaryColor,
-    fontWeight: "600",
-    marginBottom: 12,
-    letterSpacing: 0.3,
-  },
   contentText: {
     fontSize: 16,
     color: "#444",
@@ -118,17 +110,19 @@ export const styles = StyleSheet.create({
   },
   replySection: {
     marginTop: 16,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: "#f8f8f8",
     borderRadius: 8,
     borderLeftWidth: 4,
     borderLeftColor: color.primaryColor,
   },
-  replyText: {
-    fontSize: 14,
-    color: "#666",
-    lineHeight: 20,
-    fontStyle: "italic",
+  sectionLabel: {
+    fontSize: 13,
+    color: color.primaryColor,
+    fontWeight: "600",
+    marginBottom: 12,
+    letterSpacing: 0.3,
   },
   statusBadge: {
     paddingHorizontal: 8,
