@@ -91,7 +91,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
   const {
     blockAndUnblockUser,
-    isLoading: isFriendDataLoading,
+    isRemovingOrAdding: isFriendDataLoading,
     sentFriendshipRequest,
     removeFriend,
   } = useFriendData();

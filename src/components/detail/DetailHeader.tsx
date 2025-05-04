@@ -5,15 +5,19 @@ import { Ionicons } from "@expo/vector-icons";
 
 // Services
 import { Chat } from "@services/messenger/messenger.dto";
+import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
 
 // Navigation
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
-import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
-import { PrivacySettingsChoice } from "@/src/services/account/dto/privacy.dto";
+
+// Redux
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
+
+// Components
+import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
 
 interface Props {
   chat: Chat;
@@ -49,9 +53,9 @@ const DetailHeader: React.FC<Props> = ({ chat }) => {
     <>
       {/* Header */}
       <Pressable style={styles.topHeader} onPress={goBack}>
-        <TouchableOpacity style={styles.backButton}>
+        <View style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#00ff00" />
-        </TouchableOpacity>
+        </View>
         <Text style={styles.roomName} numberOfLines={1}>
           {chat.name ?? "No Room Name"}
         </Text>

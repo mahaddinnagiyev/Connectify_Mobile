@@ -40,7 +40,7 @@ const FriendRequests: React.FC = () => {
     (s: RootState) => s.myFriends
   );
   const {
-    isLoading,
+    isBlocking,
     isAccepting,
     isRejecting,
     fetchAllFriendReuqest,
@@ -192,7 +192,7 @@ const FriendRequests: React.FC = () => {
         confirmText="Block"
         cancelText="Cancel"
         confirmColor="red"
-        isLoading={isLoading}
+        isLoading={isBlocking}
         onConfirm={handleBlockUser}
         onCancel={() => setShowConfirmModal(false)}
       />

@@ -60,8 +60,10 @@ async function getToken() {
 export function useFriendData() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRemovingOrAdding, setIsRemovingOrAdding] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
   const [isBlockerListLoading, setIsBlockerListLoading] = useState(false);
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
@@ -195,7 +197,7 @@ export function useFriendData() {
 
   const sentFriendshipRequest = async (id: string) => {
     try {
-      setIsLoading(true);
+      setIsRemovingOrAdding(true);
 
       const { data } = await axios.post<Response>(
         `${process.env.SERVER_URL}/friendship/request/create?requestee=${id}`,
@@ -229,13 +231,13 @@ export function useFriendData() {
       }
       dispatch(setErrorMessage((error as Error).message));
     } finally {
-      setIsLoading(false);
+      setIsRemovingOrAdding(false);
     }
   };
 
   const removeFriend = async (id: string) => {
     try {
-      setIsLoading(true);
+      setIsRemovingOrAdding(true);
 
       const { data } = await axios.delete<Response>(
         `${process.env.SERVER_URL}/friendship/request/remove?request=${id}`,
@@ -268,7 +270,7 @@ export function useFriendData() {
       }
       dispatch(setErrorMessage((error as Error).message));
     } finally {
-      setIsLoading(false);
+      setIsRemovingOrAdding(false);
     }
   };
 
@@ -347,7 +349,7 @@ export function useFriendData() {
 
   const blockAndUnblockUser = async (id: string, block_action: BlockAction) => {
     try {
-      setIsLoading(true);
+      setIsBlocking(true);
 
       const { data } = await axios.post<Response>(
         `${process.env.SERVER_URL}/user/block-list?id=${id}&action=${block_action}`,
@@ -390,7 +392,7 @@ export function useFriendData() {
       }
       dispatch(setErrorMessage((error as Error).message));
     } finally {
-      setIsLoading(false);
+      setIsBlocking(false);
     }
   };
 
@@ -403,10 +405,12 @@ export function useFriendData() {
     acceptAndRejectFrienship,
     sentFriendshipRequest,
     removeFriend,
+    isRemovingOrAdding,
 
     // Block List
     fetchBlockList,
     fetchBlockerList,
     blockAndUnblockUser,
+    isBlocking,
   };
 }

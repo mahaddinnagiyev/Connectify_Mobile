@@ -22,7 +22,7 @@ const ChatDetailScreen = () => {
         <DetailHeader chat={chat} />
 
         {/* Actions */}
-        <DetailActions />
+        <DetailActions chat={chat} />
 
         {/* Media */}
         <DetailMedia />

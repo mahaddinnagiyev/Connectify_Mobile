@@ -27,7 +27,7 @@ const BlockList = () => {
 
   const { blockList } = useSelector((state: RootState) => state.myFriends);
 
-  const { fetchBlockList, blockAndUnblockUser, isLoading } = useFriendData();
+  const { fetchBlockList, blockAndUnblockUser, isBlocking } = useFriendData();
 
   React.useEffect(() => {
     const handleFetchBlockList = async () => {
@@ -102,7 +102,7 @@ const BlockList = () => {
         message="Are you sure you want to unblock this user?"
         confirmText="Unblock"
         cancelText="Cancel"
-        isLoading={isLoading}
+        isLoading={isBlocking}
         onConfirm={handleUnblockUser}
         onCancel={() => setShowConfirmModal(false)}
       />
