@@ -9,23 +9,38 @@ import {
   ActivityIndicator,
   PanResponder,
 } from "react-native";
-import { style } from "./style/header-style";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useSelector, useDispatch } from "react-redux";
-import { toggleModal } from "@redux/header/headerSlice";
-import { RootState } from "@redux/store";
-import { useNavigation } from "@react-navigation/native";
 import { color } from "@/colors";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { StackParamList } from "@navigation/Navigator";
+import { style } from "./style/header-style";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+
+// Components
 import Alert from "../modals/error/Alert";
+
+// Navigation
+import { useNavigation } from "@react-navigation/native";
+import type { StackParamList } from "@navigation/Navigator";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+// Services
 import { logout } from "@services/auth/auth.service";
+
+// Redux
+import { RootState } from "@redux/store";
+import { useSelector, useDispatch } from "react-redux";
 import {
   setErrorMessage,
   setSuccessMessage,
 } from "@redux/messages/messageSlice";
+import { toggleModal } from "@redux/header/headerSlice";
+import { setChats } from "@redux/messenger/messengerSlice";
 import { setIsAuthenticated } from "@redux/auth/authSlice";
+import {
+  setBlockerList,
+  setBlockList,
+  setMyFriends,
+  setReceivedFriendshipRequests,
+  setSentFriendshipRequests,
+} from "@redux/friend/myFriendsSlice";
 
 interface HeaderProps {
   activeTab: string;
@@ -65,6 +80,12 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
 
       if (response.success) {
         dispatch(setSuccessMessage(response.message ?? "Logout successful"));
+        dispatch(setChats([]));
+        dispatch(setMyFriends([]));
+        dispatch(setSentFriendshipRequests([]));
+        dispatch(setReceivedFriendshipRequests([]));
+        dispatch(setBlockList([]));
+        dispatch(setBlockerList([]));
         dispatch(setIsAuthenticated(false));
       } else {
         dispatch(
