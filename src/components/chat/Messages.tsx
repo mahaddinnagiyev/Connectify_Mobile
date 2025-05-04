@@ -163,50 +163,74 @@ const Messages: React.FC = () => {
           switch (message.message_type) {
             case MessageType.IMAGE:
               contentElement = (
-                <Image
+                <SwipeableMessage
                   message={message}
-                  bubbleStyle={bubbleStyle}
-                  onLongPress={() => {
-                    setSelectedMessage(message);
-                    setContextMenuVisible(true);
-                  }}
-                />
+                  setIsDetailMenuVisible={setIsDetailMenuVisible}
+                  setSelectedMessage={setSelectedMessage}
+                >
+                  <Image
+                    message={message}
+                    bubbleStyle={bubbleStyle}
+                    onLongPress={() => {
+                      setSelectedMessage(message);
+                      setContextMenuVisible(true);
+                    }}
+                  />
+                </SwipeableMessage>
               );
               break;
             case MessageType.VIDEO:
               contentElement = (
-                <Video
+                <SwipeableMessage
                   message={message}
-                  bubbleStyle={bubbleStyle}
-                  onLongPress={() => {
-                    setSelectedMessage(message);
-                    setContextMenuVisible(true);
-                  }}
-                />
+                  setIsDetailMenuVisible={setIsDetailMenuVisible}
+                  setSelectedMessage={setSelectedMessage}
+                >
+                  <Video
+                    message={message}
+                    bubbleStyle={bubbleStyle}
+                    onLongPress={() => {
+                      setSelectedMessage(message);
+                      setContextMenuVisible(true);
+                    }}
+                  />
+                </SwipeableMessage>
               );
               break;
             case MessageType.AUDIO:
               contentElement = (
-                <Pressable
-                  onLongPress={() => {
-                    setSelectedMessage(message);
-                    setContextMenuVisible(true);
-                  }}
+                <SwipeableMessage
+                  message={message}
+                  setIsDetailMenuVisible={setIsDetailMenuVisible}
+                  setSelectedMessage={setSelectedMessage}
                 >
-                  <Audio message={message} bubbleStyle={bubbleStyle} />
-                </Pressable>
+                  <Pressable
+                    onLongPress={() => {
+                      setSelectedMessage(message);
+                      setContextMenuVisible(true);
+                    }}
+                  >
+                    <Audio message={message} bubbleStyle={bubbleStyle} />
+                  </Pressable>
+                </SwipeableMessage>
               );
               break;
             case MessageType.FILE:
               contentElement = (
-                <Pressable
-                  onLongPress={() => {
-                    setSelectedMessage(message);
-                    setContextMenuVisible(true);
-                  }}
+                <SwipeableMessage
+                  message={message}
+                  setIsDetailMenuVisible={setIsDetailMenuVisible}
+                  setSelectedMessage={setSelectedMessage}
                 >
-                  <File message={message} bubbleStyle={bubbleStyle} />
-                </Pressable>
+                  <Pressable
+                    onLongPress={() => {
+                      setSelectedMessage(message);
+                      setContextMenuVisible(true);
+                    }}
+                  >
+                    <File message={message} bubbleStyle={bubbleStyle} />
+                  </Pressable>
+                </SwipeableMessage>
               );
               break;
             case MessageType.DEFAULT:
@@ -218,24 +242,30 @@ const Messages: React.FC = () => {
               break;
             default:
               contentElement = (
-                <Pressable
-                  onLongPress={() => {
-                    setSelectedMessage(message);
-                    setContextMenuVisible(true);
-                  }}
+                <SwipeableMessage
+                  message={message}
+                  setIsDetailMenuVisible={setIsDetailMenuVisible}
+                  setSelectedMessage={setSelectedMessage}
                 >
-                  <View style={[styles.messageBubble, bubbleStyle]}>
-                    {isUrl(message.content) ? (
-                      <Pressable
-                        onPress={() => Linking.openURL(message.content)}
-                      >
-                        <Text style={styles.url}>{message.content}</Text>
-                      </Pressable>
-                    ) : (
-                      <Text style={textStyle}>{message.content}</Text>
-                    )}
-                  </View>
-                </Pressable>
+                  <Pressable
+                    onLongPress={() => {
+                      setSelectedMessage(message);
+                      setContextMenuVisible(true);
+                    }}
+                  >
+                    <View style={[styles.messageBubble, bubbleStyle]}>
+                      {isUrl(message.content) ? (
+                        <Pressable
+                          onPress={() => Linking.openURL(message.content)}
+                        >
+                          <Text style={styles.url}>{message.content}</Text>
+                        </Pressable>
+                      ) : (
+                        <Text style={textStyle}>{message.content}</Text>
+                      )}
+                    </View>
+                  </Pressable>
+                </SwipeableMessage>
               );
           }
 
@@ -254,13 +284,7 @@ const Messages: React.FC = () => {
               )}
 
               <View style={styles.messageWrapper}>
-                <SwipeableMessage
-                  message={message}
-                  setIsDetailMenuVisible={setIsDetailMenuVisible}
-                  setSelectedMessage={setSelectedMessage}
-                >
-                  {contentElement}
-                </SwipeableMessage>
+                {contentElement}
 
                 <Text
                   style={[
