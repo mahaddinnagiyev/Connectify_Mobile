@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, Image, Pressable } from "react-native";
+import { Text, View, Image, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { styles } from "./styles/detailHeader.style";
 import { Ionicons } from "@expo/vector-icons";

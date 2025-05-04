@@ -1,3 +1,4 @@
+import { color } from "@/colors";
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -31,17 +32,52 @@ export const styles = StyleSheet.create({
     width: width / 3 - 2,
     height: width / 3 - 2,
     margin: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: color.secondaryColor,
     position: "relative",
   },
   mediaThumbnail: {
     width: "100%",
     height: "100%",
+    backgroundColor: "transparent",
   },
   playIcon: {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: [{ translateX: -16 }, { translateY: -16 }],
+  },
+  mediaContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  fileList: {
+    flex: 1,
+    width: "100%",
+  },
+  fileItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  fileName: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: "#333",
+  },
+  noMediaText: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#666",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  videoContainer: {
+    flex: 1,
   },
 });

@@ -1,4 +1,57 @@
+import axios from "axios";
+import { useState } from "react";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { useDispatch } from "react-redux";
+import { setErrorMessage } from "@redux/messages/messageSlice";
+import { getTokenFromSession } from "../services/auth/token.service";
 
-export function useChatData() {}
+interface MediaResponse {
+  success: boolean;
+  messages: MessagesDTO[];
+  error?: string;
+  message?: string;
+  response: { success: boolean; error?: string; message?: string };
+}
+
+export function useChatData() {
+  const dispatch = useDispatch();
+  const [medias, setMedias] = useState<MessagesDTO[]>([]);
+  const [isMediasLoading, setIsMediasLoading] = useState<boolean>(false);
+
+  const fetchMedias = async (roomId: string) => {
+    try {
+      const { data } = await axios.get<MediaResponse>(
+        `${process.env.SERVER_URL}/messenger/chat-rooms/${roomId}/medias`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getTokenFromSession()}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (data.success) {
+        setMedias(data.messages);
+      } else {
+        dispatch(
+          setErrorMessage(
+            data.response?.message ??
+              data.response?.error ??
+              data.message ??
+              data.error ??
+              "Something went wrong"
+          )
+        );
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsMediasLoading(false);
+    }
+  };
+
+  return { medias, isMediasLoading, fetchMedias };
+}

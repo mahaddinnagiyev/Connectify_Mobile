@@ -29,9 +29,6 @@ export const chatSlice = createSlice({
   },
 });
 
-export const {
-  setInputHeight,
-  setShowBackToBottom,
-  setMessages,
-} = chatSlice.actions;
+export const { setInputHeight, setShowBackToBottom, setMessages } =
+  chatSlice.actions;
 export default chatSlice.reducer;

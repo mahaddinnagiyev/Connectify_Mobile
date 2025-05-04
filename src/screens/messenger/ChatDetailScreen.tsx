@@ -25,7 +25,7 @@ const ChatDetailScreen = () => {
         <DetailActions chat={chat} />
 
         {/* Media */}
-        <DetailMedia />
+        <DetailMedia chat={chat} />
       </ScrollView>
     </SafeAreaView>
   );
