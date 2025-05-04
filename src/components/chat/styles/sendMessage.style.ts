@@ -53,18 +53,19 @@ export const styles = StyleSheet.create({
     borderTopColor: color.borderColor,
   },
   replyPreviewContainer: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingTop: 8,
     borderBottomWidth: 1,
     borderBottomColor: color.borderColor,
+    backgroundColor: color.inputBorderColor,
   },
   replyPreview: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: color.secondaryColor,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 10,
     marginBottom: 8,
   },
   replyPreviewLine: {

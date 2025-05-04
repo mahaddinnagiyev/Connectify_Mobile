@@ -10,9 +10,9 @@ import Audio from "./Audio";
 import { MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import { styles } from "../styles/contextMenu.style";
-import { useChatData } from "@hooks/useChatData";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
+import { setReplyMessage } from "@/src/redux/chat/chatSlice";
 
 interface Props {
   message: MessagesDTO;
@@ -20,6 +20,7 @@ interface Props {
   onDelete?: () => void;
   onDetail?: () => void;
   userId: string;
+  setReplyMessage: (message: MessagesDTO | null) => void;
 }
 
 const ContextMenu: React.FC<Props> = ({
@@ -149,7 +150,6 @@ const ContextMenu: React.FC<Props> = ({
 
   // Other Functions
   const dispatch = useDispatch();
-  const { handleReplyMessage } = useChatData();
 
   return (
     <React.Fragment>
@@ -190,7 +190,7 @@ const ContextMenu: React.FC<Props> = ({
                     closeMenu();
                     switch (item.id) {
                       case "reply":
-                        handleReplyMessage(message);
+                        setReplyMessage(message);
                         break;
                       case "copy":
                         await Clipboard.setStringAsync(message.content);

@@ -1,17 +1,16 @@
 import React, { useRef } from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Swipeable } from "react-native-gesture-handler";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { useDispatch } from "react-redux";
-import { setReplyMessage } from "@redux/chat/chatSlice";
-import { StyleSheet } from "react-native";
 
 interface SwipeableMessageProps {
   message: MessagesDTO;
   setIsDetailMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedMessage: React.Dispatch<React.SetStateAction<MessagesDTO | null>>;
   children: React.ReactNode;
+  setReplyMessage: (message: MessagesDTO | null) => void;
 }
 
 export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
@@ -19,6 +18,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   setIsDetailMenuVisible,
   setSelectedMessage,
   children,
+  setReplyMessage,
 }) => {
   const dispatch = useDispatch();
   const swipeableRef = useRef<Swipeable>(null);
@@ -36,7 +36,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   );
 
   const handleLeftOpen = () => {
-    dispatch(setReplyMessage(message));
+    setReplyMessage(message);
     swipeableRef.current?.close();
   };
 

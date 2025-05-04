@@ -7,21 +7,23 @@ import { setInputHeight } from "@redux/chat/chatSlice";
 import { RootState } from "@redux/store";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
-import { useChatData } from "@hooks/useChatData";
-import { MessageType } from "@services/messenger/messenger.dto";
+import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 import { isUrl } from "@functions/messages.function";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-const SendMessage = () => {
+interface Props {
+  setReplyMessage: (message: MessagesDTO | null) => void;
+  replyMessage: MessagesDTO | null;
+}
+
+const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { inputHeight } = useSelector((state: RootState) => state.chat);
   const { blockList = [], blockerList = [] } = useSelector(
     (state: RootState) => state.myFriends
   );
-  const { replyMessage } = useSelector((state: RootState) => state.chat);
 
-  const { handleReplyMessage } = useChatData();
   const animation = useRef(new Animated.Value(0)).current;
 
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
@@ -136,7 +138,7 @@ const SendMessage = () => {
       )}
 
       {!isBlocked && !isBlockedBy && (
-        <View style={styles.mainContainer}>
+        <View style={[styles.mainContainer, { borderTopWidth: replyMessage ? 0 : 1 }]}>
           {replyMessage && (
             <Animated.View
               style={[
@@ -165,7 +167,7 @@ const SendMessage = () => {
                   {renderReplyContent()}
                 </View>
                 <Pressable
-                  onPress={() => handleReplyMessage(null)}
+                  onPress={() => setReplyMessage(null)}
                   style={styles.closeButton}
                 >
                   <MaterialIcons name="close" size={20} color="gray" />

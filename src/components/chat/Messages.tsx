@@ -17,7 +17,7 @@ import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { setMessages, setReplyMessage } from "@redux/chat/chatSlice";
+import { setMessages } from "@redux/chat/chatSlice";
 
 // Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -39,7 +39,12 @@ import ContextMenu from "./utils/ContextMenu";
 import DetailMenu from "./utils/DetailMenu";
 import { SwipeableMessage } from "./utils/swipeUtils";
 
-const Messages: React.FC = () => {
+interface Props {
+  setReplyMessage: (message: MessagesDTO | null) => void;
+  replyMessage: MessagesDTO | null;
+}
+
+const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
   const dispatch = useDispatch();
   const scrollViewRef = useRef<ScrollView>(null);
   const { showBackToBottom, messages } = useSelector(
@@ -67,7 +72,7 @@ const Messages: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
     dispatch(setMessages([]));
-    dispatch(setReplyMessage(null));
+    setReplyMessage(null);
     socket.emit("joinChatRoom", { user2Id: chat.otherUser.id });
     socket.emit("setMessageRead", { roomId: chat.id });
     socket.emit("getMessages", { roomId: chat.id, limit: 100 });
@@ -167,6 +172,7 @@ const Messages: React.FC = () => {
                   message={message}
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
+                  setReplyMessage={setReplyMessage}
                 >
                   <Image
                     message={message}
@@ -185,6 +191,7 @@ const Messages: React.FC = () => {
                   message={message}
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
+                  setReplyMessage={setReplyMessage}
                 >
                   <Video
                     message={message}
@@ -203,6 +210,7 @@ const Messages: React.FC = () => {
                   message={message}
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
+                  setReplyMessage={setReplyMessage}
                 >
                   <Pressable
                     onLongPress={() => {
@@ -221,6 +229,7 @@ const Messages: React.FC = () => {
                   message={message}
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
+                  setReplyMessage={setReplyMessage}
                 >
                   <Pressable
                     onLongPress={() => {
@@ -246,6 +255,7 @@ const Messages: React.FC = () => {
                   message={message}
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
+                  setReplyMessage={setReplyMessage}
                 >
                   <Pressable
                     onLongPress={() => {
@@ -329,6 +339,7 @@ const Messages: React.FC = () => {
           onDelete={() => console.log("Delete")}
           onDetail={() => setIsDetailMenuVisible(true)}
           userId={userData.user.id}
+          setReplyMessage={setReplyMessage}
         />
       )}
 
