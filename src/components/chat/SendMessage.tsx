@@ -36,7 +36,7 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
     if (replyMessage) {
       Animated.timing(animation, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     } else {
