@@ -80,4 +80,20 @@ export const styles = StyleSheet.create({
   videoContainer: {
     flex: 1,
   },
+  modal: {
+    margin: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 35,
+    right: 15,
+    zIndex: 1,
+    borderRadius: 20,
+    padding: 5,
+  },
 });

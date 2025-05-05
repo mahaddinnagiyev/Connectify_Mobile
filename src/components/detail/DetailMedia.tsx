@@ -10,12 +10,18 @@ import { color } from "@/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles/detailMedia.style";
 import { Video, ResizeMode } from "expo-av";
+import Modal from "react-native-modal";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 // Hooks
 import { useChatData } from "@hooks/useChatData";
 
 // Services
-import { Chat, MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+import {
+  Chat,
+  MessagesDTO,
+  MessageType,
+} from "@services/messenger/messenger.dto";
 
 interface Props {
   chat: Chat;
@@ -25,9 +31,12 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
   const [activeTab, setActiveTab] = useState<"images" | "videos" | "files">(
     "images"
   );
+  const { medias, isMediasLoading, fetchMedias } = useChatData();
+
   const [filteredMedias, setFilteredMedias] = useState<MessagesDTO[]>([]);
 
-  const { medias, isMediasLoading, fetchMedias } = useChatData();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const loadMedias = async () => {
@@ -103,8 +112,17 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
           </View>
         ) : (
           <View style={styles.mediaGrid}>
-            {filteredMedias.map((item) => (
-              <TouchableOpacity key={item.id} style={styles.gridItem}>
+            {filteredMedias.map((item, index) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.gridItem}
+                onPress={() => {
+                  if (activeTab === "images") {
+                    setCurrentIndex(index);
+                    setIsModalVisible(true);
+                  }
+                }}
+              >
                 {activeTab === "images" ? (
                   <Image
                     source={{ uri: item.content }}
@@ -133,6 +151,30 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
           </View>
         )}
       </View>
+
+      <Modal
+        isVisible={isModalVisible}
+        style={styles.modal}
+        onBackdropPress={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <ImageViewer
+            imageUrls={filteredMedias.map((media) => ({ url: media.content }))}
+            index={currentIndex}
+            onChange={(index) => setCurrentIndex(index ?? 0)}
+            enableSwipeDown
+            onSwipeDown={() => setIsModalVisible(false)}
+            renderHeader={() => (
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setIsModalVisible(false)}
+              >
+                <Ionicons name="close" size={24} color="white" />
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </Modal>
     </>
   );
 };
