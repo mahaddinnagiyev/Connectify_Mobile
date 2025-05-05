@@ -22,6 +22,7 @@ import {
   MessagesDTO,
   MessageType,
 } from "@services/messenger/messenger.dto";
+import CustomVideoPlayer from "../modals/chat/CustomVideoPlayer";
 
 interface Props {
   chat: Chat;
@@ -37,6 +38,15 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [video, setVideo] = useState<MessagesDTO | null>(null);
+
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => {
+    setModalVisible(false);
+    setVideo(null);
+  };
 
   useEffect(() => {
     const loadMedias = async () => {
@@ -121,6 +131,10 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
                     setCurrentIndex(index);
                     setIsModalVisible(true);
                   }
+                  if (activeTab === "videos") {
+                    setVideo(item);
+                    openModal();
+                  }
                 }}
               >
                 {activeTab === "images" ? (
@@ -174,6 +188,27 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
             )}
           />
         </View>
+      </Modal>
+
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={closeModal}
+        onBackButtonPress={closeModal}
+        propagateSwipe={true}
+        swipeDirection={["down"]}
+        onSwipeComplete={closeModal}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        useNativeDriver
+        style={styles.modal}
+      >
+        {video && (
+          <CustomVideoPlayer
+            uri={video.content}
+            autoPlay={modalVisible}
+            onClose={closeModal}
+          />
+        )}
       </Modal>
     </>
   );
