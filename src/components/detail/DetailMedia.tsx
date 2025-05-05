@@ -15,7 +15,7 @@ import { Video, ResizeMode } from "expo-av";
 import { useChatData } from "@hooks/useChatData";
 
 // Services
-import { Chat, MessageType } from "@services/messenger/messenger.dto";
+import { Chat, MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 
 interface Props {
   chat: Chat;
@@ -25,7 +25,7 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
   const [activeTab, setActiveTab] = useState<"images" | "videos" | "files">(
     "images"
   );
-  const [filteredMedias, setFilteredMedias] = useState<any[]>([]);
+  const [filteredMedias, setFilteredMedias] = useState<MessagesDTO[]>([]);
 
   const { medias, isMediasLoading, fetchMedias } = useChatData();
 
