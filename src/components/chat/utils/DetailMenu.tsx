@@ -69,7 +69,7 @@ const DetailMenu = ({ visible, onClose, message }: Props) => {
 
   const slideIn = {
     from: {
-      translateY: 300,
+      translateY: 700,
     },
     to: {
       translateY: 0,
@@ -81,7 +81,7 @@ const DetailMenu = ({ visible, onClose, message }: Props) => {
       translateY: 0,
     },
     to: {
-      translateY: 300,
+      translateY: 700,
     },
   };
 

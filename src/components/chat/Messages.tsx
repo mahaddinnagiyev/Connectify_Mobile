@@ -6,6 +6,7 @@ import {
   Pressable,
   ActivityIndicator,
   Linking,
+  TouchableOpacity,
 } from "react-native";
 import { color } from "@/colors";
 import { styles } from "./styles/messages.style";
@@ -212,14 +213,14 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
                 >
-                  <Pressable
+                  <TouchableOpacity
                     onLongPress={() => {
                       setSelectedMessage(message);
                       setContextMenuVisible(true);
                     }}
                   >
                     <Audio message={message} bubbleStyle={bubbleStyle} />
-                  </Pressable>
+                  </TouchableOpacity>
                 </SwipeableMessage>
               );
               break;
@@ -231,14 +232,14 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
                 >
-                  <Pressable
+                  <TouchableOpacity
                     onLongPress={() => {
                       setSelectedMessage(message);
                       setContextMenuVisible(true);
                     }}
                   >
                     <File message={message} bubbleStyle={bubbleStyle} />
-                  </Pressable>
+                  </TouchableOpacity>
                 </SwipeableMessage>
               );
               break;
@@ -257,7 +258,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
                 >
-                  <Pressable
+                  <TouchableOpacity
                     onLongPress={() => {
                       setSelectedMessage(message);
                       setContextMenuVisible(true);
@@ -265,16 +266,16 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   >
                     <View style={[styles.messageBubble, bubbleStyle]}>
                       {isUrl(message.content) ? (
-                        <Pressable
+                        <TouchableOpacity
                           onPress={() => Linking.openURL(message.content)}
                         >
                           <Text style={styles.url}>{message.content}</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                       ) : (
                         <Text style={textStyle}>{message.content}</Text>
                       )}
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
                 </SwipeableMessage>
               );
           }

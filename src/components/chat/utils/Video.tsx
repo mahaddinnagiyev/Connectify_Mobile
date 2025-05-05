@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Pressable } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -13,7 +13,11 @@ interface Props {
   onLongPress?: () => void;
 }
 
-const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
+const VideoWithModal: React.FC<Props> = ({
+  message,
+  bubbleStyle,
+  onLongPress,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const openModal = () => setModalVisible(true);
@@ -21,7 +25,11 @@ const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) 
 
   return (
     <>
-      <Pressable onPress={openModal} onLongPress={onLongPress} hitSlop={10}>
+      <TouchableOpacity
+        onPress={openModal}
+        onLongPress={onLongPress}
+        hitSlop={10}
+      >
         <View style={[styles.videoContainer, bubbleStyle]}>
           <Video
             source={{ uri: message.content }}
@@ -39,7 +47,7 @@ const VideoWithModal: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) 
             />
           </View>
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       <Modal
         isVisible={modalVisible}

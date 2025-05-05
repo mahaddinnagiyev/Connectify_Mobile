@@ -3,8 +3,7 @@ import {
   StyleSheet,
   Image as RNImage,
   View,
-  Pressable,
-  Text,
+  TouchableOpacity,
 } from "react-native";
 import Modal from "react-native-modal";
 import ImageViewer from "react-native-image-zoom-viewer";
@@ -21,7 +20,7 @@ const Image: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
 
   return (
     <>
-      <Pressable
+      <TouchableOpacity
         onPress={() => setModalVisible(true)}
         hitSlop={10}
         onLongPress={onLongPress}
@@ -33,7 +32,7 @@ const Image: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
             resizeMode="cover"
           />
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       <Modal
         isVisible={modalVisible}
