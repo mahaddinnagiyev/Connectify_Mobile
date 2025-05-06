@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import React, { useRef, useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Components
@@ -12,14 +12,19 @@ import { MessagesDTO } from "@services/messenger/messenger.dto";
 
 const ChatScreen = () => {
   const [replyMessage, setReplyMessage] = useState<MessagesDTO | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   return (
     <SafeAreaView style={styles.container}>
       <ChatHeader />
-      <Messages setReplyMessage={setReplyMessage} replyMessage={replyMessage} />
+      <Messages
+        setReplyMessage={setReplyMessage}
+        scrollViewRef={scrollViewRef}
+      />
       <SendMessage
         setReplyMessage={setReplyMessage}
         replyMessage={replyMessage}
+        scrollViewRef={scrollViewRef}
       />
     </SafeAreaView>
   );

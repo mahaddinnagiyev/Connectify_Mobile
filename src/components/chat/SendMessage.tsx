@@ -1,30 +1,60 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, TextInput, Pressable, Animated } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  Animated,
+  ScrollView,
+} from "react-native";
 import { styles } from "./styles/sendMessage.style";
 import { color } from "@/colors";
-import { useDispatch, useSelector } from "react-redux";
-import { setInputHeight } from "@redux/chat/chatSlice";
+
+// Expo
+import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Audio } from "expo-av";
+
+// Redux
 import { RootState } from "@redux/store";
+import { setInputHeight } from "@redux/chat/chatSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setErrorMessage } from "@redux/messages/messageSlice";
+
+// Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+
+// Services
 import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+
+// Functions
 import { isUrl } from "@functions/messages.function";
-import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+// Context
+import { useSocketContext } from "@context/SocketContext";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
   replyMessage: MessagesDTO | null;
+  scrollViewRef: React.RefObject<ScrollView>;
 }
 
-const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
+const SendMessage: React.FC<Props> = ({
+  replyMessage,
+  setReplyMessage,
+  scrollViewRef,
+}) => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { inputHeight } = useSelector((state: RootState) => state.chat);
   const { blockList = [], blockerList = [] } = useSelector(
     (state: RootState) => state.myFriends
   );
+  const socket = useSocketContext();
 
   const animation = useRef(new Animated.Value(0)).current;
+
+  const soundRef = React.useRef<Audio.Sound | null>(null);
 
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
@@ -58,6 +88,17 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
       setIsBlockedBy(true);
     }
   }, [blockList, blockerList, chat.otherUser.id, userData.user.id]);
+
+  useEffect(() => {
+    Audio.Sound.createAsync(
+      require("@assets/sounds/message-sent-audio.mp3")
+    ).then(({ sound }) => {
+      soundRef.current = sound;
+    });
+    return () => {
+      soundRef.current?.unloadAsync();
+    };
+  }, []);
 
   const renderReplyContent = () => {
     if (!replyMessage) return null;
@@ -116,6 +157,32 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
             {replyMessage.content}
           </Text>
         );
+    }
+  };
+
+  // Send Message
+  const handleSendMessage = () => {
+    try {
+      if (!input.trim()) return;
+
+      socket?.emit("sendMessage", {
+        roomId: chat.id,
+        content: input,
+        message_type: MessageType.TEXT,
+        parent_message_id: replyMessage?.id,
+      });
+
+      setReplyMessage(null);
+      setInput("");
+      dispatch(setInputHeight(0));
+
+      soundRef.current?.replayAsync();
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    } catch (error) {
+      dispatch(setErrorMessage("Failed to send message"));
+    } finally {
+      setInput("");
+      dispatch(setInputHeight(0));
     }
   };
 
@@ -214,7 +281,7 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
 
             <View style={styles.sendButton}>
               {input.trim() !== "" ? (
-                <Pressable>
+                <Pressable onPress={handleSendMessage}>
                   <MaterialIcons name="send" size={24} color="white" />
                 </Pressable>
               ) : (

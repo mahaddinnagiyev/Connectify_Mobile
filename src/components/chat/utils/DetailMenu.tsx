@@ -203,7 +203,7 @@ const MessageContent = ({ message }: { message: MessagesDTO }) => {
 
   if (message.message_type === MessageType.TEXT) {
     return (
-      <Text style={styles.contentText}>{truncate(message.content, 40)}</Text>
+      <Text style={styles.contentText} numberOfLines={3}>{truncate(message.content, 40)}</Text>
     );
   }
 
@@ -217,7 +217,7 @@ const MessageContent = ({ message }: { message: MessagesDTO }) => {
         />
       </View>
       <View style={styles.fileDetails}>
-        <Text style={styles.fileName} numberOfLines={1}>
+        <Text style={styles.fileName} numberOfLines={3}>
           {truncate(message.message_name ?? "Imported File", 20) ||
             "Imported file"}
         </Text>

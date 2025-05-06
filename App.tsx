@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "@redux/store";
 import Navigator from "@navigation/Navigator";
 import { SocketProvider } from "@context/SocketContext";
+import { Platform, UIManager } from "react-native";
 
 import ErrorMessage from "@components/messages/ErrorMessage";
 import SuccessMessage from "@components/messages/SuccessMessage";
@@ -17,6 +18,13 @@ import InfoMessage from "@components/messages/InfoMessage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function AppInner() {
+  if (
+    Platform.OS === "android" &&
+    UIManager.setLayoutAnimationEnabledExperimental
+  ) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+
   const dispatch = useDispatch();
   const { errorMessage, successMessage, infoMessage } = useSelector(
     (state: RootState) => state.messages

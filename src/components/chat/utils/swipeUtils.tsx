@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Swipeable } from "react-native-gesture-handler";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
@@ -11,6 +11,7 @@ interface SwipeableMessageProps {
   setSelectedMessage: React.Dispatch<React.SetStateAction<MessagesDTO | null>>;
   children: React.ReactNode;
   setReplyMessage: (message: MessagesDTO | null) => void;
+  scrollViewRef: React.RefObject<ScrollView>;
 }
 
 export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
@@ -19,6 +20,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   setSelectedMessage,
   children,
   setReplyMessage,
+  scrollViewRef,
 }) => {
   const dispatch = useDispatch();
   const swipeableRef = useRef<Swipeable>(null);
@@ -38,6 +40,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   const handleLeftOpen = () => {
     setReplyMessage(message);
     swipeableRef.current?.close();
+    scrollViewRef.current?.scrollToEnd({ animated: true });
   };
 
   const handleRightOpen = () => {

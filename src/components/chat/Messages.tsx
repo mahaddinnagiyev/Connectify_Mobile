@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Linking,
   TouchableOpacity,
+  LayoutAnimation,
 } from "react-native";
 import { color } from "@/colors";
 import { styles } from "./styles/messages.style";
@@ -18,7 +19,7 @@ import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { setMessages } from "@redux/chat/chatSlice";
+import { addMessage, setMessages } from "@redux/chat/chatSlice";
 
 // Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -42,12 +43,11 @@ import { SwipeableMessage } from "./utils/swipeUtils";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
-  replyMessage: MessagesDTO | null;
+  scrollViewRef: React.RefObject<ScrollView>;
 }
 
-const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
+const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
   const dispatch = useDispatch();
-  const scrollViewRef = useRef<ScrollView>(null);
   const { showBackToBottom, messages } = useSelector(
     (state: RootState) => state.chat
   );
@@ -74,11 +74,11 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
     if (!socket) return;
     dispatch(setMessages([]));
     setReplyMessage(null);
-    socket.emit("joinChatRoom", { user2Id: chat.otherUser.id });
+    socket.emit("joinRoom", { user2Id: chat.otherUser.id });
     socket.emit("setMessageRead", { roomId: chat.id });
     socket.emit("getMessages", { roomId: chat.id, limit: 100 });
 
-    const handle = (data: { messages: any[] }) => {
+    const handleAll = (data: { messages: any[] }) => {
       if (data.messages[0]?.room_id === chat.id) {
         dispatch(setMessages(data.messages));
       }
@@ -87,9 +87,19 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
       else setHasMoreMessages(true);
     };
 
-    socket.on("messages", handle);
+    const handleNew = (message: MessagesDTO) => {
+      if (message.room_id !== chat.id) return;
+
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+      dispatch(addMessage(message));
+    };
+
+    socket.on("messages", handleAll);
+    socket.on("newMessage", handleNew);
     return () => {
-      socket.off("messages", handle);
+      socket.off("messages", handleAll);
+      socket.off("newMessage", handleNew);
     };
   }, [socket, chat, dispatch]);
 
@@ -174,6 +184,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
+                  scrollViewRef={scrollViewRef}
                 >
                   <Image
                     message={message}
@@ -193,6 +204,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
+                  scrollViewRef={scrollViewRef}
                 >
                   <Video
                     message={message}
@@ -212,6 +224,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
+                  scrollViewRef={scrollViewRef}
                 >
                   <TouchableOpacity
                     onLongPress={() => {
@@ -231,6 +244,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
+                  scrollViewRef={scrollViewRef}
                 >
                   <TouchableOpacity
                     onLongPress={() => {
@@ -257,6 +271,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, replyMessage }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
+                  scrollViewRef={scrollViewRef}
                 >
                   <TouchableOpacity
                     onLongPress={() => {

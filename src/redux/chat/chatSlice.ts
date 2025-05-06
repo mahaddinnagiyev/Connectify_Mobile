@@ -1,5 +1,5 @@
 import { MessagesDTO } from "@services/messenger/messenger.dto";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ChatState {
   inputHeight: number;
@@ -26,9 +26,14 @@ export const chatSlice = createSlice({
     setMessages: (state, action) => {
       state.messages = action.payload;
     },
+    addMessage: (state, action: PayloadAction<MessagesDTO>) => {
+      if (!state.messages.find((m) => m.id === action.payload.id)) {
+        state.messages.push(action.payload);
+      }
+    },
   },
 });
 
-export const { setInputHeight, setShowBackToBottom, setMessages } =
+export const { setInputHeight, setShowBackToBottom, setMessages, addMessage } =
   chatSlice.actions;
 export default chatSlice.reducer;
