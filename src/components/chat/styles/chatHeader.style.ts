@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
   },
   notificationWrapper: {
     position: "absolute",
-    top: 120,
+    top: 104,
     left: 0,
     right: 0,
     zIndex: 999,

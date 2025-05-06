@@ -9,7 +9,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
 import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 import { isUrl } from "@functions/messages.function";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
@@ -31,6 +31,8 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
 
   const [isBlocked, setIsBlocked] = React.useState(false);
   const [isBlockedBy, setIsBlockedBy] = React.useState(false);
+
+  const [input, setInput] = React.useState("");
 
   useEffect(() => {
     if (replyMessage) {
@@ -138,7 +140,12 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
       )}
 
       {!isBlocked && !isBlockedBy && (
-        <View style={[styles.mainContainer, { borderTopWidth: replyMessage ? 0 : 1 }]}>
+        <View
+          style={[
+            styles.mainContainer,
+            { borderTopWidth: replyMessage ? 0 : 1 },
+          ]}
+        >
           {replyMessage && (
             <Animated.View
               style={[
@@ -199,14 +206,22 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
                 onContentSizeChange={(e) => {
                   dispatch(setInputHeight(e.nativeEvent.contentSize.height));
                 }}
+                value={input}
+                onChangeText={(text) => setInput(text)}
                 style={styles.textInput}
               />
             </View>
 
             <View style={styles.sendButton}>
-              <Pressable>
-                <MaterialIcons name="send" size={24} color="white" />
-              </Pressable>
+              {input.trim() !== "" ? (
+                <Pressable>
+                  <MaterialIcons name="send" size={24} color="white" />
+                </Pressable>
+              ) : (
+                <Pressable>
+                  <FontAwesome5 name="microphone" size={24} color="white" />
+                </Pressable>
+              )}
             </View>
           </View>
         </View>
