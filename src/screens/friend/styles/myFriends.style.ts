@@ -80,8 +80,8 @@ export const styles = StyleSheet.create({
   },
 
   profilePhoto: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: color.primaryColor,
@@ -89,28 +89,10 @@ export const styles = StyleSheet.create({
 
   chatDetail: {
     flexDirection: "column",
+    justifyContent: "center",
     gap: 4,
     width: "80%",
     height: "58%",
-  },
-
-  lastMessage: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  unreadCount: {
-    backgroundColor: color.primaryColor,
-    width: 20,
-    height: 20,
-    borderRadius: 50,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-    position: "absolute",
-    right: 10,
-    bottom: -5,
   },
 
   noFriendsText: {

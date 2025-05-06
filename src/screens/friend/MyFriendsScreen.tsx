@@ -9,16 +9,23 @@ import {
   RefreshControl,
 } from "react-native";
 import React, { useCallback, useMemo, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles/myFriends.style";
 import { Ionicons } from "@expo/vector-icons";
 import { color } from "@/colors";
-import { SafeAreaView } from "react-native-safe-area-context";
+
+// Navigation
 import { useNavigation } from "@react-navigation/native";
 import type { StackParamList } from "@navigation/Navigator";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+// Redux
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
+
+// Hooks
 import { useFriendData } from "@hooks/useFriendData";
+import { truncate } from "@/src/functions/messages.function";
 
 interface Friend {
   first_name: string;
@@ -47,16 +54,13 @@ const MyFriendsScreen = () => {
     return name;
   };
 
-  // Group friends by first-letter, with sorting and filtering
   const sections = useMemo(() => {
-    // 1. Sort by full name
     const sorted = [...friends].sort((a, b) => {
       const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
       const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
       return nameA.localeCompare(nameB);
     });
 
-    // 2. Filter by search query
     const filtered = searchQuery
       ? sorted.filter((friend) => {
           const fullName =
@@ -152,17 +156,9 @@ const MyFriendsScreen = () => {
             />
             <View style={styles.chatDetail}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {truncateUsername(
-                  `${item.first_name} ${item.last_name} | @${item.username}`
-                )}
+                {truncateUsername(`${item.first_name} ${item.last_name}`)}
               </Text>
-              <View style={styles.lastMessage}>
-                <Text>Whats's Up Man</Text>
-                <Text style={{ fontSize: 9 }}>12:00</Text>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.unreadCount}>2</Text>
+              <Text>{truncate(`@${item.username}`, 20)}</Text>
             </View>
           </TouchableOpacity>
         )}
