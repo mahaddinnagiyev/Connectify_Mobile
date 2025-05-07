@@ -12,7 +12,6 @@ import { color } from "@/colors";
 import { styles } from "../styles/contextMenu.style";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
-import { setReplyMessage } from "@/src/redux/chat/chatSlice";
 
 interface Props {
   message: MessagesDTO;
@@ -29,6 +28,7 @@ const ContextMenu: React.FC<Props> = ({
   onDelete,
   onDetail,
   userId,
+  setReplyMessage,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;

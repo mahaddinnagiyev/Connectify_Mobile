@@ -69,7 +69,7 @@ const ChatHeader = () => {
           {/* Back Icon */}
           <View>
             <Pressable onPress={handleBack}>
-              <MaterialIcons name="arrow-back-ios" size={18} color="black" />
+              <MaterialIcons name="arrow-back" size={24} color="black" />
             </Pressable>
           </View>
 
