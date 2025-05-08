@@ -41,6 +41,7 @@ import { useSocketContext } from "@context/SocketContext";
 
 // Hooks
 import { useChatData } from "@hooks/useChatData";
+import { UIImagePickerControllerQualityType } from "expo-image-picker";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
@@ -61,6 +62,8 @@ const SendMessage: React.FC<Props> = ({
     isUploadingAudio,
     handleUploadImage,
     isImageUploading,
+    handleUploadVideo,
+    isVideoUploading,
   } = useChatData();
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
@@ -393,28 +396,89 @@ const SendMessage: React.FC<Props> = ({
     setShowMediaModal(false);
   };
 
-  const uploadAndSendImage = async () => {
+  const pickVideo = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      dispatch(
+        setErrorMessage("Permission to access media library is required")
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      quality: 0.8,
+      videoMaxDuration: 600,
+      videoQuality: UIImagePickerControllerQualityType.High,
+    });
+
+    if (result.canceled) return;
+
+    const asset = result.assets[0];
+    const uri = asset.uri;
+    const info = (await FileSystem.getInfoAsync(uri)) as FileSystem.FileInfo & {
+      size: number;
+    };
+    const name = uri.split("/").pop()!;
+    const match = /\.(\w+)$/.exec(name);
+    const mimeType = match ? `video/${match[1]}` : "video";
+
+    if (info.size > 50 * 1024 * 1024) {
+      return dispatch(setErrorMessage("Video is too large (max 50 MB)"));
+    }
+
+    setSelectedFile({
+      uri,
+      name,
+      size: info.size,
+      type: "video",
+      mimeType,
+    });
+    setShowMediaModal(false);
+  };
+
+  const uploadAndSend = async () => {
     if (!selectedFile) return dispatch(setErrorMessage("No file selected"));
 
     const formData = new FormData();
-    formData.append("message_image", {
-      uri: selectedFile.uri,
-      name: selectedFile.name,
-      type: selectedFile.mimeType,
-    } as any);
 
-    const response = await handleUploadImage(
-      formData,
-      chat.id,
-      userData.user.id
-    );
+    if (selectedFile.type === "image") {
+      formData.append("message_image", {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: selectedFile.mimeType,
+      } as any);
+    } else if (selectedFile.type === "video") {
+      formData.append("message_video", {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: selectedFile.mimeType,
+      } as any);
+    }
+
+    let response;
+
+    if (selectedFile.type === "image") {
+      response = await handleUploadImage(
+        formData,
+        chat.id,
+        userData.user.id
+      );
+    } else if (selectedFile.type === "video") {
+      response = await handleUploadVideo(
+        formData,
+        chat.id,
+        userData.user.id
+      );
+    }
 
     if (!response?.success) return;
 
     socket?.emit("sendMessage", {
       roomId: chat.id,
       content: response.publicUrl,
-      message_type: MessageType.IMAGE,
+      message_type:
+        selectedFile.type === "image" ? MessageType.IMAGE : MessageType.VIDEO,
       message_name: selectedFile.name,
       message_size: selectedFile.size,
       parent_message_id: replyMessage?.id,
@@ -601,7 +665,7 @@ const SendMessage: React.FC<Props> = ({
         visible={showMediaModal}
         onClose={() => setShowMediaModal(false)}
         onPickImage={pickImage}
-        onPickVideo={() => console.log("pickVideo")}
+        onPickVideo={pickVideo}
         onPickFile={() => console.log("pickFile")}
       />
 
@@ -611,7 +675,7 @@ const SendMessage: React.FC<Props> = ({
         file={selectedFile}
         uploadProgress={uploadProgress}
         onCancel={() => setSelectedFile(null)}
-        onUpload={uploadAndSendImage}
+        onUpload={uploadAndSend}
       />
     </React.Fragment>
   );
