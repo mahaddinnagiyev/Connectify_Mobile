@@ -101,4 +101,24 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
     padding: 4,
   },
+  recordingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  recordingIndicator: {
+    width: 40,
+    height: 40,
+    borderRadius: 15,
+    backgroundColor: "#FF000020",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  recordingTimer: {
+    color: "red",
+    fontSize: 16,
+    fontWeight: "500",
+  },
 });

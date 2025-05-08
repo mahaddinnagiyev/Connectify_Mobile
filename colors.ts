@@ -1,6 +1,7 @@
 export const color = {
   primaryColor: "#00ff00",
   solidColor: "#00ff0059",
+  darkColor: "#00cc00",
   secondaryColor: "#f5f5f5",
   tertiaryColor: "#555755",
   boldColor: "#1D976C",

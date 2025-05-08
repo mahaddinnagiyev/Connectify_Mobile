@@ -13,10 +13,19 @@ interface MediaResponse {
   response: { success: boolean; error?: string; message?: string };
 }
 
+interface UploadResponse {
+  success: boolean;
+  publicUrl: string;
+  error?: string;
+  message?: string;
+  response: { success: boolean; error?: string; message?: string };
+}
+
 export function useChatData() {
   const dispatch = useDispatch();
   const [medias, setMedias] = useState<MessagesDTO[]>([]);
   const [isMediasLoading, setIsMediasLoading] = useState<boolean>(false);
+  const [isUploadingAudio, setIsUploadingAudio] = useState<boolean>(false);
 
   const fetchMedias = async (roomId: string) => {
     try {
@@ -53,5 +62,53 @@ export function useChatData() {
     }
   };
 
-  return { medias, isMediasLoading, fetchMedias };
+  const handleUploadAudio = async (
+    formData: FormData,
+    roomId: string,
+    senderId: string
+  ) => {
+    try {
+      setIsUploadingAudio(true);
+      const { data } = await axios.post<UploadResponse>(
+        `${process.env.SERVER_URL}/messenger/upload-audio?roomId=${roomId}&senderId=${senderId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${await getTokenFromSession()}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) return data;
+
+      dispatch(
+        setErrorMessage(
+          data.response?.message ??
+            data.response?.error ??
+            data.message ??
+            data.error ??
+            "Something went wrong"
+        )
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsUploadingAudio(false);
+    }
+  };
+
+  return {
+    medias,
+    isMediasLoading,
+    fetchMedias,
+
+    // audio
+    handleUploadAudio,
+    isUploadingAudio,
+  };
 }

@@ -106,7 +106,7 @@ const SuccessMessage: React.FC<Props> = ({ message, onClose }) => {
       {...panResponder.panHandlers}
     >
       <LinearGradient
-        colors={[color.primaryColor, "#00cc00"]}
+        colors={[color.primaryColor, color.darkColor]}
         start={[0, 0]}
         end={[1, 1]}
         style={styles.gradient}

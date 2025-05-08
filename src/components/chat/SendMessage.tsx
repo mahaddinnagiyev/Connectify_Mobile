@@ -13,6 +13,7 @@ import { color } from "@/colors";
 // Expo
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 
 // Redux
 import { RootState } from "@redux/store";
@@ -32,6 +33,8 @@ import { isUrl } from "@functions/messages.function";
 
 // Context
 import { useSocketContext } from "@context/SocketContext";
+import { AndroidAudioEncoder, AndroidOutputFormat } from "expo-av/build/Audio";
+import { useChatData } from "@/src/hooks/useChatData";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
@@ -45,24 +48,31 @@ const SendMessage: React.FC<Props> = ({
   scrollViewRef,
 }) => {
   const dispatch = useDispatch();
+  const socket = useSocketContext();
+
+  const { handleUploadAudio, isMediasLoading } = useChatData();
+
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { inputHeight } = useSelector((state: RootState) => state.chat);
   const { blockList = [], blockerList = [] } = useSelector(
     (state: RootState) => state.myFriends
   );
-  const socket = useSocketContext();
 
   const animation = useRef(new Animated.Value(0)).current;
-
   const soundRef = React.useRef<Audio.Sound | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
-  const [isBlocked, setIsBlocked] = React.useState(false);
-  const [isBlockedBy, setIsBlockedBy] = React.useState(false);
+  const [recordingDuration, setRecordingDuration] = React.useState<number>(0);
+  const [isBlocked, setIsBlocked] = React.useState<boolean>(false);
+  const [isBlockedBy, setIsBlockedBy] = React.useState<boolean>(false);
+  const [isRecording, setIsRecording] = React.useState<boolean>(false);
 
-  const [input, setInput] = React.useState("");
+  const [input, setInput] = React.useState<string>("");
 
   useEffect(() => {
     if (replyMessage) {
@@ -99,6 +109,45 @@ const SendMessage: React.FC<Props> = ({
       soundRef.current?.unloadAsync();
     };
   }, []);
+
+  useEffect(() => {
+    if (isRecording) {
+      timerRef.current = setInterval(() => {
+        setRecordingDuration((prev) => prev + 1);
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setRecordingDuration(0);
+    }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isRecording]);
+
+  useEffect(() => {
+    if (isRecording) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(scaleAnim, {
+            toValue: 1.2,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else {
+      scaleAnim.setValue(1);
+    }
+  }, [isRecording, scaleAnim]);
 
   const renderReplyContent = () => {
     if (!replyMessage) return null;
@@ -160,6 +209,14 @@ const SendMessage: React.FC<Props> = ({
     }
   };
 
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
   // Send Message
   const handleSendMessage = () => {
     try {
@@ -183,6 +240,103 @@ const SendMessage: React.FC<Props> = ({
     } finally {
       setInput("");
       dispatch(setInputHeight(0));
+    }
+  };
+
+  // Send Audio Message
+  const startRecording = async () => {
+    try {
+      const { status } = await Audio.requestPermissionsAsync();
+
+      if (status !== "granted") {
+        dispatch(setErrorMessage("Permission to access audio is required"));
+        return;
+      }
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      const recording = new Audio.Recording();
+
+      await recording.prepareToRecordAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+
+      await recording.startAsync();
+      recordingRef.current = recording;
+      setIsRecording(true);
+    } catch (error) {
+      dispatch(
+        setErrorMessage((error as Error).message ?? "Failed to send message")
+      );
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      const recording = recordingRef.current;
+      if (!isRecording) return;
+
+      setIsRecording(false);
+
+      await recording?.stopAndUnloadAsync();
+      const uri = recording?.getURI();
+      if (!uri) return;
+
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const { size } = fileInfo as { size: number };
+
+      const name = uri.split("/").pop()!;
+
+      const formData = new FormData();
+      formData.append("message_audio", {
+        uri,
+        name,
+        type: "audio/webm",
+      } as any);
+
+      const response = await handleUploadAudio(
+        formData,
+        chat.id,
+        userData.user.id
+      );
+
+      if (!response?.success) return;
+
+      socket?.emit("sendMessage", {
+        roomId: chat.id,
+        content: response.publicUrl,
+        message_type: MessageType.AUDIO,
+        message_name: name,
+        message_size: size,
+        parent_message_id: replyMessage?.id,
+      });
+
+      setReplyMessage(null);
+      soundRef.current?.replayAsync();
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    } catch (error) {
+      dispatch(
+        setErrorMessage((error as Error).message ?? "Failed to stop recording")
+      );
+    }
+  };
+
+  const cancelRecording = async () => {
+    try {
+      if (!isRecording || !recordingRef.current) return;
+      await recordingRef.current.stopAndUnloadAsync();
+    } catch (error) {
+      dispatch(
+        setErrorMessage(
+          (error as Error).message ?? "Failed to cancel recording"
+        )
+      );
+    } finally {
+      setIsRecording(false);
+      recordingRef.current = null;
     }
   };
 
@@ -251,45 +405,99 @@ const SendMessage: React.FC<Props> = ({
           )}
 
           <View style={styles.container}>
-            <View style={styles.leftButton}>
-              <MaterialIcons name="attach-file" size={29} color="black" />
-            </View>
+            {isRecording ? (
+              <React.Fragment>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.leftButton,
+                    { opacity: pressed ? 0.5 : 1 },
+                  ]}
+                  onPress={cancelRecording}
+                >
+                  <MaterialIcons name="delete-forever" size={29} color="red" />
+                </Pressable>
 
-            <View
-              style={[
-                styles.messageInput,
-                {
-                  height: Math.min(inputHeight, 100),
-                  borderWidth: inputHeight > 40 ? 1 : 0,
-                  borderColor: color.borderColor,
-                  borderRadius: 5,
-                },
-              ]}
-            >
-              <TextInput
-                placeholder="Type a message"
-                multiline
-                scrollEnabled={false}
-                onContentSizeChange={(e) => {
-                  dispatch(setInputHeight(e.nativeEvent.contentSize.height));
-                }}
-                value={input}
-                onChangeText={(text) => setInput(text)}
-                style={styles.textInput}
-              />
-            </View>
+                <View style={styles.recordingContainer}>
+                  <Animated.View
+                    style={[
+                      styles.recordingIndicator,
+                      { transform: [{ scale: scaleAnim }] },
+                    ]}
+                  >
+                    <FontAwesome5 name="microphone" size={20} color={"red"} />
+                  </Animated.View>
+                  <Text style={styles.recordingTimer}>
+                    {formatTime(recordingDuration)}
+                  </Text>
+                </View>
 
-            <View style={styles.sendButton}>
-              {input.trim() !== "" ? (
-                <Pressable onPress={handleSendMessage}>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.sendButton,
+                    {
+                      backgroundColor: pressed
+                        ? color.darkColor
+                        : color.primaryColor,
+                    },
+                  ]}
+                  onPress={stopRecording}
+                >
                   <MaterialIcons name="send" size={24} color="white" />
                 </Pressable>
-              ) : (
-                <Pressable>
-                  <FontAwesome5 name="microphone" size={24} color="white" />
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <View style={styles.leftButton}>
+                  <MaterialIcons name="attach-file" size={29} color="black" />
+                </View>
+
+                <View
+                  style={[
+                    styles.messageInput,
+                    {
+                      height: Math.min(inputHeight, 100),
+                      borderWidth: inputHeight > 40 ? 1 : 0,
+                      borderColor: color.borderColor,
+                      borderRadius: 5,
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder="Type a message"
+                    multiline
+                    scrollEnabled={false}
+                    onContentSizeChange={(e) => {
+                      dispatch(
+                        setInputHeight(e.nativeEvent.contentSize.height)
+                      );
+                    }}
+                    value={input}
+                    onChangeText={(text) => setInput(text)}
+                    style={styles.textInput}
+                  />
+                </View>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.sendButton,
+                    {
+                      backgroundColor: pressed
+                        ? color.darkColor
+                        : color.primaryColor,
+                    },
+                  ]}
+                  onPress={
+                    input.trim() !== "" ? handleSendMessage : startRecording
+                  }
+                >
+                  {input.trim() !== "" ? (
+                    <MaterialIcons name="send" size={24} color="white" />
+                  ) : (
+                    <FontAwesome5 name="microphone" size={24} color="white" />
+                  )}
                 </Pressable>
-              )}
-            </View>
+              </React.Fragment>
+            )}
           </View>
         </View>
       )}

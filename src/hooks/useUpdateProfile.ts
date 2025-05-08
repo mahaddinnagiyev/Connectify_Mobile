@@ -315,7 +315,6 @@ export function useUpdateProfile() {
       if (payload.file) {
         const formData = new FormData();
         formData.append("profile_picture", payload.file as any);
-        console.log(formData);
 
         response = await axios.patch<UpdateProfilePicture>(
           `${process.env.SERVER_URL}/account/profile-pic`,

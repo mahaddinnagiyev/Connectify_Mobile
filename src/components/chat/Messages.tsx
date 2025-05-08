@@ -74,7 +74,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
     if (!socket) return;
     dispatch(setMessages([]));
     setReplyMessage(null);
-    socket.emit("joinRoom", { user2Id: chat.otherUser.id });
     socket.emit("setMessageRead", { roomId: chat.id });
     socket.emit("getMessages", { roomId: chat.id, limit: 100 });
 
