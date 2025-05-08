@@ -78,4 +78,10 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
   },
+
+  lastMessageType: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+  }
 });

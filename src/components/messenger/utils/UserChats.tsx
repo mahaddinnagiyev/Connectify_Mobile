@@ -18,6 +18,8 @@ import { styles } from "../styles/userChats.style";
 import { color } from "@/colors";
 import { truncate } from "@functions/messages.function";
 import { formatTime } from "@functions/chat.functions";
+import { MessageType } from "@/src/services/messenger/messenger.dto";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const UserChats = () => {
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
@@ -83,7 +85,65 @@ const UserChats = () => {
                       25
                     );
 
-                const message = truncate(chat.lastMessage?.content, 30);
+                let message;
+
+                switch (chat.lastMessage?.message_type) {
+                  case MessageType.IMAGE:
+                    message = (
+                      <View style={styles.lastMessageType}>
+                        <Ionicons
+                          name="image"
+                          size={14}
+                          color={color.boldColor}
+                        />
+                        <Text>Image</Text>
+                      </View>
+                    );
+                    break;
+
+                  case MessageType.VIDEO:
+                    message = (
+                      <View style={styles.lastMessageType}>
+                        <MaterialIcons
+                          name="video-collection"
+                          size={14}
+                          color={color.boldColor}
+                        />
+                        <Text>Video</Text>
+                      </View>
+                    );
+                    break;
+
+                  case MessageType.AUDIO:
+                    message = (
+                      <View style={styles.lastMessageType}>
+                        <MaterialIcons
+                          name="audiotrack"
+                          size={14}
+                          color={color.boldColor}
+                        />
+                        <Text>Audio</Text>
+                      </View>
+                    );
+                    break;
+
+                  case MessageType.FILE:
+                    message = (
+                      <View style={styles.lastMessageType}>
+                        <MaterialIcons
+                          name="description"
+                          size={14}
+                          color={color.boldColor}
+                        />
+                        <Text>File</Text>
+                      </View>
+                    );
+                    break;
+
+                  default:
+                    message = truncate(chat.lastMessage?.content, 28);
+                    break;
+                }
 
                 const time = formatTime(chat.lastMessage?.created_at);
 
