@@ -40,14 +40,18 @@
         }
       ],
       "expo-asset",
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
-    "assetBundlePatterns": [
-      "assets/models/**"
-    ],
+    "assetBundlePatterns": ["assets/models/**"],
     "extra": {
       "eas": {
         "projectId": "b676ba6b-f964-4e49-a5e2-9d14e9af7599"

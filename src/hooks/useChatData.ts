@@ -28,6 +28,7 @@ export function useChatData() {
   const [isUploadingAudio, setIsUploadingAudio] = useState<boolean>(false);
   const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
   const [isVideoUploading, setIsVideoUploading] = useState<boolean>(false);
+  const [isFileUploading, setIsFileUploading] = useState<boolean>(false);
 
   const fetchMedias = async (roomId: string) => {
     try {
@@ -184,6 +185,46 @@ export function useChatData() {
     }
   };
 
+  const handleFileUpload = async (
+    formData: FormData,
+    roomId: string,
+    senderId: string
+  ) => {
+    try {
+      setIsVideoUploading(true);
+      const { data } = await axios.post<UploadResponse>(
+        `${process.env.SERVER_URL}/messenger/upload-file?roomId=${roomId}&senderId=${senderId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${await getTokenFromSession()}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) return data;
+
+      dispatch(
+        setErrorMessage(
+          data.response?.message ??
+            data.response?.error ??
+            data.message ??
+            data.error ??
+            "Something went wrong"
+        )
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(setErrorMessage(error.message));
+      }
+      dispatch(setErrorMessage((error as Error).message));
+    } finally {
+      setIsVideoUploading(false);
+    }
+  };
+
   return {
     medias,
     isMediasLoading,
@@ -200,5 +241,9 @@ export function useChatData() {
     // Video
     handleUploadVideo,
     isVideoUploading,
+
+    // File
+    handleFileUpload,
+    isFileUploading,
   };
 }

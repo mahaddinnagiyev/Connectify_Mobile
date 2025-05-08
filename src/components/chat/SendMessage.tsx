@@ -19,6 +19,7 @@ import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 
 // Redux
 import { RootState } from "@redux/store";
@@ -64,6 +65,8 @@ const SendMessage: React.FC<Props> = ({
     isImageUploading,
     handleUploadVideo,
     isVideoUploading,
+    handleFileUpload,
+    isFileUploading,
   } = useChatData();
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
@@ -437,6 +440,32 @@ const SendMessage: React.FC<Props> = ({
     setShowMediaModal(false);
   };
 
+  const pickFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+        copyToCacheDirectory: true,
+      });
+      if (result.canceled) return;
+
+      const { uri, name, size, mimeType } = result.assets![0];
+      if (size && size > 50 * 1024 * 1024) {
+        return dispatch(setErrorMessage("File is too large (max 50 MB)"));
+      }
+
+      setSelectedFile({
+        uri,
+        name,
+        size: size ?? 0,
+        type: "file",
+        mimeType: mimeType ?? `application/${name.split(".").pop()}`,
+      });
+      setShowMediaModal(false);
+    } catch (err) {
+      dispatch(setErrorMessage((err as Error).message ?? "Failed to pick file"));
+    }
+  };
+
   const uploadAndSend = async () => {
     if (!selectedFile) return dispatch(setErrorMessage("No file selected"));
 
@@ -454,22 +483,24 @@ const SendMessage: React.FC<Props> = ({
         name: selectedFile.name,
         type: selectedFile.mimeType,
       } as any);
+    } else if (selectedFile.type === "file") {
+      formData.append("message_file", {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: selectedFile.mimeType,
+      } as any);
+    } else {
+      return dispatch(setErrorMessage("Unsupported file type"));
     }
 
     let response;
 
     if (selectedFile.type === "image") {
-      response = await handleUploadImage(
-        formData,
-        chat.id,
-        userData.user.id
-      );
+      response = await handleUploadImage(formData, chat.id, userData.user.id);
     } else if (selectedFile.type === "video") {
-      response = await handleUploadVideo(
-        formData,
-        chat.id,
-        userData.user.id
-      );
+      response = await handleUploadVideo(formData, chat.id, userData.user.id);
+    } else if (selectedFile.type === "file") {
+      response = await handleFileUpload(formData, chat.id, userData.user.id);
     }
 
     if (!response?.success) return;
@@ -478,7 +509,11 @@ const SendMessage: React.FC<Props> = ({
       roomId: chat.id,
       content: response.publicUrl,
       message_type:
-        selectedFile.type === "image" ? MessageType.IMAGE : MessageType.VIDEO,
+        selectedFile.type === "image"
+          ? MessageType.IMAGE
+          : selectedFile.type === "video"
+          ? MessageType.VIDEO
+          : MessageType.FILE,
       message_name: selectedFile.name,
       message_size: selectedFile.size,
       parent_message_id: replyMessage?.id,
@@ -666,7 +701,7 @@ const SendMessage: React.FC<Props> = ({
         onClose={() => setShowMediaModal(false)}
         onPickImage={pickImage}
         onPickVideo={pickVideo}
-        onPickFile={() => console.log("pickFile")}
+        onPickFile={pickFile}
       />
 
       {/* 2) Preview + upload */}
