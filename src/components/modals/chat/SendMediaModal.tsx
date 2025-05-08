@@ -11,9 +11,18 @@ import { styles } from "./styles/sendMedia.style";
 type Props = {
   visible: boolean;
   onClose: () => void;
+  onPickImage: () => void;
+  onPickVideo: () => void;
+  onPickFile: () => void;
 };
 
-const SendMediaModal = ({ visible, onClose }: Props) => {
+const SendMediaModal: React.FC<Props> = ({
+  visible,
+  onClose,
+  onPickImage,
+  onPickVideo,
+  onPickFile,
+}) => {
   return (
     <Modal
       visible={visible}
@@ -39,6 +48,9 @@ const SendMediaModal = ({ visible, onClose }: Props) => {
                 styles.optionButton,
                 pressed && styles.optionButtonPressed,
               ]}
+              onPress={() => {
+                onPickImage();
+              }}
             >
               <View
                 style={[styles.iconContainer, { backgroundColor: "#e8f5e9" }]}
@@ -53,6 +65,9 @@ const SendMediaModal = ({ visible, onClose }: Props) => {
                 styles.optionButton,
                 pressed && styles.optionButtonPressed,
               ]}
+              onPress={() => {
+                onPickVideo();
+              }}
             >
               <View
                 style={[styles.iconContainer, { backgroundColor: "#e3f2fd" }]}
@@ -67,6 +82,9 @@ const SendMediaModal = ({ visible, onClose }: Props) => {
                 styles.optionButton,
                 pressed && styles.optionButtonPressed,
               ]}
+              onPress={() => {
+                onPickFile();
+              }}
             >
               <View
                 style={[styles.iconContainer, { backgroundColor: "#f3e5f5" }]}

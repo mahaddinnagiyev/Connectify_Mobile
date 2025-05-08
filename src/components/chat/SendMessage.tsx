@@ -12,11 +12,13 @@ import { color } from "@/colors";
 
 // Components
 import SendMediaModal from "../modals/chat/SendMediaModal";
+import SelectedModal, { FileData } from "../modals/chat/SelectedModal";
 
 // Expo
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 
 // Redux
 import { RootState } from "@redux/store";
@@ -54,7 +56,12 @@ const SendMessage: React.FC<Props> = ({
   const dispatch = useDispatch();
   const socket = useSocketContext();
 
-  const { handleUploadAudio, isMediasLoading } = useChatData();
+  const {
+    handleUploadAudio,
+    isUploadingAudio,
+    handleUploadImage,
+    isImageUploading,
+  } = useChatData();
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { inputHeight } = useSelector((state: RootState) => state.chat);
@@ -75,7 +82,11 @@ const SendMessage: React.FC<Props> = ({
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false);
   const [isBlockedBy, setIsBlockedBy] = React.useState<boolean>(false);
   const [isRecording, setIsRecording] = React.useState<boolean>(false);
-  const [showMediaModal, setShowMediaModal] = React.useState<boolean>(false);
+  const [showMediaModal, setShowMediaModal] = React.useState(false);
+  const [selectedFile, setSelectedFile] = React.useState<FileData | null>(null);
+  const [uploadProgress, setUploadProgress] = React.useState<
+    number | undefined
+  >();
 
   const [input, setInput] = React.useState<string>("");
 
@@ -345,6 +356,75 @@ const SendMessage: React.FC<Props> = ({
     }
   };
 
+  // Send Media
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      dispatch(setErrorMessage("Permission to access photos is required"));
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.8,
+    });
+
+    if (result.canceled) return;
+
+    const asset = result.assets[0];
+    const uri = asset.uri;
+    const info = (await FileSystem.getInfoAsync(uri)) as FileSystem.FileInfo & {
+      size: number;
+    };
+    const name = uri.split("/").pop()!;
+    const match = /\.(\w+)$/.exec(name ?? "");
+    const mimeType = match ? `image/${match[1]}` : `image`;
+
+    if (info.size > 50 * 1024 * 1024)
+      return dispatch(setErrorMessage("File size is too large"));
+
+    setSelectedFile({
+      uri,
+      name,
+      size: info.size ?? 0,
+      type: "image",
+      mimeType,
+    });
+    setShowMediaModal(false);
+  };
+
+  const uploadAndSendImage = async () => {
+    if (!selectedFile) return dispatch(setErrorMessage("No file selected"));
+
+    const formData = new FormData();
+    formData.append("message_image", {
+      uri: selectedFile.uri,
+      name: selectedFile.name,
+      type: selectedFile.mimeType,
+    } as any);
+
+    const response = await handleUploadImage(
+      formData,
+      chat.id,
+      userData.user.id
+    );
+
+    if (!response?.success) return;
+
+    socket?.emit("sendMessage", {
+      roomId: chat.id,
+      content: response.publicUrl,
+      message_type: MessageType.IMAGE,
+      message_name: selectedFile.name,
+      message_size: selectedFile.size,
+      parent_message_id: replyMessage?.id,
+    });
+
+    setReplyMessage(null);
+    setSelectedFile(null);
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  };
+
   return (
     <React.Fragment>
       {isBlocked && (
@@ -517,12 +597,22 @@ const SendMessage: React.FC<Props> = ({
         </View>
       )}
 
-      {showMediaModal && (
-        <SendMediaModal
-          visible={showMediaModal}
-          onClose={() => setShowMediaModal(false)}
-        />
-      )}
+      <SendMediaModal
+        visible={showMediaModal}
+        onClose={() => setShowMediaModal(false)}
+        onPickImage={pickImage}
+        onPickVideo={() => console.log("pickVideo")}
+        onPickFile={() => console.log("pickFile")}
+      />
+
+      {/* 2) Preview + upload */}
+      <SelectedModal
+        visible={!!selectedFile}
+        file={selectedFile}
+        uploadProgress={uploadProgress}
+        onCancel={() => setSelectedFile(null)}
+        onUpload={uploadAndSendImage}
+      />
     </React.Fragment>
   );
 };
