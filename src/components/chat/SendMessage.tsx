@@ -10,6 +10,9 @@ import {
 import { styles } from "./styles/sendMessage.style";
 import { color } from "@/colors";
 
+// Components
+import SendMediaModal from "../modals/chat/SendMediaModal";
+
 // Expo
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -33,8 +36,9 @@ import { isUrl } from "@functions/messages.function";
 
 // Context
 import { useSocketContext } from "@context/SocketContext";
-import { AndroidAudioEncoder, AndroidOutputFormat } from "expo-av/build/Audio";
-import { useChatData } from "@/src/hooks/useChatData";
+
+// Hooks
+import { useChatData } from "@hooks/useChatData";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
@@ -71,6 +75,7 @@ const SendMessage: React.FC<Props> = ({
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false);
   const [isBlockedBy, setIsBlockedBy] = React.useState<boolean>(false);
   const [isRecording, setIsRecording] = React.useState<boolean>(false);
+  const [showMediaModal, setShowMediaModal] = React.useState<boolean>(false);
 
   const [input, setInput] = React.useState<string>("");
 
@@ -447,9 +452,19 @@ const SendMessage: React.FC<Props> = ({
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <View style={styles.leftButton}>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.leftButton,
+                    {
+                      backgroundColor: pressed ? "gray" : "transparent",
+                      borderRadius: 15,
+                      padding: 5,
+                    },
+                  ]}
+                  onPress={() => setShowMediaModal(true)}
+                >
                   <MaterialIcons name="attach-file" size={29} color="black" />
-                </View>
+                </Pressable>
 
                 <View
                   style={[
@@ -500,6 +515,13 @@ const SendMessage: React.FC<Props> = ({
             )}
           </View>
         </View>
+      )}
+
+      {showMediaModal && (
+        <SendMediaModal
+          visible={showMediaModal}
+          onClose={() => setShowMediaModal(false)}
+        />
       )}
     </React.Fragment>
   );
