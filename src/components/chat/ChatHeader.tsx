@@ -31,6 +31,10 @@ const ChatHeader = () => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
+  const selectedChat = useSelector((state: RootState) =>
+    state.messenger.filteredChats.find((c) => c.id === chat.id)
+  )!;
+
   const socket = useSocketContext();
   const { acceptAndRejectFrienship, isAccepting, isRejecting } =
     useFriendData();
@@ -89,10 +93,10 @@ const ChatHeader = () => {
 
             <View style={{ gap: 5 }}>
               <Text style={styles.roomName}>
-                {chat.name
-                  ? truncate(chat.name, 30)
+                {selectedChat.name
+                  ? truncate(selectedChat.name, 30)
                   : truncate(
-                      `${chat.otherUser.first_name} ${chat.otherUser.last_name} | @${chat.otherUser.username}`,
+                      `${selectedChat.otherUser.first_name} ${selectedChat.otherUser.last_name} | @${selectedChat.otherUser.username}`,
                       30
                     )}
               </Text>

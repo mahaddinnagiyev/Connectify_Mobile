@@ -24,6 +24,9 @@ interface Props {
 }
 
 const DetailHeader: React.FC<Props> = ({ chat }) => {
+  const selectedChat = useSelector((state: RootState) =>
+    state.messenger.filteredChats.find((c) => c.id === chat.id)
+  )!;
   const { goBack } = useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { friends = [] } = useSelector((state: RootState) => state.myFriends);
 
@@ -57,7 +60,7 @@ const DetailHeader: React.FC<Props> = ({ chat }) => {
           <Ionicons name="arrow-back" size={24} color="#00ff00" />
         </View>
         <Text style={styles.roomName} numberOfLines={1}>
-          {chat.name ?? "No Room Name"}
+          {selectedChat.name ?? "No Room Name"}
         </Text>
       </Pressable>
 

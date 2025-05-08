@@ -4,6 +4,10 @@ import { styles } from "./styles/detailActions.style";
 import { color } from "@/colors";
 import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
+// Components
+import ConfirmModal from "../modals/confirm/ConfirmModal";
+import RoomNameModal from "../modals/chat/RoomNameModal";
+
 // Services
 import { Chat } from "@services/messenger/messenger.dto";
 import { BlockAction } from "@services/friends/blockList.dto";
@@ -22,7 +26,6 @@ import { useFriendData } from "@hooks/useFriendData";
 
 // Enums
 import { FriendshipAction } from "@enums/friendship.enum";
-import ConfirmModal from "../modals/confirm/ConfirmModal";
 
 interface Props {
   chat: Chat;
@@ -57,6 +60,7 @@ const DetailActions: React.FC<Props> = ({ chat }) => {
   const [isFriend, setIsFriend] = useState<boolean>(true);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [showRoomNameModal, setShowRoomNameModal] = useState<boolean>(false);
 
   useEffect(() => {
     const isFriend = friends.some(
@@ -160,7 +164,10 @@ const DetailActions: React.FC<Props> = ({ chat }) => {
           <Text style={styles.actionText}>See Profile</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.actionButton, styles.borderBottom]}>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.borderBottom]}
+          onPress={() => setShowRoomNameModal(true)}
+        >
           <Feather name="edit-2" size={22} color={color.primaryColor} />
           <Text style={styles.actionText}>Change Room Name</Text>
         </TouchableOpacity>
@@ -226,6 +233,14 @@ const DetailActions: React.FC<Props> = ({ chat }) => {
         }
         onCancel={() => setShowConfirmModal(false)}
       />
+
+      {showRoomNameModal && (
+        <RoomNameModal
+          visible={showRoomNameModal}
+          onClose={() => setShowRoomNameModal(false)}
+          chat={chat}
+        />
+      )}
     </>
   );
 };

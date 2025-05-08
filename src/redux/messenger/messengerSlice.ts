@@ -31,8 +31,20 @@ export const messengerSlice = createSlice({
         );
       }
     },
+    changeRoomName: (
+      state,
+      action: PayloadAction<{ id: string; name: string | null }>
+    ) => {
+      const { id, name } = action.payload;
+      state.chats = state.chats.map((c) =>
+        c.id === id ? { ...c, name: name ?? undefined } : c
+      );
+      state.filteredChats = state.filteredChats.map((c) =>
+        c.id === id ? { ...c, name: name ?? undefined } : c
+      );
+    },
   },
 });
 
-export const { setChats, filterChats } = messengerSlice.actions;
+export const { setChats, filterChats, changeRoomName } = messengerSlice.actions;
 export default messengerSlice.reducer;
