@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@redux/store";
 import InfoMessage from "@components/messages/InfoMessage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import DownloadModal from "./src/components/modals/chat/DownloadModal";
 
 function AppInner() {
   if (
@@ -51,6 +52,7 @@ function AppInner() {
         />
       )}
       <Navigator />
+      <DownloadModal />
     </>
   );
 }
