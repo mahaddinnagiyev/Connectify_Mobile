@@ -9,7 +9,11 @@ import React, { useState } from "react";
 import { styles } from "./styles/loginform";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@redux/store";
-import { setIsAuthenticated, setLoginForm } from "@redux/auth/authSlice";
+import {
+  setIsAuthenticated,
+  setLoginForm,
+  setToken,
+} from "@redux/auth/authSlice";
 import { login } from "@services/auth/auth.service";
 import {
   setErrorMessage,
@@ -21,6 +25,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamList } from "@navigation/AuthStack";
 import { MaterialIcons } from "@expo/vector-icons";
+import { getTokenFromSession } from "@/src/services/auth/token.service";
 
 const LoginForm = () => {
   const { navigate } =
@@ -37,6 +42,10 @@ const LoginForm = () => {
 
       const response = await login(loginForm);
       if (response.success) {
+        const token = await getTokenFromSession();
+        if (!token) return;
+
+        dispatch(setToken(token));
         dispatch(setSuccessMessage(response.message ?? "Login successful"));
         dispatch(setLoginForm({ username_or_email: null, password: null }));
         dispatch(setIsAuthenticated(true));

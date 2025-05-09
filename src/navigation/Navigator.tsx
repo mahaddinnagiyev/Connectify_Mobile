@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AuthStack from "./AuthStack";
 import UserStack from "./UserStack";
 import { getTokenFromSession } from "@services/auth/token.service";
-import { setIsAuthenticated } from "@redux/auth/authSlice";
+import { setIsAuthenticated, setToken } from "@redux/auth/authSlice";
 import type { RootState } from "@redux/store";
 import { color } from "@/colors";
 
@@ -41,6 +41,7 @@ export default function RootNavigator() {
     (async () => {
       const tokenObj = await getTokenFromSession();
       dispatch(setIsAuthenticated(!!tokenObj));
+      dispatch(setToken(tokenObj));
       setLoading(false);
     })();
   }, [dispatch]);

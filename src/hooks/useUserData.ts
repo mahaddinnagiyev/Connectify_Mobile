@@ -1,19 +1,23 @@
-import { useState, useEffect, useRef } from "react";
 import axios, { AxiosError } from "axios";
-import { UserResponse } from "@services/user/user.service";
-import { getTokenFromSession } from "@services/auth/token.service";
+import { useState, useEffect, useRef } from "react";
+import { Response } from "./useUpdateProfile";
+
+// Redux
 import {
   setErrorMessage,
   setSuccessMessage,
 } from "@redux/messages/messageSlice";
-import { useDispatch } from "react-redux";
-import { setOtherUserData } from "../redux/users/usersSlice";
-import { User } from "../services/user/dto/user.dto";
-import { Account } from "../services/account/dto/account.dto";
-import { PrivacySettings } from "../services/account/dto/privacy.dto";
-import { setIsAuthenticated } from "../redux/auth/authSlice";
-import { Response } from "./useUpdateProfile";
-import { updateUserFaceID } from "../redux/profile/myProfileSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setOtherUserData } from "@redux/users/usersSlice";
+import { setIsAuthenticated } from "@redux/auth/authSlice";
+import { updateUserFaceID } from "@redux/profile/myProfileSlice";
+import { RootState } from "@redux/store";
+
+// Services
+import { User } from "@services/user/dto/user.dto";
+import { UserResponse } from "@services/user/user.service";
+import { Account } from "@services/account/dto/account.dto";
+import { PrivacySettings } from "@services/account/dto/privacy.dto";
 
 interface ApiResponse {
   success: boolean;
@@ -56,6 +60,7 @@ interface GetMyDataResponse {
 
 export function useUserData() {
   const dispatch = useDispatch();
+  const { token } = useSelector((state: RootState) => state.auth);
   const [userResponse, setUserResponse] = useState<UserResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -73,7 +78,7 @@ export function useUserData() {
         {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
           signal: abortControllerRef.current?.signal,
@@ -154,7 +159,7 @@ export function useUserData() {
         {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -208,7 +213,7 @@ export function useUserData() {
         {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -234,7 +239,7 @@ export function useUserData() {
         {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -264,7 +269,7 @@ export function useUserData() {
         {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }

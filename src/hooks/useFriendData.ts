@@ -1,7 +1,8 @@
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 import { Response } from "./useUpdateProfile";
-import { getTokenFromSession } from "@services/auth/token.service";
+
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import {
   acceptFriendshipRequest,
@@ -13,17 +14,21 @@ import {
   setSentFriendshipRequests,
 } from "@redux/friend/myFriendsSlice";
 import {
+  setErrorMessage,
+  setSuccessMessage,
+} from "@redux/messages/messageSlice";
+import { RootState } from "@redux/store";
+
+// Enums
+import { FriendshipAction } from "@enums/friendship.enum";
+
+// Services
+import {
   FriendshipRecieveRequestDTO,
   FriendshipSentRequestDTO,
   UserFriendsDTO,
 } from "@services/friends/friends.dto";
-import {
-  setErrorMessage,
-  setSuccessMessage,
-} from "@redux/messages/messageSlice";
 import { BlockAction, BlockListDTO } from "@services/friends/blockList.dto";
-import { FriendshipAction } from "@enums/friendship.enum";
-import { RootState } from "../redux/store";
 
 interface MyFriendsReponse {
   success: boolean;
@@ -52,11 +57,6 @@ interface BlockerListResponse {
   response: { success: boolean; error?: string; message?: string };
 }
 
-async function getToken() {
-  const token = await getTokenFromSession();
-  return token ?? null;
-}
-
 export function useFriendData() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +66,7 @@ export function useFriendData() {
   const [isBlocking, setIsBlocking] = useState(false);
   const [isBlockerListLoading, setIsBlockerListLoading] = useState(false);
 
+  const { token } = useSelector((state: RootState) => state.auth);
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const fetchAllMyFriends = async () => {
@@ -77,7 +78,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -113,7 +114,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -158,7 +159,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -205,7 +206,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -244,7 +245,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -284,7 +285,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -320,7 +321,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -357,7 +358,7 @@ export function useFriendData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }

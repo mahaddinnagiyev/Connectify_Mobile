@@ -1,9 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
+
+// Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
-import { useDispatch } from "react-redux";
+
+// Redux
+import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { setErrorMessage } from "@redux/messages/messageSlice";
-import { getTokenFromSession } from "../services/auth/token.service";
 
 interface MediaResponse {
   success: boolean;
@@ -23,6 +27,7 @@ interface UploadResponse {
 
 export function useChatData() {
   const dispatch = useDispatch();
+  const { token } = useSelector((state: RootState) => state.auth);
   const [medias, setMedias] = useState<MessagesDTO[]>([]);
   const [isMediasLoading, setIsMediasLoading] = useState<boolean>(false);
   const [isUploadingAudio, setIsUploadingAudio] = useState<boolean>(false);
@@ -37,7 +42,7 @@ export function useChatData() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -78,7 +83,7 @@ export function useChatData() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -118,7 +123,7 @@ export function useChatData() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -158,7 +163,7 @@ export function useChatData() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
@@ -198,7 +203,7 @@ export function useChatData() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${await getTokenFromSession()}`,
+            Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }

@@ -7,6 +7,8 @@ interface AuthState {
   isAuthenticated: boolean;
   activeTab: AuthPage;
 
+  token: string | null;
+
   // Login
   authType: AuthType;
   isFaceIDModalOpen: boolean;
@@ -26,6 +28,8 @@ interface AuthState {
 const initialState: AuthState = {
   isAuthenticated: false,
   activeTab: AuthPage.LOGIN,
+
+  token: null,
 
   // Login
   authType: AuthType.PASSWORD,
@@ -81,6 +85,11 @@ export const authSlice = createSlice({
     setCode: (state, action) => {
       state.code = action.payload;
     },
+
+    // Token
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
   },
 });
 
@@ -93,5 +102,6 @@ export const {
   setFaceIdLoginForm,
   setSignupForm,
   setCode,
+  setToken,
 } = authSlice.actions;
 export default authSlice.reducer;
