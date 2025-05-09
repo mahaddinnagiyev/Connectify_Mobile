@@ -1,12 +1,22 @@
 import React from "react";
-import { Provider } from "react-redux";
-import { store } from "@redux/store";
-import Navigator from "@navigation/Navigator";
-import { SocketProvider } from "@context/SocketContext";
 import { Platform, UIManager } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+// Navigation
+import Navigator from "@navigation/Navigator";
+
+// Context
+import { SocketProvider } from "@context/SocketContext";
+
+// Components
 import ErrorMessage from "@components/messages/ErrorMessage";
 import SuccessMessage from "@components/messages/SuccessMessage";
+import InfoMessage from "@components/messages/InfoMessage";
+import DownloadModal from "@components/modals/chat/DownloadModal";
+
+// Redux
+import { Provider } from "react-redux";
+import { store } from "@redux/store";
 import {
   clearErrorMessage,
   clearInfoMessage,
@@ -14,9 +24,6 @@ import {
 } from "@redux/messages/messageSlice";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@redux/store";
-import InfoMessage from "@components/messages/InfoMessage";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import DownloadModal from "./src/components/modals/chat/DownloadModal";
 
 function AppInner() {
   if (
@@ -30,6 +37,7 @@ function AppInner() {
   const { errorMessage, successMessage, infoMessage } = useSelector(
     (state: RootState) => state.messages
   );
+  const { downloadMessages } = useSelector((state: RootState) => state.chat);
 
   return (
     <>
@@ -51,8 +59,8 @@ function AppInner() {
           onClose={() => dispatch(clearInfoMessage())}
         />
       )}
+      {downloadMessages.length > 0 && <DownloadModal />}
       <Navigator />
-      <DownloadModal />
     </>
   );
 }

@@ -5,12 +5,14 @@ interface ChatState {
   inputHeight: number;
   showBackToBottom: boolean;
   messages: MessagesDTO[];
+  downloadMessages: MessagesDTO[];
 }
 
 const initialState: ChatState = {
   inputHeight: 35,
   showBackToBottom: false,
   messages: [],
+  downloadMessages: [],
 };
 
 export const chatSlice = createSlice({
@@ -31,9 +33,34 @@ export const chatSlice = createSlice({
         state.messages.push(action.payload);
       }
     },
+
+    // Download Messages
+    addDownloadMessage: (state, action: PayloadAction<MessagesDTO>) => {
+      if (state.downloadMessages.find((m) => m.id === action.payload.id))
+        return;
+
+      state.downloadMessages.push(action.payload);
+    },
+    removeDownloadMessage: (state, action: PayloadAction<string>) => {
+      state.downloadMessages = state.downloadMessages.filter(
+        (m) => m.id !== action.payload
+      );
+    },
+    clearDownloadMessages: (state) => {
+      state.downloadMessages = [];
+    },
   },
 });
 
-export const { setInputHeight, setShowBackToBottom, setMessages, addMessage } =
-  chatSlice.actions;
+export const {
+  setInputHeight,
+  setShowBackToBottom,
+  setMessages,
+  addMessage,
+
+  // Download Messages
+  addDownloadMessage,
+  removeDownloadMessage,
+  clearDownloadMessages,
+} = chatSlice.actions;
 export default chatSlice.reducer;

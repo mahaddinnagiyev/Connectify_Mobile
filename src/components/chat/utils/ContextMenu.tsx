@@ -12,6 +12,7 @@ import { color } from "@/colors";
 import { styles } from "../styles/contextMenu.style";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
+import { addDownloadMessage } from "@/src/redux/chat/chatSlice";
 
 interface Props {
   message: MessagesDTO;
@@ -117,7 +118,7 @@ const ContextMenu: React.FC<Props> = ({
       case MessageType.VIDEO:
       case MessageType.FILE:
         menuItems.push({
-          id: "Download",
+          id: "download",
           title: `Download ${
             message.message_type === MessageType.FILE
               ? "File"
@@ -201,6 +202,9 @@ const ContextMenu: React.FC<Props> = ({
                         break;
                       case "details":
                         onDetail?.();
+                        break;
+                      case "download":
+                        dispatch(addDownloadMessage(message));
                         break;
                     }
                   }}

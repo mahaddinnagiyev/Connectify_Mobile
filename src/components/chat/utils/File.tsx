@@ -12,6 +12,9 @@ import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
 import { truncate } from "@functions/messages.function";
+import { useDispatch } from "react-redux";
+import { addDownloadMessage } from "@redux/chat/chatSlice";
+import { setSuccessMessage } from "@redux/messages/messageSlice";
 
 interface Props {
   message: MessagesDTO;
@@ -19,18 +22,16 @@ interface Props {
 }
 
 const File: React.FC<Props> = ({ message, bubbleStyle }) => {
+  const dispatch = useDispatch();
+
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
   const iconColor =
     message.sender_id !== chat.otherUser.id ? "white" : color.primaryColor;
 
-  const handleDownload = async (url: string) => {
-    try {
-      await Linking.openURL(url);
-    } catch (err) {
-      console.warn("Download failed", err);
-    }
+  const handleDownload = async () => {
+    dispatch(addDownloadMessage(message));
   };
 
   return (
@@ -61,7 +62,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => handleDownload(message.content)}
+        onPress={handleDownload}
         style={styles.downloadIconContainer}
       >
         <MaterialIcons name="file-download" size={24} color={iconColor} />

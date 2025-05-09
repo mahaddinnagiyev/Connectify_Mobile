@@ -41,6 +41,7 @@ import {
   setReceivedFriendshipRequests,
   setSentFriendshipRequests,
 } from "@redux/friend/myFriendsSlice";
+import { clearDownloadMessages } from "@redux/chat/chatSlice";
 
 interface HeaderProps {
   activeTab: string;
@@ -87,6 +88,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
         dispatch(setBlockList([]));
         dispatch(setBlockerList([]));
         dispatch(setIsAuthenticated(false));
+        dispatch(clearDownloadMessages());
         dispatch(setToken(null));
       } else {
         dispatch(
