@@ -10,22 +10,41 @@ import {
 import React from "react";
 import { styles } from "./styles/personal-info";
 import { color } from "@/colors";
+
+// Expo And Components
 import {
   Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { UserData } from "./ProfilePage";
+import ConfirmModal from "../modals/confirm/ConfirmModal";
 import ChangePhotoModal from "../modals/profile/ChangePhotoModal";
 import ProfilePhotoModal from "../modals/profile/ProfilePhotoModal";
-import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
-import { UserData } from "./ProfilePage";
-import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
 import PrivacyLegendModal from "../modals/profile/PrivacyLegendModal";
-import { useSelector } from "react-redux";
-import { RootState } from "@redux/store";
+import EditProfileInfoModal from "../modals/profile/EditProfileInfoModal";
+
+// Context
+import { useSocketContext } from "@context/SocketContext";
+
+// Services
 import { BlockAction } from "@services/friends/blockList.dto";
+import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
+import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
+
+// Redux
+import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { addChat } from "@redux/messenger/messengerSlice";
+
+// Navigation
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackParamList } from "@navigation/UserStack";
+
+// Hooks
+import { useUserData } from "@hooks/useUserData";
 import { useFriendData } from "@hooks/useFriendData";
-import ConfirmModal from "../modals/confirm/ConfirmModal";
 
 interface PersonalInfoProps {
   isMyProfileScreen: boolean;
@@ -74,6 +93,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   );
 
   // States And Functions
+  const dispatch = useDispatch();
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const { getUserByID } = useUserData();
+
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [showImageModal, setShowImageModal] = React.useState<boolean>(false);
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
@@ -81,6 +106,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     React.useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] =
     React.useState<boolean>(false);
+
+  const socket = useSocketContext();
 
   const {
     friends,
@@ -188,6 +215,31 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     );
   };
 
+  const handleGoChat = (userId: string) => {
+    socket?.emit("joinRoom", { user2Id: userId });
+    socket?.once("joinRoomSuccess", async (data: { room: ChatRoomsDTO }) => {
+      if (data && data.room) {
+        const otherUserId = data.room.user_ids.find(
+          (id) => id === userData.user.id
+        );
+        if (!otherUserId) return;
+        const userInfo = await getUserByID(otherUserId);
+        const newChat = {
+          ...data.room,
+          name: data.room.name ?? null,
+          otherUser: userInfo?.user!,
+          otherUserAccount: userInfo?.account!,
+          otherUserPrivacySettings: userInfo?.privacy_settings!,
+        };
+
+        dispatch(addChat(newChat));
+        navigate("Chat", {
+          chat: newChat,
+        });
+      }
+    });
+  };
+
   return (
     <>
       <View style={styles.container}>
@@ -228,7 +280,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                   />
                 ) : (
                   <View style={styles.actionButtonsContainer}>
-                    <TouchableOpacity style={styles.actionButton}>
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleGoChat(userData.user.id)}
+                    >
                       <Ionicons name="chatbubble" size={20} color="white" />
                       <Text style={styles.actionButtonText}>Message</Text>
                     </TouchableOpacity>

@@ -7,18 +7,30 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { styles } from "./styles/friendRequests";
+
+// Expo And Components
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from "date-fns";
+import { styles } from "./styles/friendRequests.style";
+import ConfirmModal from "../modals/confirm/ConfirmModal";
+
+// Redux
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
+
+// Hooks
 import { useFriendData } from "@hooks/useFriendData";
+
+// Services
 import { BlockAction } from "@services/friends/blockList.dto";
-import ConfirmModal from "../modals/confirm/ConfirmModal";
+
+// Enums
 import { FriendshipAction } from "@enums/friendship.enum";
+
+// Navigation
 import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface RequestItem {
   id: string;

@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  StyleSheet,
   TextInput,
   FlatList,
   Image,
@@ -9,22 +8,41 @@ import {
 } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { color } from "@/colors";
+import { styles } from "./styles/myFriends.style";
+
+// Hooks
 import { useFriendData } from "@hooks/useFriendData";
-import { useSelector } from "react-redux";
+import { useUserData } from "@hooks/useUserData";
+
+// Redux
 import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { addChat } from "@redux/messenger/messengerSlice";
+
+// Navigation
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
 
+// Context
+import { useSocketContext } from "@context/SocketContext";
+
+// Services
+import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
+
 const MyFriends: React.FC = () => {
+  const dispatch = useDispatch();
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { isLoading, fetchAllMyFriends } = useFriendData();
+  const { getUserByID } = useUserData();
 
   const { friends } = useSelector((state: RootState) => state.myFriends);
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const [searchQuery, setSearchQuery] = React.useState("");
+
+  const socket = useSocketContext();
 
   React.useEffect(() => {
     fetchAllMyFriends();
@@ -42,6 +60,31 @@ const MyFriends: React.FC = () => {
         f.last_name.toLowerCase().includes(q)
     );
   }, [searchQuery, friends]);
+
+  const handleGoChat = (userId: string) => {
+    socket?.emit("joinRoom", { user2Id: userId });
+    socket?.once("joinRoomSuccess", async (data: { room: ChatRoomsDTO }) => {
+      if (data && data.room) {
+        const otherUserId = data.room.user_ids.find(
+          (id) => id !== userData.user.id
+        );
+        if (!otherUserId) return;
+        const userInfo = await getUserByID(otherUserId);
+        const newChat = {
+          ...data.room,
+          name: data.room.name ?? null,
+          otherUser: userInfo?.user!,
+          otherUserAccount: userInfo?.account!,
+          otherUserPrivacySettings: userInfo?.privacy_settings!,
+        };
+
+        dispatch(addChat(newChat));
+        navigate("Chat", {
+          chat: newChat,
+        });
+      }
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -96,9 +139,12 @@ const MyFriends: React.FC = () => {
 
             {/* Actions */}
             <View style={styles.actions}>
-              <View style={styles.statusIndicator}>
+              <Pressable
+                style={styles.statusIndicator}
+                onPress={() => handleGoChat(item.friend_id)}
+              >
                 <Text style={styles.statusText}>G</Text>
-              </View>
+              </Pressable>
             </View>
           </Pressable>
         )}
@@ -106,98 +152,5 @@ const MyFriends: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  headerText: {
-    fontSize: 24,
-    margin: "auto",
-    fontWeight: "700",
-    marginBottom: 20,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F8F9FA",
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginBottom: 15,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#333",
-  },
-  friendItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 15,
-    borderWidth: 2,
-    borderColor: color.primaryColor,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2D3436",
-  },
-  username: {
-    fontSize: 14,
-    color: "#636E72",
-    marginTop: 2,
-  },
-  actions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 15,
-  },
-  statusIndicator: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#E8F5E9",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  statusText: {
-    color: color.primaryColor,
-    fontWeight: "700",
-  },
-  noFriendsText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2D3436",
-    marginTop: 20,
-    textAlign: "center",
-  },
-});
 
 export default MyFriends;

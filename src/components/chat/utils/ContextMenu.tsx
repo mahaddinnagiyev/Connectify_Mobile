@@ -1,18 +1,24 @@
 import { Text, View, Animated, Pressable, Platform } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import * as Clipboard from "expo-clipboard";
-import { MessagesDTO } from "@services/messenger/messenger.dto";
-import { MessageType } from "@services/messenger/messenger.dto";
+import React, { useEffect, useRef } from "react";
+
+// Components
 import Image from "./Image";
 import Video from "./Video";
 import File from "./File";
 import Audio from "./Audio";
-import { MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
+import * as Clipboard from "expo-clipboard";
+import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "../styles/contextMenu.style";
+
+// Services
+import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { MessageType } from "@services/messenger/messenger.dto";
+
+// Redux
 import { setSuccessMessage } from "@redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
-import { addDownloadMessage } from "@/src/redux/chat/chatSlice";
+import { addDownloadMessage } from "@redux/chat/chatSlice";
 
 interface Props {
   message: MessagesDTO;

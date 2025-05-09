@@ -7,6 +7,13 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { styles } from "./styles/loginform";
+import { color } from "@/colors";
+
+// Expo
+import { Audio } from "expo-av";
+import { MaterialIcons } from "@expo/vector-icons";
+
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import {
@@ -14,18 +21,19 @@ import {
   setLoginForm,
   setToken,
 } from "@redux/auth/authSlice";
-import { login } from "@services/auth/auth.service";
 import {
   setErrorMessage,
   setSuccessMessage,
 } from "@redux/messages/messageSlice";
-import { color } from "@/colors";
-import { Audio } from "expo-av";
+
+// Navigation
+import { login } from "@services/auth/auth.service";
+import { StackParamList } from "@navigation/AuthStack";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { StackParamList } from "@navigation/AuthStack";
-import { MaterialIcons } from "@expo/vector-icons";
-import { getTokenFromSession } from "@/src/services/auth/token.service";
+
+// Services
+import { getTokenFromSession } from "@services/auth/token.service";
 
 const LoginForm = () => {
   const { navigate } =

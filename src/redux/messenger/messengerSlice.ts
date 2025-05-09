@@ -32,6 +32,7 @@ export const messengerSlice = createSlice({
       }
     },
     addChat: (state, action: PayloadAction<Chat>) => {
+      if (state.chats.find((c) => c.id === action.payload.id)) return;
       state.chats.push(action.payload);
       state.filteredChats.push(action.payload);
     },
