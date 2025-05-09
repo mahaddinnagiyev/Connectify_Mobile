@@ -16,18 +16,30 @@ import { color } from "@/colors";
 
 // Navigation
 import { useNavigation } from "@react-navigation/native";
-import type { StackParamList } from "@navigation/Navigator";
+import type { StackParamList } from "@navigation/UserStack";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Redux
-import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { addChat } from "@redux/messenger/messengerSlice";
 
 // Hooks
 import { useFriendData } from "@hooks/useFriendData";
-import { truncate } from "@/src/functions/messages.function";
+import { useUserData } from "@hooks/useUserData";
+
+// Functions
+import { truncate } from "@functions/messages.function";
+
+// Services
+import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
+
+// Context
+import { useSocketContext } from "@context/SocketContext";
 
 interface Friend {
+  id: string;
+  friend_id: string;
   first_name: string;
   last_name: string;
   username: string;
@@ -35,9 +47,14 @@ interface Friend {
 }
 
 const MyFriendsScreen = () => {
-  const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const dispatch = useDispatch();
+  const { navigate, goBack } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { friends } = useSelector((state: RootState) => state.myFriends);
+  const { userData } = useSelector((state: RootState) => state.myProfile);
+
   const { fetchAllMyFriends } = useFriendData();
+  const { getUserByID } = useUserData();
 
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const handleRefresh = useCallback(() => {
@@ -86,6 +103,33 @@ const MyFriendsScreen = () => {
     );
   }, [friends, searchQuery]);
 
+  const socket = useSocketContext();
+
+  const handleGoChat = (userId: string) => {
+    socket?.emit("joinRoom", { user2Id: userId });
+    socket?.once("joinRoomSuccess", async (data: { room: ChatRoomsDTO }) => {
+      if (data && data.room) {
+        const otherUserId = data.room.user_ids.find(
+          (id) => id !== userData.user.id
+        );
+        if (!otherUserId) return;
+        const userInfo = await getUserByID(otherUserId);
+        const newChat = {
+          ...data.room,
+          name: data.room.name ?? null,
+          otherUser: userInfo?.user!,
+          otherUserAccount: userInfo?.account!,
+          otherUserPrivacySettings: userInfo?.privacy_settings!,
+        };
+
+        dispatch(addChat(newChat));
+        navigate("Chat", {
+          chat: newChat,
+        });
+      }
+    });
+  };
+
   const refreshControl = (
     <RefreshControl
       refreshing={refreshing}
@@ -100,10 +144,7 @@ const MyFriendsScreen = () => {
       {/* Friends Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Friend List</Text>
-        <Pressable
-          style={styles.headerButton}
-          onPress={() => navigate.goBack()}
-        >
+        <Pressable style={styles.headerButton} onPress={() => goBack()}>
           <Text
             style={{
               fontSize: 16,
@@ -144,7 +185,7 @@ const MyFriendsScreen = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.chat}
-            onPress={() => navigate.navigate("Chat")}
+            onPress={() => handleGoChat(item.friend_id)}
           >
             <Image
               source={

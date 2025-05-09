@@ -31,20 +31,25 @@ export const messengerSlice = createSlice({
         );
       }
     },
+    addChat: (state, action: PayloadAction<Chat>) => {
+      state.chats.push(action.payload);
+      state.filteredChats.push(action.payload);
+    },
     changeRoomName: (
       state,
       action: PayloadAction<{ id: string; name: string | null }>
     ) => {
       const { id, name } = action.payload;
       state.chats = state.chats.map((c) =>
-        c.id === id ? { ...c, name: name ?? undefined } : c
+        c.id === id ? { ...c, name: name ?? null } : c
       );
       state.filteredChats = state.filteredChats.map((c) =>
-        c.id === id ? { ...c, name: name ?? undefined } : c
+        c.id === id ? { ...c, name: name ?? null } : c
       );
     },
   },
 });
 
-export const { setChats, filterChats, changeRoomName } = messengerSlice.actions;
+export const { setChats, filterChats, addChat, changeRoomName } =
+  messengerSlice.actions;
 export default messengerSlice.reducer;

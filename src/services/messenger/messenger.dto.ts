@@ -46,7 +46,7 @@ export interface ChatRoomsDTO {
 
 export interface Chat {
   id: string;
-  name?: string;
+  name: string | null;
   user_ids: string[];
   created_at: Date;
   updated_at: Date;

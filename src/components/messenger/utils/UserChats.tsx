@@ -8,21 +8,30 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
+import { color } from "@/colors";
+import { styles } from "../styles/userChats.style";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+// Navigation
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
+
+// Redux
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { useMessengerData } from "@hooks/useMessengerData";
-import { styles } from "../styles/userChats.style";
-import { color } from "@/colors";
+
+// Functions
 import { truncate } from "@functions/messages.function";
 import { formatTime } from "@functions/chat.functions";
-import { MessageType } from "@/src/services/messenger/messenger.dto";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+// Services
+import { MessageType } from "@services/messenger/messenger.dto";
 
 const UserChats = () => {
-  const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { filteredChats } = useSelector((state: RootState) => state.messenger);
   const { fetchChats, isChatsLoading } = useMessengerData();
 
@@ -152,7 +161,7 @@ const UserChats = () => {
                     key={chat.id}
                     style={styles.chat}
                     onPress={() =>
-                      navigate.navigate("Chat", {
+                      navigate("Chat", {
                         chat: chat,
                       })
                     }
