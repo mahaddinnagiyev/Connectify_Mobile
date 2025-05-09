@@ -106,6 +106,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     React.useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] =
     React.useState<boolean>(false);
+  const [isCreatingRoom, setIsCreatingRoom] = React.useState<boolean>(false);
 
   const socket = useSocketContext();
 
@@ -218,6 +219,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   const handleGoChat = (userId: string) => {
     socket?.emit("joinRoom", { user2Id: userId });
     socket?.once("joinRoomSuccess", async (data: { room: ChatRoomsDTO }) => {
+      setIsCreatingRoom(true);
       if (data && data.room) {
         const otherUserId = data.room.user_ids.find(
           (id) => id === userData.user.id
@@ -232,6 +234,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           otherUserPrivacySettings: userInfo?.privacy_settings!,
         };
 
+        setIsCreatingRoom(false);
         dispatch(addChat(newChat));
         navigate("Chat", {
           chat: newChat,
