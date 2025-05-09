@@ -20,7 +20,7 @@ export function useMessengerData() {
 
   const [isChatsLoading, setIsChatsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const fetchChats = () => {
     setIsChatsLoading(true);
     if (!socket || !userData) return;
     socket.emit("getChatRooms");
@@ -66,7 +66,11 @@ export function useMessengerData() {
     return () => {
       socket.off("getChatRooms", handler);
     };
+  };
+
+  useEffect(() => {
+    fetchChats();
   }, [socket, userData]);
 
-  return { fetchChats: () => socket?.emit("getChatRooms"), isChatsLoading };
+  return { fetchChats, isChatsLoading };
 }
