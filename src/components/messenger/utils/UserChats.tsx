@@ -181,7 +181,7 @@ const UserChats = () => {
                       </Text>
 
                       <View style={styles.lastMessage}>
-                        <Text>{message}</Text>
+                        <Text numberOfLines={1}>{message}</Text>
                         <Text style={{ fontSize: 9 }}>{time}</Text>
                       </View>
                     </View>

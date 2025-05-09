@@ -1,6 +1,5 @@
 import {
-  ActivityIndicator,
-  Modal,
+  RefreshControl,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,19 +7,36 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import ProfilePage from "@components/profile/ProfilePage";
-import { useUserData } from "@hooks/useUserData";
 import { color } from "@/colors";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+// Navigation
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
-import { SafeAreaView } from "react-native-safe-area-context";
+
+// Components
+import ProfilePage from "@components/profile/ProfilePage";
+
+// Hooks
+import { useUserData } from "@hooks/useUserData";
 
 const UserProfileScreen = () => {
   const { getUserByUsername, isOtherUserDataLoading } = useUserData();
 
   const route = useRoute<RouteProp<StackParamList, "OtherUserProfile">>();
   const { username } = route.params;
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await getUserByUsername(username);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   React.useEffect(() => {
     const handleGetUserData = async () => {
@@ -31,6 +47,15 @@ const UserProfileScreen = () => {
   }, [username]);
 
   const navigate = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const refreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={handleRefresh}
+      colors={[color.primaryColor]}
+      tintColor={color.primaryColor}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,8 +69,14 @@ const UserProfileScreen = () => {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <ProfilePage isMyProfileScreen={false} isLoading={isOtherUserDataLoading} />
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={refreshControl}
+      >
+        <ProfilePage
+          isMyProfileScreen={false}
+          isLoading={isOtherUserDataLoading || refreshing}
+        />
       </ScrollView>
     </SafeAreaView>
   );

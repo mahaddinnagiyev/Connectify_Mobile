@@ -8,17 +8,23 @@ import {
   RefreshControl,
 } from "react-native";
 import { TabView } from "react-native-tab-view";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@redux/store";
+import { color } from "@/colors";
+
+// Components
 import ProfileHeader from "@components/profile/ProfileHeader";
 import ProfilePage from "@components/profile/ProfilePage";
 import MyFriends from "@components/friends/MyFriends";
 import FriendRequests from "@components/friends/FriendRequests";
 import BlockList from "@components/block/BlockList";
-import { setActiveIndex, setUserData } from "@redux/profile/myProfileSlice";
+
+// Redux
+import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { setErrorMessage } from "@redux/messages/messageSlice";
+import { setActiveIndex, setUserData } from "@redux/profile/myProfileSlice";
+
+// Hooks
 import { useUserData } from "@hooks/useUserData";
-import { color } from "@/colors";
 import { useFriendData } from "@hooks/useFriendData";
 
 export default function MyProfileScreen() {
