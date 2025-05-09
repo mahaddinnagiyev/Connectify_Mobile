@@ -33,7 +33,7 @@ import {
 } from "@redux/messages/messageSlice";
 import { toggleModal } from "@redux/header/headerSlice";
 import { setChats } from "@redux/messenger/messengerSlice";
-import { setIsAuthenticated } from "@redux/auth/authSlice";
+import { setIsAuthenticated, setToken } from "@redux/auth/authSlice";
 import {
   setBlockerList,
   setBlockList,
@@ -87,6 +87,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
         dispatch(setBlockList([]));
         dispatch(setBlockerList([]));
         dispatch(setIsAuthenticated(false));
+        dispatch(setToken(null));
       } else {
         dispatch(
           setErrorMessage(

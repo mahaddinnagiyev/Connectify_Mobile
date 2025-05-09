@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { getTokenFromSession } from "@services/auth/token.service";
+
+// Redux
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -10,12 +13,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-
+  const { token } = useSelector((state: RootState) => state.auth);
+  
   useEffect(() => {
     let sock: Socket | null = null;
 
     (async () => {
-      const token = await getTokenFromSession();
       if (!token) return;
 
       sock = io(process.env.SERVER_WEB_SOCKET_URL!, {
@@ -29,7 +32,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       sock?.disconnect();
     };
-  }, []);
+  }, [token]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
