@@ -33,6 +33,9 @@ export const chatSlice = createSlice({
         state.messages.push(action.payload);
       }
     },
+    removeMessage: (state, action: PayloadAction<string>) => {
+      state.messages = state.messages.filter((m) => m.id !== action.payload);
+    },
 
     // Download Messages
     addDownloadMessage: (state, action: PayloadAction<MessagesDTO>) => {
@@ -57,6 +60,7 @@ export const {
   setShowBackToBottom,
   setMessages,
   addMessage,
+  removeMessage,
 
   // Download Messages
   addDownloadMessage,

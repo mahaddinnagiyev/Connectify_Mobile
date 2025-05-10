@@ -19,7 +19,7 @@ import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
-import { addMessage, setMessages } from "@redux/chat/chatSlice";
+import { addMessage, removeMessage, setMessages } from "@redux/chat/chatSlice";
 
 // Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -31,7 +31,7 @@ import { useSocketContext } from "@context/SocketContext";
 // Functions
 import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
 
-// Utils
+// Utils And Components
 import Image from "./utils/Image";
 import Video from "./utils/Video";
 import File from "./utils/File";
@@ -102,6 +102,17 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
     };
   }, [socket, chat, dispatch]);
 
+  useEffect(() => {
+    const handleDelete = (data: { messageId: string; roomId: string }) => {
+      if (data.roomId !== chat.id) return;
+      dispatch(removeMessage(data.messageId));
+    };
+    socket?.on("messageDeleted", handleDelete);
+    return () => {
+      socket?.off("messageDeleted", handleDelete);
+    };
+  }, [socket, chat.id, dispatch]);
+
   const loadMoreMessages = useCallback(
     async (newLimit: number) => {
       if (!hasMoreMessagesLoading && hasMoreMessages) {
@@ -125,6 +136,15 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
       }
     },
     [hasMoreMessages, chat.id, socket, dispatch]
+  );
+
+  const handleUnsendMessage = useCallback(
+    (messageId: string) => {
+      if (!messageId) return;
+
+      socket?.emit("unsendMessage", { roomId: chat.id, messageId });
+    },
+    [chat.id, socket]
   );
 
   return (
@@ -351,7 +371,10 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
         <ContextMenu
           message={selectedMessage}
           onClose={() => setContextMenuVisible(false)}
-          onDelete={() => console.log("Delete")}
+          onDelete={() => {
+            handleUnsendMessage(selectedMessage.id);
+            setContextMenuVisible(false);
+          }}
           onDetail={() => setIsDetailMenuVisible(true)}
           userId={userData.user.id}
           setReplyMessage={setReplyMessage}
