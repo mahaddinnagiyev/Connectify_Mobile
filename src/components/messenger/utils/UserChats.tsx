@@ -18,8 +18,13 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { StackParamList } from "@navigation/UserStack";
 
 // Redux
-import { useSelector } from "react-redux";
+import {
+  bumpChat,
+  updateLastMessage,
+  updateUnreadCount,
+} from "@redux/messenger/messengerSlice";
 import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { useMessengerData } from "@hooks/useMessengerData";
 
 // Functions
@@ -27,13 +32,19 @@ import { truncate } from "@functions/messages.function";
 import { formatTime } from "@functions/chat.functions";
 
 // Services
-import { MessageType } from "@services/messenger/messenger.dto";
+import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+
+// Context
+import { useSocketContext } from "@context/SocketContext";
 
 const UserChats = () => {
+  const dispatch = useDispatch();
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { filteredChats } = useSelector((state: RootState) => state.messenger);
   const { fetchChats, isChatsLoading } = useMessengerData();
+
+  const socket = useSocketContext();
 
   const [refrehing, setRefreshing] = React.useState<boolean>(false);
   const [isRefreshChatsLoading, setIsRefreshChatsLoading] =
@@ -49,6 +60,37 @@ const UserChats = () => {
       setIsRefreshChatsLoading(false);
     }
   };
+
+  React.useEffect(() => {
+    const handleNewGlobal = (message: MessagesDTO) => {
+      dispatch(bumpChat({ chatId: message.room_id, message }));
+    };
+
+    const handleLastMessageUpdated = (payload: {
+      roomId: string;
+      lastMessage: MessagesDTO;
+    }) => {
+      if (payload.lastMessage) {
+        dispatch(updateLastMessage(payload.lastMessage));
+      }
+    };
+
+    const handleUpdateUnreadCount = (payload: {
+      roomId: string;
+      count: number;
+    }) => {
+      dispatch(updateUnreadCount({ id: payload.roomId }));
+    };
+
+    socket?.on("newMessage", handleNewGlobal);
+    socket?.on("unreadCountUpdated", handleUpdateUnreadCount);
+    socket?.on("lastMessageUpdated", handleLastMessageUpdated);
+    return () => {
+      socket?.off("newMessage", handleNewGlobal);
+      socket?.off("unreadCountUpdated", handleUpdateUnreadCount);
+      socket?.off("lastMessageUpdated", handleLastMessageUpdated);
+    };
+  }, [socket, dispatch]);
 
   const refreshControl = (
     <RefreshControl

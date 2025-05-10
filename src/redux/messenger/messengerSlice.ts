@@ -1,4 +1,4 @@
-import { Chat } from "@services/messenger/messenger.dto";
+import { Chat, MessagesDTO } from "@services/messenger/messenger.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface MessengerState {
@@ -31,6 +31,57 @@ export const messengerSlice = createSlice({
         );
       }
     },
+    bumpChat: (
+      state,
+      action: PayloadAction<{ chatId: string; message: MessagesDTO }>
+    ) => {
+      const { chatId, message } = action.payload;
+      const idx = state.chats.findIndex((c) => c.id === chatId);
+      if (idx !== -1) {
+        const chat = {
+          ...state.chats[idx],
+          lastMessage: message,
+          unreadCount: (state.chats[idx].unreadCount || 0) + 1,
+        };
+        state.chats.splice(idx, 1);
+        state.chats.unshift(chat);
+      }
+
+      const fidx = state.filteredChats.findIndex((c) => c.id === chatId);
+      if (fidx !== -1) {
+        const fchat = {
+          ...state.filteredChats[fidx],
+          lastMessage: message,
+          unreadCount: (state.filteredChats[fidx].unreadCount || 0) + 1,
+        };
+        state.filteredChats.splice(fidx, 1);
+        state.filteredChats.unshift(fchat);
+      }
+    },
+    updateLastMessage: (state, action: PayloadAction<MessagesDTO>) => {
+      const idx = state.chats.findIndex((c) => c.id === action.payload.room_id);
+      if (idx !== -1) {
+        state.chats[idx].lastMessage = action.payload;
+      }
+
+      const fidx = state.filteredChats.findIndex(
+        (c) => c.id === action.payload.room_id
+      );
+
+      if (fidx !== -1) {
+        state.filteredChats[fidx].lastMessage = action.payload;
+      }
+    },
+    updateUnreadCount: (state, action: PayloadAction<{ id: string }>) => {
+      const { id } = action.payload;
+      state.chats = state.chats.map((c) =>
+        c.id === id ? { ...c, unreadCount: 0 } : c
+      );
+      state.filteredChats = state.filteredChats.map((c) =>
+        c.id === id ? { ...c, unreadCount: 0 } : c
+      );
+    },
+
     addChat: (state, action: PayloadAction<Chat>) => {
       if (state.chats.find((c) => c.id === action.payload.id)) return;
       state.chats.push(action.payload);
@@ -51,6 +102,13 @@ export const messengerSlice = createSlice({
   },
 });
 
-export const { setChats, filterChats, addChat, changeRoomName } =
-  messengerSlice.actions;
+export const {
+  setChats,
+  filterChats,
+  bumpChat,
+  updateLastMessage,
+  updateUnreadCount,
+  addChat,
+  changeRoomName,
+} = messengerSlice.actions;
 export default messengerSlice.reducer;

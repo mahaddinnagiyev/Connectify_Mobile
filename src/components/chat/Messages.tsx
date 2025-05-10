@@ -17,8 +17,9 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 
 // Redux
-import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { bumpChat } from "@redux/messenger/messengerSlice";
 import { addMessage, removeMessage, setMessages } from "@redux/chat/chatSlice";
 
 // Navigation
