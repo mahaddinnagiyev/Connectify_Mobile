@@ -45,6 +45,10 @@ export const styles = StyleSheet.create({
   lastSeen: {
     fontSize: 11,
   },
+  onlineStatus: {
+    fontSize: 11,
+    color: color.primaryColor,
+  },
   notificationWrapper: {
     position: "absolute",
     top: 104,

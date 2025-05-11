@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, Pressable, ActivityIndicator } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  ActivityIndicator,
+  Animated,
+} from "react-native";
 import { styles } from "./styles/chatHeader.style";
 import { MaterialIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
@@ -48,8 +55,36 @@ const ChatHeader = () => {
     (state: RootState) => state.myFriends
   );
 
+  const [isOnline, setIsOnline] = useState<boolean>(false);
   const [isFriendRequestReceived, setIsFriendRequestReceived] =
     useState<boolean>(false);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: isOnline ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [isOnline, fadeAnim]);
+
+  useEffect(() => {
+    const handleUserPresence = (payload: {
+      userId: string;
+      online: boolean;
+      inRoom?: boolean;
+    }) => {
+      if (payload.userId === chat.otherUser.id) {
+        setIsOnline(payload.online);
+      }
+    };
+
+    socket?.on("userPresence", handleUserPresence);
+    return () => {
+      socket?.off("userPresence", handleUserPresence);
+    };
+  }, [socket, chat.otherUser.id]);
 
   useEffect(() => {
     const isFriendRequestReceived = receivedFriendshipRequests.some(
@@ -100,18 +135,44 @@ const ChatHeader = () => {
                       30
                     )}
               </Text>
-              <Text style={styles.lastSeen}>
-                Last Seen:{" "}
-                {new Date(
-                  chat.otherUserAccount.last_login! + "Z"
-                ).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
-              </Text>
+              {isOnline ? (
+                <Animated.Text
+                  style={[
+                    styles.onlineStatus,
+                    {
+                      opacity: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                      }),
+                    },
+                  ]}
+                >
+                  ● Online
+                </Animated.Text>
+              ) : (
+                <Animated.Text
+                  style={[
+                    styles.lastSeen,
+                    {
+                      opacity: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0],
+                      }),
+                    },
+                  ]}
+                >
+                  Last Seen:{" "}
+                  {new Date(
+                    chat.otherUserAccount.last_login! + "Z"
+                  ).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}
+                </Animated.Text>
+              )}
             </View>
           </Pressable>
         </View>
