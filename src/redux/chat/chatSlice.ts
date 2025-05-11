@@ -1,4 +1,4 @@
-import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { MessagesDTO, MessageStatus } from "@services/messenger/messenger.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ChatState {
@@ -36,6 +36,13 @@ export const chatSlice = createSlice({
     removeMessage: (state, action: PayloadAction<string>) => {
       state.messages = state.messages.filter((m) => m.id !== action.payload);
     },
+    setMessagesRead: (state) => {
+      state.messages.forEach((m) => {
+        if (m.status !== MessageStatus.READ) {
+          m.status = MessageStatus.READ;
+        }
+      });
+    },
 
     // Download Messages
     addDownloadMessage: (state, action: PayloadAction<MessagesDTO>) => {
@@ -61,6 +68,7 @@ export const {
   setMessages,
   addMessage,
   removeMessage,
+  setMessagesRead,
 
   // Download Messages
   addDownloadMessage,

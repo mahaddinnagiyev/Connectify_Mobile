@@ -11,16 +11,25 @@ import {
 } from "react-native";
 import { color } from "@/colors";
 import { styles } from "./styles/messages.style";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 // Services
-import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+import {
+  MessagesDTO,
+  MessageStatus,
+  MessageType,
+} from "@services/messenger/messenger.dto";
 
 // Redux
 import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { bumpChat } from "@redux/messenger/messengerSlice";
-import { addMessage, removeMessage, setMessages } from "@redux/chat/chatSlice";
+import {
+  addMessage,
+  removeMessage,
+  setMessages,
+  setMessagesRead,
+} from "@redux/chat/chatSlice";
 
 // Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -95,11 +104,19 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
       dispatch(addMessage(message));
     };
 
+    const handleMessagesRead = (payload: { roomId: string }) => {
+      if (payload.roomId === chat.id) {
+        dispatch(setMessagesRead());
+      }
+    };
+
     socket.on("messages", handleAll);
     socket.on("newMessage", handleNew);
+    socket.on("messagesRead", handleMessagesRead);
     return () => {
       socket.off("messages", handleAll);
       socket.off("newMessage", handleNew);
+      socket.off("messagesRead", handleMessagesRead);
     };
   }, [socket, chat, dispatch]);
 
@@ -332,26 +349,46 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
               <View style={styles.messageWrapper}>
                 {contentElement}
 
-                <Text
-                  style={[
-                    styles.timeText,
-                    {
-                      alignSelf:
-                        message.sender_id === chat.otherUser.id
-                          ? "flex-start"
-                          : "flex-end",
-                      display:
-                        message.message_type === MessageType.DEFAULT
-                          ? "none"
-                          : "flex",
-                    },
-                  ]}
-                >
-                  {new Date(message.created_at + "Z").toLocaleTimeString("az", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Text>
+                {message.message_type !== MessageType.DEFAULT && (
+                  <View
+                    style={[
+                      styles.timeContainer,
+                      {
+                        justifyContent:
+                          message.sender_id === chat.otherUser.id
+                            ? "flex-start"
+                            : "flex-end",
+
+                        marginRight:
+                          message.sender_id === chat.otherUser.id ? 0 : 10,
+                        marginLeft:
+                          message.sender_id === chat.otherUser.id ? 10 : 0,
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.timeText]}>
+                      {new Date(message.created_at + "Z").toLocaleTimeString(
+                        "az",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
+                    </Text>
+                    {message.sender_id !== chat.otherUser.id && (
+                      <Ionicons
+                        name="checkmark-done-sharp"
+                        size={15}
+                        color={
+                          message.status === MessageStatus.READ
+                            ? "#2196F3"
+                            : "#333"
+                        }
+                        style={{ marginTop: 2 }}
+                      />
+                    )}
+                  </View>
+                )}
               </View>
             </React.Fragment>
           );

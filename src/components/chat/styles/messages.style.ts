@@ -51,10 +51,14 @@ export const styles = StyleSheet.create({
     textDecorationLine: "underline",
     textDecorationColor: "blue",
   },
+  timeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
   timeText: {
     fontSize: 10,
     color: "#999",
-    marginHorizontal: 15,
     marginTop: 4,
   },
   backToBottom: {
