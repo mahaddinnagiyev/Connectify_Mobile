@@ -49,6 +49,8 @@ const UserChats = () => {
   const socket = useSocketContext();
 
   const [refrehing, setRefreshing] = React.useState<boolean>(false);
+  const [onlineUsers, setOnlineUsers] = React.useState<Set<string>>(new Set());
+
   const [isRefreshChatsLoading, setIsRefreshChatsLoading] =
     React.useState<boolean>(false);
 
@@ -109,6 +111,36 @@ const UserChats = () => {
     };
   }, [socket, dispatch, userData.user.id]);
 
+  React.useEffect(() => {
+    const handleActiveUsers = (ids: string[]) => {
+      setOnlineUsers(new Set(ids));
+    };
+
+    socket?.on("activeUsers", handleActiveUsers);
+    return () => {
+      socket?.off("activeUsers", handleActiveUsers);
+    };
+  }, [socket]);
+
+  React.useEffect(() => {
+    const handleUserPresence = (payload: {
+      userId: string;
+      online: boolean;
+    }) => {
+      setOnlineUsers((prev) => {
+        const next = new Set(prev);
+        if (payload.online) next.add(payload.userId);
+        else next.delete(payload.userId);
+        return next;
+      });
+    };
+
+    socket?.on("userPresence", handleUserPresence);
+    return () => {
+      socket?.off("userPresence", handleUserPresence);
+    };
+  }, [socket, filteredChats]);
+
   const refreshControl = (
     <RefreshControl
       refreshing={refrehing}
@@ -146,6 +178,7 @@ const UserChats = () => {
               refreshControl={refreshControl}
             >
               {filteredChats.map((chat) => {
+                const isUserOnline = onlineUsers.has(chat.otherUser.id);
                 const name = chat.name
                   ? truncate(chat.name, 25)
                   : truncate(
@@ -225,14 +258,18 @@ const UserChats = () => {
                       })
                     }
                   >
-                    <Image
-                      source={
-                        chat.otherUserAccount.profile_picture
-                          ? { uri: chat.otherUserAccount.profile_picture }
-                          : require("@assets/images/no-profile-photo.png")
-                      }
-                      style={styles.profilePhoto}
-                    />
+                    <View>
+                      <Image
+                        source={
+                          chat.otherUserAccount.profile_picture
+                            ? { uri: chat.otherUserAccount.profile_picture }
+                            : require("@assets/images/no-profile-photo.png")
+                        }
+                        style={styles.profilePhoto}
+                      />
+
+                      {isUserOnline && <View style={styles.onlineDot} />}
+                    </View>
 
                     <View style={styles.chatDetail}>
                       <Text style={{ fontWeight: "bold", fontSize: 16 }}>

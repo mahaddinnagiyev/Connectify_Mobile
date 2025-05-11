@@ -40,6 +40,18 @@ export const styles = StyleSheet.create({
     borderColor: color.primaryColor,
   },
 
+  onlineDot: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 18,
+    height: 18,
+    borderRadius: 12,
+    backgroundColor: "#4CD964",
+    borderWidth: 2,
+    borderColor: "white",
+  },
+
   chatDetail: {
     height: "58%",
     flexDirection: "column",
@@ -83,5 +95,5 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 2,
-  }
+  },
 });
