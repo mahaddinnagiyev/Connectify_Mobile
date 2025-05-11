@@ -23,7 +23,6 @@ import {
 // Redux
 import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { bumpChat } from "@redux/messenger/messengerSlice";
 import {
   addMessage,
   removeMessage,

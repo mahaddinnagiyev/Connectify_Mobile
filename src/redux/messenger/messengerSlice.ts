@@ -33,9 +33,16 @@ export const messengerSlice = createSlice({
     },
     bumpChat: (
       state,
-      action: PayloadAction<{ chatId: string; message: MessagesDTO }>
+      action: PayloadAction<{
+        chatId: string;
+        message: MessagesDTO;
+        user_id: string;
+      }>
     ) => {
-      const { chatId, message } = action.payload;
+      const { chatId, message, user_id } = action.payload;
+
+      if (message.sender_id === user_id) return;
+
       const idx = state.chats.findIndex((c) => c.id === chatId);
       if (idx !== -1) {
         const chat = {
@@ -72,13 +79,19 @@ export const messengerSlice = createSlice({
         state.filteredChats[fidx].lastMessage = action.payload;
       }
     },
-    updateUnreadCount: (state, action: PayloadAction<{ id: string }>) => {
-      const { id } = action.payload;
+    updateUnreadCount: (
+      state,
+      action: PayloadAction<{ id: string; count: number }>
+    ) => {
       state.chats = state.chats.map((c) =>
-        c.id === id ? { ...c, unreadCount: 0 } : c
+        c.id === action.payload.id
+          ? { ...c, unreadCount: action.payload.count }
+          : c
       );
       state.filteredChats = state.filteredChats.map((c) =>
-        c.id === id ? { ...c, unreadCount: 0 } : c
+        c.id === action.payload.id
+          ? { ...c, unreadCount: action.payload.count }
+          : c
       );
     },
 

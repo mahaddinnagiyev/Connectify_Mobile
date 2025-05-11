@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     position: "absolute",
-    right: -50,
+    right: -60,
     top: "50%",
     transform: [{ translateY: -15 }],
   },

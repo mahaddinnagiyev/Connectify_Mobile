@@ -35,6 +35,8 @@ export function useMessengerData() {
               otherUser: {} as User,
               otherUserAccount: {} as Account,
               otherUserPrivacySettings: {} as PrivacySettings,
+              name: chat.name ?? null,
+              unreadCount: chat.unreadCount || 0,
             };
 
           try {
@@ -45,6 +47,8 @@ export function useMessengerData() {
                 otherUser: other.user,
                 otherUserAccount: other.account,
                 otherUserPrivacySettings: other.privacy_settings,
+                name: chat.name ?? null,
+                unreadCount: chat.unreadCount || 0,
               };
             }
           } catch (e) {
@@ -55,6 +59,8 @@ export function useMessengerData() {
             otherUser: {} as User,
             otherUserAccount: {} as Account,
             otherUserPrivacySettings: {} as PrivacySettings,
+            name: chat.name ?? null,
+            unreadCount: chat.unreadCount || 0,
           };
         })
       );

@@ -51,7 +51,7 @@ export interface Chat {
   created_at: Date;
   updated_at: Date;
   lastMessage?: MessagesDTO;
-  unreadCount?: number;
+  unreadCount: number;
   lastMessageDate?: Date;
   otherUser: User;
   otherUserAccount: Account;

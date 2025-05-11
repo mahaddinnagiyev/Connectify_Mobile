@@ -42,6 +42,7 @@ const UserChats = () => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
   const { filteredChats } = useSelector((state: RootState) => state.messenger);
+  const { userData } = useSelector((state: RootState) => state.myProfile);
   const { fetchChats, isChatsLoading } = useMessengerData();
 
   const socket = useSocketContext();
@@ -63,7 +64,13 @@ const UserChats = () => {
 
   React.useEffect(() => {
     const handleNewGlobal = (message: MessagesDTO) => {
-      dispatch(bumpChat({ chatId: message.room_id, message }));
+      dispatch(
+        bumpChat({
+          chatId: message.room_id,
+          message,
+          user_id: userData.user.id,
+        })
+      );
     };
 
     const handleLastMessageUpdated = (payload: {
@@ -79,7 +86,7 @@ const UserChats = () => {
       roomId: string;
       count: number;
     }) => {
-      dispatch(updateUnreadCount({ id: payload.roomId }));
+      dispatch(updateUnreadCount({ id: payload.roomId, count: payload.count }));
     };
 
     socket?.on("newMessage", handleNewGlobal);
@@ -90,7 +97,7 @@ const UserChats = () => {
       socket?.off("unreadCountUpdated", handleUpdateUnreadCount);
       socket?.off("lastMessageUpdated", handleLastMessageUpdated);
     };
-  }, [socket, dispatch]);
+  }, [socket, dispatch, userData.user.id]);
 
   const refreshControl = (
     <RefreshControl
