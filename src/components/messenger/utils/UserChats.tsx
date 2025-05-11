@@ -20,6 +20,7 @@ import type { StackParamList } from "@navigation/UserStack";
 // Redux
 import {
   bumpChat,
+  changeRoomName,
   updateLastMessage,
   updateUnreadCount,
 } from "@redux/messenger/messengerSlice";
@@ -89,11 +90,20 @@ const UserChats = () => {
       dispatch(updateUnreadCount({ id: payload.roomId, count: payload.count }));
     };
 
+    const handleRoomNameChanged = (payload: {
+      id: string;
+      name: string | null;
+    }) => {
+      dispatch(changeRoomName({ id: payload.id, name: payload.name }));
+    };
+
     socket?.on("newMessage", handleNewGlobal);
+    socket?.on("roomNameChanged", handleRoomNameChanged);
     socket?.on("unreadCountUpdated", handleUpdateUnreadCount);
     socket?.on("lastMessageUpdated", handleLastMessageUpdated);
     return () => {
       socket?.off("newMessage", handleNewGlobal);
+      socket?.off("roomNameChanged", handleRoomNameChanged);
       socket?.off("unreadCountUpdated", handleUpdateUnreadCount);
       socket?.off("lastMessageUpdated", handleLastMessageUpdated);
     };
