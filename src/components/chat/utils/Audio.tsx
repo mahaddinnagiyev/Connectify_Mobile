@@ -1,10 +1,16 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+// Expo
 import { MaterialIcons } from "@expo/vector-icons";
+import { Audio as ExpoAudio, AVPlaybackStatus } from "expo-av";
+
+// Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
-import { RouteProp, useRoute } from "@react-navigation/native";
+
+// Navigation
 import { StackParamList } from "@navigation/UserStack";
-import { Audio as ExpoAudio } from "expo-av";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 interface Props {
   message: MessagesDTO;
@@ -15,42 +21,66 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
-  // const audioRef = React.useRef<ExpoAudio.Sound>(null);
-  const [audioStatus, setAudioStatus] = React.useState<"play" | "pause">(
-    "pause"
-  );
+  const soundRef = useRef<ExpoAudio.Sound | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-  const playAudio = async () => {
-    const { sound } = await ExpoAudio.Sound.createAsync({
-      uri: message.content,
+  useEffect(() => {
+    let isMounted = true;
+
+    ExpoAudio.Sound.createAsync(
+      { uri: message.content },
+      { shouldPlay: false },
+      (status: AVPlaybackStatus) => {
+        if (!isMounted || !status.isLoaded) return;
+        setDuration(status.durationMillis || 0);
+      }
+    ).then(({ sound }) => {
+      soundRef.current = sound;
+      sound.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
+        if (!isMounted || !status.isLoaded) return;
+        setPlaying(status.isPlaying);
+        setPosition(status.positionMillis);
+      });
     });
-    if (audioStatus === "play") {
+
+    return () => {
+      isMounted = false;
+      soundRef.current?.unloadAsync();
+    };
+  }, [message.content]);
+
+  const togglePlay = async () => {
+    const sound = soundRef.current;
+    if (!sound) return;
+
+    if (playing) {
       await sound.pauseAsync();
-      setAudioStatus("pause");
     } else {
       await sound.playAsync();
-      setAudioStatus("play");
     }
   };
 
+  const progressPercent = duration > 0 ? (position / duration) * 100 : 0;
+
   return (
     <View style={[styles.audioContainer, bubbleStyle]}>
-      {/* Play/Pause düyməsi */}
-      <TouchableOpacity style={styles.playButton} onPress={playAudio}>
+      <TouchableOpacity style={styles.playButton} onPress={togglePlay}>
         <MaterialIcons
-          name={audioStatus === "play" ? "pause" : "play-arrow"}
+          name={playing ? "pause" : "play-arrow"}
           size={24}
           color={message.sender_id !== chat.otherUser.id ? "white" : "black"}
         />
       </TouchableOpacity>
 
-      {/* Proqres bar və vaxt eyni sətirdə */}
       <View style={styles.progressWrapper}>
         <View style={styles.progressBarBackground}>
           <View
             style={[
               styles.progressBarFill,
               {
+                width: `${progressPercent}%`,
                 backgroundColor:
                   message.sender_id !== chat.otherUser.id
                     ? "rgba(255,255,255,0.8)"
@@ -65,7 +95,8 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
             message.sender_id !== chat.otherUser.id && styles.sentTimeText,
           ]}
         >
-          00:00
+          {formatTime(Math.floor(position / 1000))} /{" "}
+          {formatTime(Math.floor(duration / 1000))}
         </Text>
       </View>
     </View>
@@ -74,8 +105,10 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, "0")}:${secs
+    .toString()
+    .padStart(2, "0")}`;
 };
 
 export default Audio;
