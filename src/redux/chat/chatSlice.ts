@@ -36,9 +36,10 @@ export const chatSlice = createSlice({
     removeMessage: (state, action: PayloadAction<string>) => {
       state.messages = state.messages.filter((m) => m.id !== action.payload);
     },
-    setMessagesRead: (state) => {
+    setMessagesRead: (state, action: PayloadAction<string[]>) => {
+      const idsToMark = action.payload;
       state.messages.forEach((m) => {
-        if (m.status !== MessageStatus.READ) {
+        if (idsToMark.includes(m.id)) {
           m.status = MessageStatus.READ;
         }
       });

@@ -103,9 +103,9 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
       dispatch(addMessage(message));
     };
 
-    const handleMessagesRead = (payload: { roomId: string }) => {
+    const handleMessagesRead = (payload: { roomId: string, ids: string[] }) => {
       if (payload.roomId === chat.id) {
-        dispatch(setMessagesRead());
+        dispatch(setMessagesRead(payload.ids));
       }
     };
 
