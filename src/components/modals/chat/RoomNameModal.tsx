@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   TextInput,
@@ -25,6 +24,7 @@ import { RootState } from "@redux/store";
 
 // Services
 import { Chat, MessagesDTO } from "@services/messenger/messenger.dto";
+import { addNewMessageToStorage } from "@functions/storage.function"
 
 // Context
 import { useSocketContext } from "@context/SocketContext";
@@ -86,8 +86,9 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
       onClose();
     };
 
-    const onNewMessage = (message: MessagesDTO) => {
+    const onNewMessage = async (message: MessagesDTO) => {
       dispatch(addMessage(message));
+      await addNewMessageToStorage(chat.id, message);
     };
 
     socket.on("roomNameChanged", onRoomNameChanged);
@@ -102,7 +103,10 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
   const saveRoomName = () => {
     if (!roomName.trim() || roomName === selectedChat.name) return;
     setLoading("save");
-    socket?.emit("changeRoomName", { roomId: selectedChat.id, name: roomName.trim() });
+    socket?.emit("changeRoomName", {
+      roomId: selectedChat.id,
+      name: roomName.trim(),
+    });
   };
 
   const removeRoomName = () => {
@@ -218,11 +222,16 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                     !roomName.trim() || roomName === selectedChat.name
                       ? "#ddd"
                       : color.primaryColor,
-                  opacity: !roomName.trim() || roomName === selectedChat.name ? 0.7 : 1,
+                  opacity:
+                    !roomName.trim() || roomName === selectedChat.name
+                      ? 0.7
+                      : 1,
                 },
               ]}
               onPress={saveRoomName}
-              disabled={!roomName.trim() || roomName === selectedChat.name || !!loading}
+              disabled={
+                !roomName.trim() || roomName === selectedChat.name || !!loading
+              }
             >
               {loading === "save" ? (
                 <>

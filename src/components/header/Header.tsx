@@ -23,6 +23,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Services
 import { logout } from "@services/auth/auth.service";
+import { clearAllMessagesFromStorage } from "@functions/storage.function";
 
 // Redux
 import { RootState } from "@redux/store";
@@ -90,6 +91,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
         dispatch(setIsAuthenticated(false));
         dispatch(clearDownloadMessages());
         dispatch(setToken(null));
+
+        await clearAllMessagesFromStorage();
       } else {
         dispatch(
           setErrorMessage(

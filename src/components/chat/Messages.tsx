@@ -39,6 +39,13 @@ import { useSocketContext } from "@context/SocketContext";
 
 // Functions
 import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
+import {
+  addNewMessageToStorage,
+  getMessagesFromStorage,
+  removeMessageFromStorage,
+  setMessagesReadInStorage,
+  setMessagesToStorage,
+} from "@functions/storage.function";
 
 // Utils And Components
 import Image from "./utils/Image";
@@ -77,35 +84,50 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
-  }, [messages]);
+  }, [scrollViewRef]);
 
   useEffect(() => {
     if (!socket) return;
     dispatch(setMessages([]));
     setReplyMessage(null);
     socket.emit("setMessageRead", { roomId: chat.id });
-    socket.emit("getMessages", { roomId: chat.id, limit: 100 });
 
-    const handleAll = (data: { messages: any[] }) => {
+    getMessagesFromStorage(chat.id).then((messages: MessagesDTO[]) => {
+      if (messages.length > 0) dispatch(setMessages(messages));
+      socket.emit("getMessages", {
+        roomId: chat.id,
+        limit: messages.length === 0 ? 50 : messages.length,
+      });
+
+      setHasMoreMessages(messages.length < 50);
+    });
+
+    const handleAll = async (data: { messages: any[] }) => {
       if (data.messages[0]?.room_id === chat.id) {
         dispatch(setMessages(data.messages));
+        await setMessagesToStorage(chat.id, data.messages);
       }
 
-      if (data.messages.length < 100) setHasMoreMessages(false);
+      if (data.messages.length < 50) setHasMoreMessages(false);
       else setHasMoreMessages(true);
     };
 
-    const handleNew = (message: MessagesDTO) => {
+    const handleNew = async (message: MessagesDTO) => {
       if (message.room_id !== chat.id) return;
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
       dispatch(addMessage(message));
+      await addNewMessageToStorage(chat.id, message);
     };
 
-    const handleMessagesRead = (payload: { roomId: string, ids: string[] }) => {
+    const handleMessagesRead = async (payload: {
+      roomId: string;
+      ids: string[];
+    }) => {
       if (payload.roomId === chat.id) {
         dispatch(setMessagesRead(payload.ids));
+        await setMessagesReadInStorage(chat.id, payload.ids);
       }
     };
 
@@ -120,9 +142,13 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
   }, [socket, chat, dispatch]);
 
   useEffect(() => {
-    const handleDelete = (data: { messageId: string; roomId: string }) => {
+    const handleDelete = async (data: {
+      messageId: string;
+      roomId: string;
+    }) => {
       if (data.roomId !== chat.id) return;
       dispatch(removeMessage(data.messageId));
+      await removeMessageFromStorage(chat.id, data.messageId);
     };
     socket?.on("messageDeleted", handleDelete);
     return () => {
@@ -138,9 +164,10 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
 
           socket?.off("messages");
 
-          socket?.once("messages", (data) => {
+          socket?.once("messages", async (data) => {
             if (data.messages[0]?.room_id === chat.id) {
               dispatch(setMessages([...data.messages]));
+              await setMessagesToStorage(chat.id, data.messages);
             }
             setHasMoreMessages(data.messages.length >= newLimit);
             setHasMoreMessagesLoading(false);
@@ -184,7 +211,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
               </Pressable>
             ) : (
               <Pressable
-                onPress={() => loadMoreMessages(messages.length + 100)}
+                onPress={() => loadMoreMessages(messages.length + 50)}
                 style={styles.loadMoreMessagesContainer}
               >
                 <AntDesign name="down" size={16} color={color.primaryColor} />
