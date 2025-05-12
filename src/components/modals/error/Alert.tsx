@@ -1,5 +1,6 @@
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { color } from "@/colors";
 
 interface AlertProps {
   title: string;
@@ -34,7 +35,7 @@ const Alert = ({
             <Ionicons
               name={iconName ? iconName : "alert-circle"}
               size={40}
-              color="#00ff00"
+              color={color.primaryColor}
             />
           </View>
 

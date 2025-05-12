@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   success: {
-    color: "#00ff00",
+    color: color.primaryColor,
     textAlign: "center",
     marginBottom: 15,
     fontSize: 14,

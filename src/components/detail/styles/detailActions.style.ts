@@ -1,3 +1,4 @@
+import { color } from "@/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -45,7 +46,7 @@ export const styles = StyleSheet.create({
     borderRadius: 25,
   },
   accept: {
-    backgroundColor: "#00ff00",
+    backgroundColor: color.primaryColor,
   },
   decline: {
     backgroundColor: "#ff4444",

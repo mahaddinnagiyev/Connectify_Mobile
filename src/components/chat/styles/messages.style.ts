@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   },
   sentBubble: {
     alignSelf: "flex-end",
-    backgroundColor: "#00ff00",
+    backgroundColor: color.primaryColor,
     borderBottomRightRadius: 0,
   },
   receivedBubble: {

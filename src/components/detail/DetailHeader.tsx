@@ -1,7 +1,9 @@
 import { Text, View, Image, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import { styles } from "./styles/detailHeader.style";
+
+import { color } from "@/colors";
 import { Ionicons } from "@expo/vector-icons";
+import { styles } from "./styles/detailHeader.style";
 
 // Services
 import { Chat } from "@services/messenger/messenger.dto";
@@ -57,7 +59,7 @@ const DetailHeader: React.FC<Props> = ({ chat }) => {
       {/* Header */}
       <Pressable style={styles.topHeader} onPress={goBack}>
         <View style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#00ff00" />
+          <Ionicons name="arrow-back" size={24} color={color.primaryColor} />
         </View>
         <Text style={styles.roomName} numberOfLines={1}>
           {selectedChat.name ?? "No Room Name"}

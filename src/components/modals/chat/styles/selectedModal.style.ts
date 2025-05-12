@@ -1,3 +1,4 @@
+import { color } from "@/colors";
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -64,7 +65,7 @@ export const styles = StyleSheet.create({
   },
   progressFill: {
     height: "100%",
-    backgroundColor: "#00ff00",
+    backgroundColor: color.primaryColor,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -83,7 +84,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
   },
   uploadButton: {
-    backgroundColor: "#00ff00",
+    backgroundColor: color.primaryColor,
   },
   cancelText: {
     color: "#666",

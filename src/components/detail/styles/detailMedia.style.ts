@@ -17,10 +17,10 @@ export const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderBottomColor: "#00ff00",
+    borderBottomColor: color.primaryColor,
   },
   tabText: {
-    color: "#00ff00",
+    color: color.primaryColor,
     fontWeight: "500",
   },
   mediaGrid: {

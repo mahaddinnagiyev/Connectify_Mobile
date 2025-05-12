@@ -7,15 +7,18 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import ImageViewer from "react-native-image-zoom-viewer";
+
+// Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
+  thumbnailStyle?: any;
   onLongPress?: () => void;
 }
 
-const Image: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
+const Image: React.FC<Props> = ({ message, bubbleStyle, thumbnailStyle,onLongPress }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -28,7 +31,7 @@ const Image: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
         <View style={[styles.imageContainer, bubbleStyle]}>
           <RNImage
             source={{ uri: message.content }}
-            style={styles.thumbnail}
+            style={[styles.thumbnail, thumbnailStyle]}
             resizeMode="cover"
           />
         </View>

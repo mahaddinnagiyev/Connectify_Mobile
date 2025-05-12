@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   parentPreviewLine: {
     width: 3,
     height: "100%",
-    backgroundColor: "#00ff00",
+    backgroundColor: color.primaryColor,
     borderRadius: 2,
   },
   parentPreviewText: {

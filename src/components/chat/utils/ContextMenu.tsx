@@ -1,24 +1,36 @@
-import { Text, View, Animated, Pressable, Platform } from "react-native";
+import {
+  Text,
+  View,
+  Animated,
+  Pressable,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import React, { useEffect, useRef } from "react";
+import { BlurView } from "expo-blur";
 
 // Components
 import Image from "./Image";
 import Video from "./Video";
 import File from "./File";
 import Audio from "./Audio";
-import { color } from "@/colors";
+
+// Icons & Clipboard
 import * as Clipboard from "expo-clipboard";
 import { MaterialIcons } from "@expo/vector-icons";
-import { styles } from "../styles/contextMenu.style";
-
-// Services
-import { MessagesDTO } from "@services/messenger/messenger.dto";
-import { MessageType } from "@services/messenger/messenger.dto";
 
 // Redux
-import { setSuccessMessage } from "@redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
+import { setSuccessMessage } from "@redux/messages/messageSlice";
 import { addDownloadMessage } from "@redux/chat/chatSlice";
+
+// Types & Colors
+import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { MessageType } from "@services/messenger/messenger.dto";
+import { color } from "@/colors";
+
+// Styles
+import { styles } from "../styles/contextMenu.style";
 
 interface Props {
   message: MessagesDTO;
@@ -29,6 +41,8 @@ interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
 }
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
 const ContextMenu: React.FC<Props> = ({
   message,
   onClose,
@@ -37,33 +51,30 @@ const ContextMenu: React.FC<Props> = ({
   userId,
   setReplyMessage,
 }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim, {
+      Animated.timing(opacityAnim, {
         toValue: 1,
         duration: 200,
         useNativeDriver: true,
       }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
+      Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true }),
     ]).start();
   }, []);
 
   const closeMenu = () => {
     Animated.parallel([
-      Animated.timing(fadeAnim, {
+      Animated.timing(opacityAnim, {
         toValue: 0,
         duration: 200,
         useNativeDriver: true,
       }),
-      Animated.timing(slideAnim, {
-        toValue: 30,
+      Animated.timing(scaleAnim, {
+        toValue: 0.8,
         duration: 200,
         useNativeDriver: true,
       }),
@@ -75,31 +86,67 @@ const ContextMenu: React.FC<Props> = ({
       styles.messagePreviewBubble,
       message.sender_id === userId ? styles.sentBubble : styles.receivedBubble,
     ];
-    const textBubbleBgColor =
-      message.sender_id === userId ? color.primaryColor : "#f1f1f1";
-    const textBubbleColor = message.sender_id === userId ? "white" : "black";
+
+    const imageAndVideoBubbleStyle = [
+      bubbleStyle,
+      {
+        backgroundColor: "transparent",
+        marginLeft: message.message_type === MessageType.IMAGE ? "20%" : 0,
+      },
+    ];
+
+    const textBubleStyle = [
+      bubbleStyle,
+      styles.textBubble,
+      message.sender_id === userId
+        ? {
+            backgroundColor: color.primaryColor,
+          }
+        : {
+            backgroundColor: "#eee",
+          },
+    ];
+
+    const messagePreviewTextStyle = [
+      styles.messagePreviewText,
+      message.sender_id === userId ? { color: "white" } : { color: "#333" },
+    ];
 
     switch (message.message_type) {
       case MessageType.IMAGE:
-        return <Image message={message} bubbleStyle={bubbleStyle} />;
+        return (
+          <Image
+            message={message}
+            bubbleStyle={imageAndVideoBubbleStyle}
+            thumbnailStyle={{
+              borderRadius: 15,
+              borderBottomLeftRadius: message.sender_id === userId ? 15 : 0,
+              borderBottomRightRadius: message.sender_id === userId ? 0 : 15,
+            }}
+          />
+        );
       case MessageType.VIDEO:
-        return <Video message={message} bubbleStyle={bubbleStyle} />;
+        return (
+          <Video
+            message={message}
+            bubbleStyle={imageAndVideoBubbleStyle}
+            thumbnailStyle={{
+              borderRadius: 15,
+              borderBottomLeftRadius: message.sender_id === userId ? 15 : 0,
+              borderBottomRightRadius: message.sender_id === userId ? 0 : 15,
+            }}
+          />
+        );
       case MessageType.AUDIO:
         return <Audio message={message} bubbleStyle={bubbleStyle} />;
       case MessageType.FILE:
         return <File message={message} bubbleStyle={bubbleStyle} />;
       default:
         return (
-          <View
-            style={[
-              bubbleStyle,
-              styles.textBubble,
-              { backgroundColor: textBubbleBgColor },
-            ]}
-          >
+          <View style={textBubleStyle}>
             <Text
-              style={[styles.messagePreviewText, { color: textBubbleColor }]}
-              numberOfLines={3}
+              style={messagePreviewTextStyle}
+              numberOfLines={5}
               ellipsizeMode="tail"
             >
               {message.content}
@@ -109,115 +156,85 @@ const ContextMenu: React.FC<Props> = ({
     }
   };
 
-  let menuItems: { id: string; title: string; icon: string; color?: string }[] =
-    [];
-
-  (function renderMenuItems() {
-    menuItems.push({ id: "reply", title: "Reply", icon: "reply" });
-
-    switch (message.message_type) {
-      case MessageType.TEXT:
-        menuItems.push({ id: "copy", title: "Copy", icon: "copy-all" });
-        break;
-
-      case MessageType.IMAGE:
-      case MessageType.VIDEO:
-      case MessageType.FILE:
-        menuItems.push({
-          id: "download",
-          title: `Download ${
-            message.message_type === MessageType.FILE
-              ? "File"
-              : message.message_type === MessageType.IMAGE
-              ? "Image"
-              : "Video"
-          }`,
-          icon: "download",
-        });
-        break;
-    }
-
-    menuItems.push({
+  const menuItems = [
+    { id: "reply", title: "Reply", icon: "reply" } as const,
+    ...(message.message_type === MessageType.TEXT
+      ? [{ id: "copy", title: "Copy", icon: "copy-all" }]
+      : [
+          {
+            id: "download",
+            title:
+              message.message_type === MessageType.FILE
+                ? "Download File"
+                : message.message_type === MessageType.IMAGE
+                ? "Download Image"
+                : "Download Video",
+            icon: "download",
+          },
+        ]),
+    {
       id: "details",
       title: "Details",
       icon: "info",
       color: "#2196F3",
-    });
-    if (message.sender_id === userId) {
-      menuItems.push({
-        id: "delete",
-        title: "Unsend",
-        icon: "delete",
-        color: "red",
-      });
+    },
+    ...(message.sender_id === userId
+      ? [{ id: "delete", title: "Unsend", icon: "delete", color: "red" }]
+      : []),
+  ];
+
+  const onItemPress = async (id: string) => {
+    closeMenu();
+    switch (id) {
+      case "reply":
+        setReplyMessage(message);
+        break;
+      case "copy":
+        await Clipboard.setStringAsync(message.content);
+        dispatch(setSuccessMessage("Message copied"));
+        break;
+      case "delete":
+        onDelete?.();
+        break;
+      case "details":
+        onDetail?.();
+        break;
+      case "download":
+        dispatch(addDownloadMessage(message));
+        break;
     }
-
-    return menuItems;
-  })();
-
-  // Other Functions
-  const dispatch = useDispatch();
+  };
 
   return (
     <React.Fragment>
-      <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
-        <Pressable style={styles.backdropPressable} onPress={closeMenu}>
+      <Animated.View style={[styles.backdrop, { opacity: opacityAnim }]}>
+        <BlurView intensity={50} style={StyleSheet.absoluteFill} />
+        <Pressable style={styles.container} onPress={closeMenu}>
           <Animated.View
             style={[
               styles.modalContent,
               {
-                transform: [{ translateY: slideAnim }],
-                ...Platform.select({
-                  ios: {
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                  },
-                  android: {
-                    elevation: 5,
-                  },
-                }),
+                width: SCREEN_WIDTH * 0.8,
+                transform: [{ scale: scaleAnim }],
               },
             ]}
           >
             <View style={styles.messagePreviewContainer}>
               {renderMessageContent()}
             </View>
-
             <View style={styles.menuItemsContainer}>
               {menuItems.map((item) => (
                 <Pressable
                   key={item.id}
                   style={({ pressed }) => [
                     styles.menuItem,
-                    { backgroundColor: pressed ? "#f0f0f0" : "white" },
+                    pressed && { backgroundColor: "#f2f2f2" },
                   ]}
-                  onPress={async () => {
-                    closeMenu();
-                    switch (item.id) {
-                      case "reply":
-                        setReplyMessage(message);
-                        break;
-                      case "copy":
-                        await Clipboard.setStringAsync(message.content);
-                        dispatch(setSuccessMessage("Message copied"));
-                        break;
-                      case "delete":
-                        onDelete?.();
-                        break;
-                      case "details":
-                        onDetail?.();
-                        break;
-                      case "download":
-                        dispatch(addDownloadMessage(message));
-                        break;
-                    }
-                  }}
+                  onPress={() => onItemPress(item.id)}
                 >
                   <MaterialIcons
                     name={item.icon as any}
-                    size={24}
+                    size={20}
                     color={item.color || color.primaryColor}
                   />
                   <Text

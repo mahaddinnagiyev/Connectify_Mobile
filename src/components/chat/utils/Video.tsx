@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import Modal from "react-native-modal";
-import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
+
+// Expo
+import { Video, ResizeMode } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
-import { MessagesDTO } from "@services/messenger/messenger.dto";
+
+// UI Components
 import { color } from "@/colors";
+import Modal from "react-native-modal";
 import CustomVideoPlayer from "../../modals/chat/CustomVideoPlayer";
+
+// Services
+import { MessagesDTO } from "@services/messenger/messenger.dto";
 
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
+  thumbnailStyle?: any;
   onLongPress?: () => void;
 }
 
 const VideoWithModal: React.FC<Props> = ({
   message,
   bubbleStyle,
+  thumbnailStyle,
   onLongPress,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,7 +41,7 @@ const VideoWithModal: React.FC<Props> = ({
         <View style={[styles.videoContainer, bubbleStyle]}>
           <Video
             source={{ uri: message.content }}
-            style={styles.videoPreview}
+            style={[styles.videoPreview, thumbnailStyle]}
             resizeMode={ResizeMode.COVER}
             shouldPlay={false}
             isMuted={true}

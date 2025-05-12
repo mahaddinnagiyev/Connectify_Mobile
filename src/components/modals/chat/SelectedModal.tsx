@@ -1,6 +1,7 @@
 import { View, Text, Pressable, Image } from "react-native";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import { styles } from "./styles/selectedModal.style";
+import { color } from "@/colors";
 
 export type FileData = {
   uri: string;
@@ -55,7 +56,7 @@ const SelectedModal = ({
               <FontAwesome
                 name={getFileIcon(file.mimeType)}
                 size={40}
-                color="#00ff00"
+                color={color.primaryColor}
               />
             </View>
           )}

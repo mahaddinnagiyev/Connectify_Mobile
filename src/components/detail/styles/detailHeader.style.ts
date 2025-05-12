@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
   roomName: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#00ff00",
+    color: color.primaryColor,
     maxWidth: width - 100,
   },
   profileSection: {

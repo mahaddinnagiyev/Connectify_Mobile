@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { styles } from "./styles/sendMedia.style";
+import { color } from "@/colors";
 
 type Props = {
   visible: boolean;
@@ -55,7 +56,7 @@ const SendMediaModal: React.FC<Props> = ({
               <View
                 style={[styles.iconContainer, { backgroundColor: "#e8f5e9" }]}
               >
-                <MaterialIcons name="photo-camera" size={32} color="#00ff00" />
+                <MaterialIcons name="photo-camera" size={32} color={color.primaryColor} />
               </View>
               <Text style={styles.optionText}>Image</Text>
             </Pressable>
