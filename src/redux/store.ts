@@ -5,7 +5,7 @@ import myFriendsReducer from "./friend/myFriendsSlice";
 import usersReducer from "./users/usersSlice";
 import myProfileReducer from "./profile/myProfileSlice";
 import settingsReducer from "./settings/settingsSlice";
-import authReucer from "./auth/authSlice";
+import authReducer from "./auth/authSlice";
 import messageReducer from "./messages/messageSlice";
 import messengerReducer from "./messenger/messengerSlice";
 
@@ -25,7 +25,7 @@ export const store = configureStore({
     messages: messageReducer,
 
     // Auth
-    auth: authReucer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
