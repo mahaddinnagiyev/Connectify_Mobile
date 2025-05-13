@@ -112,7 +112,6 @@ const UserChats = () => {
       roomId: string;
       ids: string[];
     }) => {
-      console.log("handleUpdateLastMessageStatus", paylaod);
       dispatch(updateLastMessageStatus(paylaod));
     };
 
