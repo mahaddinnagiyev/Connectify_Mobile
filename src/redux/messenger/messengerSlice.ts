@@ -39,9 +39,7 @@ export const messengerSlice = createSlice({
         user_id: string;
       }>
     ) => {
-      const { chatId, message, user_id } = action.payload;
-
-      if (message.sender_id === user_id) return;
+      const { chatId, message } = action.payload;
 
       const idx = state.chats.findIndex((c) => c.id === chatId);
       if (idx !== -1) {

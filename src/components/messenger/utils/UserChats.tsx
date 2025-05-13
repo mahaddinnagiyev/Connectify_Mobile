@@ -82,6 +82,10 @@ const UserChats = () => {
     }) => {
       if (payload.lastMessage) {
         dispatch(updateLastMessage(payload.lastMessage));
+
+        if (payload.lastMessage.sender_id === userData.user.id) {
+          dispatch(updateUnreadCount({ id: payload.roomId, count: 0 }));
+        }
       }
     };
 
