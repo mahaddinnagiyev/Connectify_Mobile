@@ -1,4 +1,8 @@
-import { Chat, MessagesDTO } from "@services/messenger/messenger.dto";
+import {
+  Chat,
+  MessagesDTO,
+  MessageStatus,
+} from "@services/messenger/messenger.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface MessengerState {
@@ -77,6 +81,29 @@ export const messengerSlice = createSlice({
         state.filteredChats[fidx].lastMessage = action.payload;
       }
     },
+    updateLastMessageStatus: (
+      state,
+      action: PayloadAction<{ roomId: string; ids: string[] }>
+    ) => {
+      const { roomId, ids } = action.payload;
+      const idx = state.chats.findIndex((c) => c.id === roomId);
+      if (
+        idx !== -1 &&
+        state.chats[idx].lastMessage &&
+        ids.includes(state.chats[idx].lastMessage.id)
+      ) {
+        state.chats[idx].lastMessage.status = MessageStatus.READ;
+      }
+
+      const fidx = state.filteredChats.findIndex((c) => c.id === roomId);
+      if (
+        fidx !== -1 &&
+        state.filteredChats[fidx].lastMessage &&
+        ids.includes(state.filteredChats[fidx].lastMessage.id)
+      ) {
+        state.filteredChats[fidx].lastMessage.status = MessageStatus.READ;
+      }
+    },
     updateUnreadCount: (
       state,
       action: PayloadAction<{ id: string; count: number }>
@@ -118,6 +145,7 @@ export const {
   filterChats,
   bumpChat,
   updateLastMessage,
+  updateLastMessageStatus,
   updateUnreadCount,
   addChat,
   changeRoomName,

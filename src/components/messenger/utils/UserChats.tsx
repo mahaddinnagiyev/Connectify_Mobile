@@ -22,6 +22,7 @@ import {
   bumpChat,
   changeRoomName,
   updateLastMessage,
+  updateLastMessageStatus,
   updateUnreadCount,
 } from "@redux/messenger/messengerSlice";
 import { RootState } from "@redux/store";
@@ -33,7 +34,11 @@ import { truncate } from "@functions/messages.function";
 import { formatTime } from "@functions/chat.functions";
 
 // Services
-import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+import {
+  MessagesDTO,
+  MessageStatus,
+  MessageType,
+} from "@services/messenger/messenger.dto";
 
 // Context
 import { useSocketContext } from "@context/SocketContext";
@@ -103,13 +108,23 @@ const UserChats = () => {
       dispatch(changeRoomName({ id: payload.id, name: payload.name }));
     };
 
+    const handleUpdateLastMessageStatus = (paylaod: {
+      roomId: string;
+      ids: string[];
+    }) => {
+      console.log("handleUpdateLastMessageStatus", paylaod);
+      dispatch(updateLastMessageStatus(paylaod));
+    };
+
     socket?.on("newMessage", handleNewGlobal);
     socket?.on("roomNameChanged", handleRoomNameChanged);
+    socket?.on("messagesRead", handleUpdateLastMessageStatus);
     socket?.on("unreadCountUpdated", handleUpdateUnreadCount);
     socket?.on("lastMessageUpdated", handleLastMessageUpdated);
     return () => {
       socket?.off("newMessage", handleNewGlobal);
       socket?.off("roomNameChanged", handleRoomNameChanged);
+      socket?.off("messagesRead", handleUpdateLastMessageStatus);
       socket?.off("unreadCountUpdated", handleUpdateUnreadCount);
       socket?.off("lastMessageUpdated", handleLastMessageUpdated);
     };
@@ -168,7 +183,7 @@ const UserChats = () => {
           </Text>
         </View>
       ) : (
-        <>
+        <React.Fragment>
           {filteredChats.length === 0 ? (
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -281,7 +296,23 @@ const UserChats = () => {
                       </Text>
 
                       <View style={styles.lastMessage}>
-                        <Text numberOfLines={1}>{message}</Text>
+                        <View style={styles.lastMessageContent}>
+                          {chat.lastMessage?.sender_id === userData.user.id &&
+                            chat.lastMessage.message_type !==
+                              MessageType.DEFAULT && (
+                              <Ionicons
+                                name="checkmark-done-sharp"
+                                size={15}
+                                color={
+                                  chat.lastMessage.status === MessageStatus.READ
+                                    ? "#2196F3"
+                                    : "#333"
+                                }
+                                style={{ marginTop: 2 }}
+                              />
+                            )}
+                          <Text numberOfLines={1}>{message}</Text>
+                        </View>
                         <Text style={{ fontSize: 9 }}>{time}</Text>
                       </View>
                     </View>
@@ -294,7 +325,7 @@ const UserChats = () => {
               })}
             </ScrollView>
           )}
-        </>
+        </React.Fragment>
       )}
     </View>
   );

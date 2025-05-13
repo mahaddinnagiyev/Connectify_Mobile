@@ -65,6 +65,12 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
 
+  lastMessageContent: {
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "flex-end",
+  },
+
   unreadCount: {
     backgroundColor: color.primaryColor,
     width: 20,
