@@ -462,7 +462,9 @@ const SendMessage: React.FC<Props> = ({
       });
       setShowMediaModal(false);
     } catch (err) {
-      dispatch(setErrorMessage((err as Error).message ?? "Failed to pick file"));
+      dispatch(
+        setErrorMessage((err as Error).message ?? "Failed to pick file")
+      );
     }
   };
 
@@ -526,31 +528,27 @@ const SendMessage: React.FC<Props> = ({
 
   return (
     <React.Fragment>
+      {/* Blocked Situations */}
       {isBlocked && (
-        <View style={[styles.container, { height: 60 }]}>
+        <View style={styles.blockedContainer}>
           <Text style={styles.blockedText}>
-            You have blocked {chat.otherUser.first_name}{" "}
+            ⚠️ You've blocked {chat.otherUser.first_name}{" "}
             {chat.otherUser.last_name}
           </Text>
         </View>
       )}
 
       {isBlockedBy && (
-        <View style={[styles.container, { height: 60 }]}>
+        <View style={styles.blockedContainer}>
           <Text style={styles.blockedText}>
-            {chat.otherUser.first_name} {chat.otherUser.last_name} has blocked
-            you
+            ⚠️ {chat.otherUser.first_name} {chat.otherUser.last_name} has
+            blocked you
           </Text>
         </View>
       )}
 
       {!isBlocked && !isBlockedBy && (
-        <View
-          style={[
-            styles.mainContainer,
-            { borderTopWidth: replyMessage ? 0 : 1 },
-          ]}
-        >
+        <View style={styles.container}>
           {replyMessage && (
             <Animated.View
               style={[
@@ -568,96 +566,86 @@ const SendMessage: React.FC<Props> = ({
                 },
               ]}
             >
-              <View style={styles.replyPreview}>
-                <View style={styles.replyPreviewLine} />
-                <View style={styles.replyContent}>
-                  <Text style={styles.replySender}>
-                    {replyMessage.sender_id === userData.user.id
-                      ? "You"
-                      : `@${chat.otherUser.username}`}
-                  </Text>
-                  {renderReplyContent()}
-                </View>
-                <Pressable
-                  onPress={() => setReplyMessage(null)}
-                  style={styles.closeButton}
-                >
-                  <MaterialIcons name="close" size={20} color="gray" />
-                </Pressable>
+              <View style={styles.mediaTypeIcon}>
+                <MaterialIcons name="reply" size={16} color={color.primary} />
               </View>
+              <View style={styles.replyContent}>
+                <Text style={styles.replySender}>
+                  {replyMessage.sender_id === userData.user.id
+                    ? "Your message"
+                    : `@${chat.otherUser.username}`}
+                </Text>
+                {renderReplyContent()}
+              </View>
+              <Pressable
+                onPress={() => setReplyMessage(null)}
+                style={styles.closeButton}
+              >
+                <MaterialIcons
+                  name="close"
+                  size={18}
+                  color={color.textSecondary}
+                />
+              </Pressable>
             </Animated.View>
           )}
 
-          <View style={styles.container}>
+          <View style={styles.inputContainer}>
             {isRecording ? (
-              <React.Fragment>
+              <View style={styles.recordingContainer}>
+                <View style={styles.recordingIndicator}>
+                  <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                    <FontAwesome5
+                      name="microphone"
+                      size={14}
+                      color={color.white}
+                    />
+                  </Animated.View>
+                </View>
+                <Text style={styles.recordingTimer}>
+                  {formatTime(recordingDuration)}
+                </Text>
                 <Pressable
-                  style={({ pressed }) => [
-                    styles.leftButton,
-                    { opacity: pressed ? 0.5 : 1 },
-                  ]}
+                  style={styles.cancelRecordingButton}
                   onPress={cancelRecording}
                 >
-                  <MaterialIcons name="delete-forever" size={29} color="red" />
+                  <MaterialIcons name="delete" size={24} color={color.danger} />
                 </Pressable>
-
-                <View style={styles.recordingContainer}>
-                  <Animated.View
-                    style={[
-                      styles.recordingIndicator,
-                      { transform: [{ scale: scaleAnim }] },
-                    ]}
-                  >
-                    <FontAwesome5 name="microphone" size={20} color={"red"} />
-                  </Animated.View>
-                  <Text style={styles.recordingTimer}>
-                    {formatTime(recordingDuration)}
-                  </Text>
-                </View>
-
                 <Pressable
                   style={({ pressed }) => [
                     styles.sendButton,
-                    {
-                      backgroundColor: pressed
-                        ? color.darkColor
-                        : color.primaryColor,
+                    pressed && {
+                      backgroundColor: color.primaryDark,
+                      width: 30,
+                      height: 30,
                     },
                   ]}
                   onPress={stopRecording}
                 >
-                  <MaterialIcons name="send" size={24} color="white" />
+                  <Ionicons name="send" size={20} color={color.white} />
                 </Pressable>
-              </React.Fragment>
+              </View>
             ) : (
               <React.Fragment>
                 <Pressable
                   style={({ pressed }) => [
-                    styles.leftButton,
-                    {
-                      backgroundColor: pressed ? "gray" : "transparent",
-                      borderRadius: 15,
-                      padding: 5,
-                    },
+                    styles.attachmentButton,
+                    pressed && { backgroundColor: color.border },
                   ]}
                   onPress={() => setShowMediaModal(true)}
                 >
-                  <MaterialIcons name="attach-file" size={29} color="black" />
+                  <MaterialIcons
+                    name="attach-file"
+                    size={24}
+                    color={color.iconDark}
+                  />
                 </Pressable>
 
-                <View
-                  style={[
-                    styles.messageInput,
-                    {
-                      height: Math.min(inputHeight, 100),
-                      borderWidth: inputHeight > 40 ? 1 : 0,
-                      borderColor: color.borderColor,
-                      borderRadius: 5,
-                    },
-                  ]}
-                >
+                <View style={styles.inputWrapper}>
                   <TextInput
-                    placeholder="Type a message"
+                    style={styles.textInput}
+                    placeholder="Type a message..."
+                    placeholderTextColor={color.textSecondary}
                     multiline
                     scrollEnabled={false}
                     onContentSizeChange={(e) => {
@@ -666,28 +654,25 @@ const SendMessage: React.FC<Props> = ({
                       );
                     }}
                     value={input}
-                    onChangeText={(text) => setInput(text)}
-                    style={styles.textInput}
+                    onChangeText={setInput}
                   />
                 </View>
 
                 <Pressable
                   style={({ pressed }) => [
                     styles.sendButton,
-                    {
-                      backgroundColor: pressed
-                        ? color.darkColor
-                        : color.primaryColor,
-                    },
+                    pressed && { backgroundColor: color.primaryDark },
                   ]}
-                  onPress={
-                    input.trim() !== "" ? handleSendMessage : startRecording
-                  }
+                  onPress={input.trim() ? handleSendMessage : startRecording}
                 >
-                  {input.trim() !== "" ? (
-                    <MaterialIcons name="send" size={24} color="white" />
+                  {input.trim() ? (
+                    <Ionicons name="send" size={24} color={color.white} />
                   ) : (
-                    <FontAwesome5 name="microphone" size={24} color="white" />
+                    <FontAwesome5
+                      name="microphone"
+                      size={20}
+                      color={color.white}
+                    />
                   )}
                 </Pressable>
               </React.Fragment>
@@ -696,6 +681,7 @@ const SendMessage: React.FC<Props> = ({
         </View>
       )}
 
+      {/* Modallar */}
       <SendMediaModal
         visible={showMediaModal}
         onClose={() => setShowMediaModal(false)}
@@ -704,7 +690,6 @@ const SendMessage: React.FC<Props> = ({
         onPickFile={pickFile}
       />
 
-      {/* 2) Preview + upload */}
       <SelectedModal
         visible={!!selectedFile}
         file={selectedFile}

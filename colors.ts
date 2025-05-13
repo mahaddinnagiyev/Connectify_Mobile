@@ -17,4 +17,20 @@ export const color = {
   inputBgColor: "#f7f7f7",
   inputBorderColor: "#ddd",
   inputTextColor: "#333",
+
+  // <----- ----->
+  primary: "#2ecc71",
+  primaryDark: "#27ae60",
+  secondary: "#f1c40f",
+  danger: "#e74c3c",
+  background: "#ecf0f1",
+  textPrimary: "#2c3e50",
+  textSecondary: "#95a5a6",
+  border: "#bdc3c7",
+  white: "#ffffff",
+  gradientStart: "#1abc9c",
+  gradientEnd: "#3498db",
+  replyBackground: "#f8f9fa",
+  recordingBg: "#ffe6e6",
+  iconDark: "#34495e",
 };
