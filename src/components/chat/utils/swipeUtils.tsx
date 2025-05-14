@@ -11,7 +11,7 @@ interface SwipeableMessageProps {
   setSelectedMessage: React.Dispatch<React.SetStateAction<MessagesDTO | null>>;
   children: React.ReactNode;
   setReplyMessage: (message: MessagesDTO | null) => void;
-  scrollViewRef: React.RefObject<ScrollView>;
+  // scrollViewRef: React.RefObject<ScrollView>;
 }
 
 export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
@@ -20,7 +20,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   setSelectedMessage,
   children,
   setReplyMessage,
-  scrollViewRef,
+  // scrollViewRef,
 }) => {
   const dispatch = useDispatch();
   const swipeableRef = useRef<Swipeable>(null);
@@ -40,7 +40,7 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
   const handleLeftOpen = () => {
     setReplyMessage(message);
     swipeableRef.current?.close();
-    scrollViewRef.current?.scrollToEnd({ animated: true });
+    // scrollViewRef.current?.scrollToEnd({ animated: true });
   };
 
   const handleRightOpen = () => {

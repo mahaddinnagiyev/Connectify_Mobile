@@ -247,7 +247,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
-                  scrollViewRef={scrollViewRef}
                 >
                   <Image
                     message={message}
@@ -267,7 +266,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
-                  scrollViewRef={scrollViewRef}
                 >
                   <Video
                     message={message}
@@ -287,7 +285,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
-                  scrollViewRef={scrollViewRef}
                 >
                   <TouchableOpacity
                     onLongPress={() => {
@@ -307,7 +304,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
-                  scrollViewRef={scrollViewRef}
                 >
                   <TouchableOpacity
                     onLongPress={() => {
@@ -334,7 +330,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
                   setIsDetailMenuVisible={setIsDetailMenuVisible}
                   setSelectedMessage={setSelectedMessage}
                   setReplyMessage={setReplyMessage}
-                  scrollViewRef={scrollViewRef}
                 >
                   <TouchableOpacity
                     onLongPress={() => {
