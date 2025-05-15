@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import { color } from "@/colors";
 import { styles } from "./styles/messages.style";
-import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Audio as ExpoAudio } from "expo-av";
 
 // Services
 import {
@@ -80,15 +81,26 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const { chat } = route.params;
 
   const listRef = useRef<FlatList<MessagesDTO>>(null);
+  const soundRef = useRef<ExpoAudio.Sound | null>(null);
 
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
-  const [contextMenuVisible, setContextMenuVisible] = useState<boolean>(false);
+  const [unsendingIds, setUnsendingIds] = useState<Set<string>>(new Set());
   const [selectedMessage, setSelectedMessage] = useState<MessagesDTO | null>(
     null
   );
-  const [detailVisible, setDetailVisible] = useState(false);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [contextMenuVisible, setContextMenuVisible] = useState<boolean>(false);
+  const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
-  const [unsendingIds, setUnsendingIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    ExpoAudio.Sound.createAsync(
+      require("@assets/sounds/message-receive-audio.mp3")
+    ).then(({ sound }) => {
+      soundRef.current = sound;
+    });
+    return () => {
+      soundRef.current?.unloadAsync();
+    };
+  }, []);
 
   // ---- INITIAL LOAD & SOCKET HANDLERS ----
   useEffect(() => {
@@ -115,6 +127,9 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       LayoutAnimation.easeInEaseOut();
       dispatch(addMessage(msg));
       addNewMessageToStorage(chat.id, msg);
+      if (msg.sender_id !== userData.user.id) {
+        soundRef.current?.replayAsync();
+      }
     };
     const onRead = (p: { roomId: string; ids: string[] }) => {
       if (p.roomId !== chat.id) return;
