@@ -6,6 +6,7 @@ interface ChatState {
   showBackToBottom: boolean;
   messages: MessagesDTO[];
   downloadMessages: MessagesDTO[];
+  unsendingIds: string[];
 }
 
 const initialState: ChatState = {
@@ -13,6 +14,7 @@ const initialState: ChatState = {
   showBackToBottom: false,
   messages: [],
   downloadMessages: [],
+  unsendingIds: [],
 };
 
 export const chatSlice = createSlice({
@@ -61,6 +63,17 @@ export const chatSlice = createSlice({
     clearDownloadMessages: (state) => {
       state.downloadMessages = [];
     },
+
+    markUnsending: (state, action: PayloadAction<string>) => {
+      if (!state.unsendingIds.includes(action.payload)) {
+        state.unsendingIds.push(action.payload);
+      }
+    },
+    clearUnsending: (state, action: PayloadAction<string>) => {
+      state.unsendingIds = state.unsendingIds.filter(
+        (id) => id !== action.payload
+      );
+    },
   },
 });
 
@@ -76,5 +89,8 @@ export const {
   addDownloadMessage,
   removeDownloadMessage,
   clearDownloadMessages,
+
+  markUnsending,
+  clearUnsending,
 } = chatSlice.actions;
 export default chatSlice.reducer;

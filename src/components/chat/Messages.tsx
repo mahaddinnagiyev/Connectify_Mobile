@@ -27,6 +27,8 @@ import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addMessage,
+  clearUnsending,
+  markUnsending,
   removeMessage,
   setMessages,
   setMessagesRead,
@@ -71,7 +73,7 @@ const ITEM_BATCH = 20;
 
 const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const dispatch = useDispatch();
-  const { showBackToBottom, messages } = useSelector(
+  const { showBackToBottom, messages, unsendingIds } = useSelector(
     (state: RootState) => state.chat
   );
   const { userData } = useSelector((state: RootState) => state.myProfile);
@@ -83,7 +85,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const listRef = useRef<FlatList<MessagesDTO>>(null);
   const soundRef = useRef<ExpoAudio.Sound | null>(null);
 
-  const [unsendingIds, setUnsendingIds] = useState<Set<string>>(new Set());
   const [selectedMessage, setSelectedMessage] = useState<MessagesDTO | null>(
     null
   );
@@ -140,11 +141,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
     const onDeleted = (data: { messageId: string; roomId: string }) => {
       if (data.roomId !== chat.id) return;
       // remove from unsending set if pending
-      setUnsendingIds((prev) => {
-        const copy = new Set(prev);
-        copy.delete(data.messageId);
-        return copy;
-      });
+      dispatch(clearUnsending(data.messageId));
       dispatch(removeMessage(data.messageId));
       removeMessageFromStorage(chat.id, data.messageId);
     };
@@ -182,7 +179,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const unsend = useCallback(
     (id: string) => {
       // show spinner for this message
-      setUnsendingIds((prev) => new Set(prev).add(id));
+      dispatch(markUnsending(id));
       socket?.emit("unsendMessage", { roomId: chat.id, messageId: id });
     },
     [chat.id, socket]
@@ -290,7 +287,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
           <View style={styles.messageWrapper}>
             {item.message_type === MessageType.DEFAULT ? (
               <>{content}</>
-            ) : unsendingIds.has(item.id) ? (
+            ) : unsendingIds.includes(item.id) ? (
               <View
                 key={item.id}
                 style={[
