@@ -101,7 +101,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
               {
                 label: "Last Seen",
                 value: userData.account.last_login
-                  ? new Date(userData.account.last_login)
+                  ? new Date(userData.account.last_login + "Z")
                       .toLocaleTimeString("az-AZ", {
                         timeZone: "Asia/Baku",
                         day: "2-digit",

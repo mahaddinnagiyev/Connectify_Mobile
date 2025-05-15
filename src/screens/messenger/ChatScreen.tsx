@@ -30,7 +30,6 @@ const ChatScreen = () => {
   )!;
 
   const [replyMessage, setReplyMessage] = useState<MessagesDTO | null>(null);
-  const scrollViewRef = useRef<ScrollView>(null);
 
   const socket = useSocketContext();
 
@@ -43,12 +42,10 @@ const ChatScreen = () => {
       <ChatHeader />
       <Messages
         setReplyMessage={setReplyMessage}
-        scrollViewRef={scrollViewRef}
       />
       <SendMessage
         setReplyMessage={setReplyMessage}
         replyMessage={replyMessage}
-        scrollViewRef={scrollViewRef}
       />
     </SafeAreaView>
   );

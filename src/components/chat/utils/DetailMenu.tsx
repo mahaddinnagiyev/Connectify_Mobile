@@ -121,7 +121,14 @@ const DetailMenu = ({ visible, onClose, message }: Props) => {
 
             <DetailRow
               label="Sent at"
-              value={new Date(message.created_at).toLocaleString()}
+              value={new Date(message.created_at).toLocaleString("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric",
+              })}
             />
 
             <DetailRow
@@ -203,7 +210,9 @@ const MessageContent = ({ message }: { message: MessagesDTO }) => {
 
   if (message.message_type === MessageType.TEXT) {
     return (
-      <Text style={styles.contentText} numberOfLines={3}>{truncate(message.content, 40)}</Text>
+      <Text style={styles.contentText} numberOfLines={3}>
+        {truncate(message.content, 40)}
+      </Text>
     );
   }
 

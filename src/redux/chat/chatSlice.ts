@@ -30,9 +30,10 @@ export const chatSlice = createSlice({
     },
     addMessage: (state, action: PayloadAction<MessagesDTO>) => {
       if (!state.messages.find((m) => m.id === action.payload.id)) {
-        state.messages.push(action.payload);
+        state.messages.unshift(action.payload);
       }
     },
+
     removeMessage: (state, action: PayloadAction<string>) => {
       state.messages = state.messages.filter((m) => m.id !== action.payload);
     },

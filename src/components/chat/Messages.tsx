@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef, memo } from "react";
 import {
   View,
   Text,
-  ScrollView,
   Pressable,
   ActivityIndicator,
   Linking,
   TouchableOpacity,
   LayoutAnimation,
+  FlatList,
+  ListRenderItemInfo,
 } from "react-native";
 import { color } from "@/colors";
 import { styles } from "./styles/messages.style";
@@ -38,7 +39,11 @@ import { StackParamList } from "@navigation/UserStack";
 import { useSocketContext } from "@context/SocketContext";
 
 // Functions
-import { formatDate, handleScroll, isUrl } from "@functions/messages.function";
+import {
+  bannerDateLabel,
+  handleScroll,
+  isUrl,
+} from "@functions/messages.function";
 import {
   addNewMessageToStorage,
   getMessagesFromStorage,
@@ -59,10 +64,11 @@ import { SwipeableMessage } from "./utils/swipeUtils";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
-  scrollViewRef: React.RefObject<ScrollView>;
 }
 
-const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
+const ITEM_BATCH = 20;
+
+const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const dispatch = useDispatch();
   const { showBackToBottom, messages } = useSelector(
     (state: RootState) => state.chat
@@ -73,348 +79,317 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
-  const [hasMoreMessages, setHasMoreMessages] = useState<boolean>(false);
-  const [hasMoreMessagesLoading, setHasMoreMessagesLoading] =
-    useState<boolean>(false);
-  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const listRef = useRef<FlatList<MessagesDTO>>(null);
+
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [contextMenuVisible, setContextMenuVisible] = useState<boolean>(false);
   const [selectedMessage, setSelectedMessage] = useState<MessagesDTO | null>(
     null
   );
-  const [isDetailMenuVisible, setIsDetailMenuVisible] = useState(false);
+  const [detailVisible, setDetailVisible] = useState(false);
 
-  useEffect(() => {
-    scrollViewRef.current?.scrollToEnd({ animated: true });
-  }, [scrollViewRef]);
+  const [unsendingIds, setUnsendingIds] = useState<Set<string>>(new Set());
 
+  // ---- INITIAL LOAD & SOCKET HANDLERS ----
   useEffect(() => {
     if (!socket) return;
     dispatch(setMessages([]));
     setReplyMessage(null);
     socket.emit("setMessageRead", { roomId: chat.id });
 
-    getMessagesFromStorage(chat.id).then((messages: MessagesDTO[]) => {
-      if (messages.length > 0) dispatch(setMessages(messages));
+    getMessagesFromStorage(chat.id).then((stored) => {
+      dispatch(setMessages(stored.toReversed()));
       socket.emit("getMessages", {
         roomId: chat.id,
-        limit: messages.length === 0 ? 50 : messages.length,
+        limit: stored.length === 0 ? 50 : stored.length,
       });
-
-      setHasMoreMessages(messages.length < 50);
     });
 
-    const handleAll = async (data: { messages: any[] }) => {
-      if (data.messages[0]?.room_id === chat.id) {
-        dispatch(setMessages(data.messages));
-        await setMessagesToStorage(chat.id, data.messages);
-      }
-
-      if (data.messages.length < 50) setHasMoreMessages(false);
-      else setHasMoreMessages(true);
+    const onAll = (data: { messages: any[] }) => {
+      if (data.messages[0]?.room_id !== chat.id) return;
+      dispatch(setMessages(data.messages.toReversed()));
+      setMessagesToStorage(chat.id, data.messages);
+    };
+    const onNew = (msg: MessagesDTO) => {
+      if (msg.room_id !== chat.id) return;
+      LayoutAnimation.easeInEaseOut();
+      dispatch(addMessage(msg));
+      addNewMessageToStorage(chat.id, msg);
+    };
+    const onRead = (p: { roomId: string; ids: string[] }) => {
+      if (p.roomId !== chat.id) return;
+      dispatch(setMessagesRead(p.ids));
+      setMessagesReadInStorage(chat.id, p.ids);
     };
 
-    const handleNew = async (message: MessagesDTO) => {
-      if (message.room_id !== chat.id) return;
-
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-
-      dispatch(addMessage(message));
-      await addNewMessageToStorage(chat.id, message);
-    };
-
-    const handleMessagesRead = async (payload: {
-      roomId: string;
-      ids: string[];
-    }) => {
-      if (payload.roomId === chat.id) {
-        dispatch(setMessagesRead(payload.ids));
-        await setMessagesReadInStorage(chat.id, payload.ids);
-      }
-    };
-
-    socket.on("messages", handleAll);
-    socket.on("newMessage", handleNew);
-    socket.on("messagesRead", handleMessagesRead);
-    return () => {
-      socket.off("messages", handleAll);
-      socket.off("newMessage", handleNew);
-      socket.off("messagesRead", handleMessagesRead);
-    };
-  }, [socket, chat, dispatch]);
-
-  useEffect(() => {
-    const handleDelete = async (data: {
-      messageId: string;
-      roomId: string;
-    }) => {
+    const onDeleted = (data: { messageId: string; roomId: string }) => {
       if (data.roomId !== chat.id) return;
+      // remove from unsending set if pending
+      setUnsendingIds((prev) => {
+        const copy = new Set(prev);
+        copy.delete(data.messageId);
+        return copy;
+      });
       dispatch(removeMessage(data.messageId));
-      await removeMessageFromStorage(chat.id, data.messageId);
+      removeMessageFromStorage(chat.id, data.messageId);
     };
-    socket?.on("messageDeleted", handleDelete);
+
+    socket.on("messages", onAll);
+    socket.on("newMessage", onNew);
+    socket.on("messagesRead", onRead);
+    socket?.on("messageDeleted", onDeleted);
     return () => {
-      socket?.off("messageDeleted", handleDelete);
+      socket.off("messages", onAll);
+      socket.off("newMessage", onNew);
+      socket.off("messagesRead", onRead);
+      socket?.off("messageDeleted", onDeleted);
     };
-  }, [socket, chat.id, dispatch]);
+  }, [socket, chat.id, dispatch, unsendingIds]);
 
-  const loadMoreMessages = useCallback(
-    async (newLimit: number) => {
-      if (!hasMoreMessagesLoading && hasMoreMessages) {
-        try {
-          setHasMoreMessagesLoading(true);
-
-          socket?.off("messages");
-
-          socket?.once("messages", async (data) => {
-            if (data.messages[0]?.room_id === chat.id) {
-              dispatch(setMessages([...data.messages]));
-              await setMessagesToStorage(chat.id, data.messages);
-            }
-            setHasMoreMessages(data.messages.length >= newLimit);
-            setHasMoreMessagesLoading(false);
-          });
-
-          socket?.emit("getMessages", { roomId: chat.id, limit: newLimit });
-        } catch (error) {
-          setHasMoreMessagesLoading(false);
-        }
+  // ---- LOAD MORE ----
+  const loadMore = useCallback(async () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+    socket?.off("messages");
+    socket?.once("messages", (data) => {
+      if (data.messages[0]?.room_id === chat.id) {
+        dispatch(setMessages(data.messages.toReversed()));
+        setMessagesToStorage(chat.id, data.messages);
       }
-    },
-    [hasMoreMessages, chat.id, socket, dispatch]
-  );
+      setLoadingMore(false);
+    });
+    socket?.emit("getMessages", {
+      roomId: chat.id,
+      limit: messages.length + ITEM_BATCH,
+    });
+  }, [loadingMore, chat.id, messages.length, dispatch, socket]);
 
-  const handleUnsendMessage = useCallback(
-    (messageId: string) => {
-      if (!messageId) return;
-
-      socket?.emit("unsendMessage", { roomId: chat.id, messageId });
+  const unsend = useCallback(
+    (id: string) => {
+      // show spinner for this message
+      setUnsendingIds((prev) => new Set(prev).add(id));
+      socket?.emit("unsendMessage", { roomId: chat.id, messageId: id });
     },
     [chat.id, socket]
   );
 
-  return (
-    <View style={styles.outerContainer}>
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-        onContentSizeChange={() =>
-          scrollViewRef.current?.scrollToEnd({ animated: true })
-        }
-        onScroll={(event) => handleScroll(event, dispatch)}
-        scrollEventThrottle={16}
-      >
-        {hasMoreMessages && (
-          <View style={{ alignItems: "center" }}>
-            {hasMoreMessagesLoading ? (
-              <Pressable style={styles.loadMoreMessagesContainer}>
-                <ActivityIndicator color={color.primaryColor} size="small" />
-              </Pressable>
-            ) : (
-              <Pressable
-                onPress={() => loadMoreMessages(messages.length + 50)}
-                style={styles.loadMoreMessagesContainer}
-              >
-                <AntDesign name="down" size={16} color={color.primaryColor} />
-                <Text style={styles.loadMoreMessagesText}>More</Text>
-              </Pressable>
-            )}
-          </View>
-        )}
-        {messages.map((message, index) => {
-          const currDate = new Date(message.created_at).toDateString();
-          const prevDate =
-            index > 0
-              ? new Date(messages[index - 1].created_at).toDateString()
-              : null;
-          const showSeparator = index === 0 || currDate !== prevDate;
+  const renderMessage = useCallback(
+    ({ item, index }: ListRenderItemInfo<MessagesDTO>) => {
+      const curr = new Date(item.created_at).toDateString();
+      const next =
+        index < messages.length - 1
+          ? new Date(messages[index + 1].created_at).toDateString()
+          : null;
+      const showSeparator = curr !== next;
 
-          // Bubble styles
-          const bubbleStyle =
-            message.sender_id === chat.otherUser.id
-              ? styles.receivedBubble
-              : styles.sentBubble;
-          const textStyle =
-            message.sender_id === chat.otherUser.id
-              ? styles.receivedText
-              : styles.sentText;
+      const isMine = item.sender_id === userData.user.id;
+      const bubbleStyle = isMine ? styles.sentBubble : styles.receivedBubble;
+      const textStyle = isMine ? styles.sentText : styles.receivedText;
 
-          let contentElement: React.ReactNode;
-          switch (message.message_type) {
-            case MessageType.IMAGE:
-              contentElement = (
-                <SwipeableMessage
-                  message={message}
-                  setIsDetailMenuVisible={setIsDetailMenuVisible}
-                  setSelectedMessage={setSelectedMessage}
-                  setReplyMessage={setReplyMessage}
-                >
-                  <Image
-                    message={message}
-                    bubbleStyle={bubbleStyle}
-                    onLongPress={() => {
-                      setSelectedMessage(message);
-                      setContextMenuVisible(true);
-                    }}
-                  />
-                </SwipeableMessage>
-              );
-              break;
-            case MessageType.VIDEO:
-              contentElement = (
-                <SwipeableMessage
-                  message={message}
-                  setIsDetailMenuVisible={setIsDetailMenuVisible}
-                  setSelectedMessage={setSelectedMessage}
-                  setReplyMessage={setReplyMessage}
-                >
-                  <Video
-                    message={message}
-                    bubbleStyle={bubbleStyle}
-                    onLongPress={() => {
-                      setSelectedMessage(message);
-                      setContextMenuVisible(true);
-                    }}
-                  />
-                </SwipeableMessage>
-              );
-              break;
-            case MessageType.AUDIO:
-              contentElement = (
-                <SwipeableMessage
-                  message={message}
-                  setIsDetailMenuVisible={setIsDetailMenuVisible}
-                  setSelectedMessage={setSelectedMessage}
-                  setReplyMessage={setReplyMessage}
-                >
-                  <TouchableOpacity
-                    onLongPress={() => {
-                      setSelectedMessage(message);
-                      setContextMenuVisible(true);
-                    }}
-                  >
-                    <Audio message={message} bubbleStyle={bubbleStyle} />
-                  </TouchableOpacity>
-                </SwipeableMessage>
-              );
-              break;
-            case MessageType.FILE:
-              contentElement = (
-                <SwipeableMessage
-                  message={message}
-                  setIsDetailMenuVisible={setIsDetailMenuVisible}
-                  setSelectedMessage={setSelectedMessage}
-                  setReplyMessage={setReplyMessage}
-                >
-                  <TouchableOpacity
-                    onLongPress={() => {
-                      setSelectedMessage(message);
-                      setContextMenuVisible(true);
-                    }}
-                  >
-                    <File message={message} bubbleStyle={bubbleStyle} />
-                  </TouchableOpacity>
-                </SwipeableMessage>
-              );
-              break;
-            case MessageType.DEFAULT:
-              contentElement = (
-                <View style={[styles.messageBubble, styles.defaultContainer]}>
-                  <Text style={styles.defaultText}>{message.content}</Text>
-                </View>
-              );
-              break;
-            default:
-              contentElement = (
-                <SwipeableMessage
-                  message={message}
-                  setIsDetailMenuVisible={setIsDetailMenuVisible}
-                  setSelectedMessage={setSelectedMessage}
-                  setReplyMessage={setReplyMessage}
-                >
-                  <TouchableOpacity
-                    onLongPress={() => {
-                      setSelectedMessage(message);
-                      setContextMenuVisible(true);
-                    }}
-                  >
-                    <View style={[styles.messageBubble, bubbleStyle]}>
-                      {isUrl(message.content) ? (
-                        <TouchableOpacity
-                          onPress={() => Linking.openURL(message.content)}
-                        >
-                          <Text style={styles.url}>{message.content}</Text>
-                        </TouchableOpacity>
-                      ) : (
-                        <Text style={textStyle}>{message.content}</Text>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                </SwipeableMessage>
-              );
-          }
+      // if pending unsend, show loader instead of content
 
-          return (
-            <React.Fragment key={message.id}>
-              {showSeparator && (
-                <View style={styles.dateSeparator}>
-                  <Text style={styles.dateText}>
-                    {formatDate(message.created_at)}
+      // content
+      let content: React.ReactNode;
+      switch (item.message_type) {
+        case MessageType.IMAGE:
+          content = (
+            <Image
+              message={item}
+              bubbleStyle={bubbleStyle}
+              onLongPress={() => {
+                setSelectedMessage(item);
+                setContextMenuVisible(true);
+              }}
+            />
+          );
+          break;
+        case MessageType.VIDEO:
+          content = (
+            <Video
+              message={item}
+              bubbleStyle={bubbleStyle}
+              onLongPress={() => {
+                setSelectedMessage(item);
+                setContextMenuVisible(true);
+              }}
+            />
+          );
+          break;
+        case MessageType.AUDIO:
+          content = (
+            <TouchableOpacity
+              onLongPress={() => {
+                setSelectedMessage(item);
+                setContextMenuVisible(true);
+              }}
+            >
+              <Audio message={item} bubbleStyle={bubbleStyle} />
+            </TouchableOpacity>
+          );
+          break;
+        case MessageType.FILE:
+          content = (
+            <TouchableOpacity
+              onLongPress={() => {
+                setSelectedMessage(item);
+                setContextMenuVisible(true);
+              }}
+            >
+              <File message={item} bubbleStyle={bubbleStyle} />
+            </TouchableOpacity>
+          );
+          break;
+        case MessageType.DEFAULT:
+          content = (
+            <View style={[styles.messageBubble, styles.defaultContainer]}>
+              <Text style={styles.defaultText}>{item.content}</Text>
+            </View>
+          );
+          break;
+        default:
+          content = (
+            <TouchableOpacity
+              onLongPress={() => {
+                setSelectedMessage(item);
+                setContextMenuVisible(true);
+              }}
+            >
+              <View style={[styles.messageBubble, bubbleStyle]}>
+                {isUrl(item.content) ? (
+                  <Text
+                    style={styles.url}
+                    onPress={() => Linking.openURL(item.content)}
+                  >
+                    {item.content}
                   </Text>
-                </View>
-              )}
-
-              {message.parent_message_id && (
-                <ParentMessage message={message} chat={chat} />
-              )}
-
-              <View style={styles.messageWrapper}>
-                {contentElement}
-
-                {message.message_type !== MessageType.DEFAULT && (
-                  <View
-                    style={[
-                      styles.timeContainer,
-                      {
-                        justifyContent:
-                          message.sender_id === chat.otherUser.id
-                            ? "flex-start"
-                            : "flex-end",
-
-                        marginRight:
-                          message.sender_id === chat.otherUser.id ? 0 : 10,
-                        marginLeft:
-                          message.sender_id === chat.otherUser.id ? 10 : 0,
-                      },
-                    ]}
-                  >
-                    <Text style={[styles.timeText]}>
-                      {new Date(message.created_at + "Z").toLocaleTimeString(
-                        "az",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
-                      )}
-                    </Text>
-                    {message.sender_id !== chat.otherUser.id && (
-                      <Ionicons
-                        name="checkmark-done-sharp"
-                        size={15}
-                        color={
-                          message.status === MessageStatus.READ
-                            ? "#2196F3"
-                            : "#333"
-                        }
-                        style={{ marginTop: 2 }}
-                      />
-                    )}
-                  </View>
+                ) : (
+                  <Text style={textStyle}>{item.content}</Text>
                 )}
               </View>
-            </React.Fragment>
+            </TouchableOpacity>
           );
-        })}
-      </ScrollView>
+      }
+
+      return (
+        <React.Fragment key={item.id}>
+          <View style={styles.messageWrapper}>
+            {item.message_type === MessageType.DEFAULT ? (
+              <>{content}</>
+            ) : unsendingIds.has(item.id) ? (
+              <View
+                key={item.id}
+                style={[
+                  styles.messageWrapper,
+                  {
+                    alignSelf: "flex-end",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  },
+                ]}
+              >
+                <ActivityIndicator size="small" color={color.primaryColor} />
+                <Text
+                  style={{ fontSize: 12, fontStyle: "italic", color: "gray" }}
+                >
+                  Unsending...
+                </Text>
+              </View>
+            ) : (
+              <SwipeableMessage
+                message={item}
+                setIsDetailMenuVisible={setDetailVisible}
+                setSelectedMessage={setSelectedMessage}
+                setReplyMessage={setReplyMessage}
+              >
+                {content}
+              </SwipeableMessage>
+            )}
+            {item.message_type !== MessageType.DEFAULT && (
+              <View
+                style={[
+                  styles.timeContainer,
+                  {
+                    justifyContent:
+                      item.sender_id === chat.otherUser.id
+                        ? "flex-start"
+                        : "flex-end",
+
+                    marginRight: item.sender_id === chat.otherUser.id ? 0 : 10,
+                    marginLeft: item.sender_id === chat.otherUser.id ? 10 : 0,
+                  },
+                ]}
+              >
+                <Text style={[styles.timeText]}>
+                  {new Date(item.created_at).toLocaleTimeString("az", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
+                {item.sender_id !== chat.otherUser.id && (
+                  <Ionicons
+                    name="checkmark-done-sharp"
+                    size={15}
+                    color={
+                      item.status === MessageStatus.READ
+                        ? color.primaryColor
+                        : "#333"
+                    }
+                    style={{ marginTop: 2 }}
+                  />
+                )}
+              </View>
+            )}
+          </View>
+          {showSeparator && (
+            <>
+              {item.parent_message_id && (
+                <ParentMessage message={item} chat={chat} />
+              )}
+              <View style={styles.dateSeparator}>
+                <Text style={styles.dateText}>
+                  {bannerDateLabel(item.created_at.toString())}
+                </Text>
+              </View>
+            </>
+          )}
+          {item.parent_message_id && !showSeparator && (
+            <ParentMessage message={item} chat={chat} />
+          )}
+        </React.Fragment>
+      );
+    },
+    [messages, chat, setReplyMessage]
+  );
+
+  const keyExtractor = useCallback((item: MessagesDTO) => item.id, []);
+
+  return (
+    <View style={styles.outerContainer}>
+      <FlatList
+        ref={listRef}
+        data={messages}
+        keyExtractor={keyExtractor}
+        renderItem={renderMessage}
+        inverted
+        removeClippedSubviews
+        initialNumToRender={ITEM_BATCH}
+        maxToRenderPerBatch={ITEM_BATCH}
+        windowSize={5}
+        onScroll={(e) => handleScroll(e, dispatch)}
+        contentContainerStyle={styles.contentContainer}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={() =>
+          loadingMore ? (
+            <ActivityIndicator
+              size="small"
+              color={color.primaryColor}
+              style={{ marginVertical: 10 }}
+            />
+          ) : null
+        }
+      />
 
       {showBackToBottom && (
         <MaterialIcons
@@ -422,7 +397,9 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
           size={24}
           color="black"
           style={styles.backToBottom}
-          onPress={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+          onPress={() =>
+            listRef.current?.scrollToOffset({ offset: 0, animated: true })
+          }
         />
       )}
 
@@ -431,24 +408,24 @@ const Messages: React.FC<Props> = ({ setReplyMessage, scrollViewRef }) => {
           message={selectedMessage}
           onClose={() => setContextMenuVisible(false)}
           onDelete={() => {
-            handleUnsendMessage(selectedMessage.id);
+            unsend(selectedMessage.id);
             setContextMenuVisible(false);
           }}
-          onDetail={() => setIsDetailMenuVisible(true)}
+          onDetail={() => setDetailVisible(true)}
           userId={userData.user.id}
           setReplyMessage={setReplyMessage}
         />
       )}
 
-      {isDetailMenuVisible && (
+      {detailVisible && selectedMessage && (
         <DetailMenu
-          visible={isDetailMenuVisible}
-          onClose={() => setIsDetailMenuVisible(false)}
-          message={selectedMessage!}
+          visible={detailVisible}
+          onClose={() => setDetailVisible(false)}
+          message={selectedMessage}
         />
       )}
     </View>
   );
 };
 
-export default Messages;
+export default memo(Messages);

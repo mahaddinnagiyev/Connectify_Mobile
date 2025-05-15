@@ -4,11 +4,11 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
+    backgroundColor: color.inputBorderColor,
     position: "relative",
   },
   container: {
     flex: 1,
-    backgroundColor: color.inputBorderColor,
     paddingTop: 5,
   },
   contentContainer: {

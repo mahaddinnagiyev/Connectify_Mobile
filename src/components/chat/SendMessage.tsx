@@ -47,14 +47,9 @@ import { UIImagePickerControllerQualityType } from "expo-image-picker";
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
   replyMessage: MessagesDTO | null;
-  scrollViewRef: React.RefObject<ScrollView>;
 }
 
-const SendMessage: React.FC<Props> = ({
-  replyMessage,
-  setReplyMessage,
-  scrollViewRef,
-}) => {
+const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
   const dispatch = useDispatch();
   const socket = useSocketContext();
 
@@ -256,7 +251,6 @@ const SendMessage: React.FC<Props> = ({
       dispatch(setInputHeight(0));
 
       soundRef.current?.replayAsync();
-      scrollViewRef.current?.scrollToEnd({ animated: true });
     } catch (error) {
       dispatch(setErrorMessage("Failed to send message"));
     } finally {
@@ -338,7 +332,6 @@ const SendMessage: React.FC<Props> = ({
 
       setReplyMessage(null);
       soundRef.current?.replayAsync();
-      scrollViewRef.current?.scrollToEnd({ animated: true });
     } catch (error) {
       dispatch(
         setErrorMessage((error as Error).message ?? "Failed to stop recording")
@@ -523,7 +516,6 @@ const SendMessage: React.FC<Props> = ({
 
     setReplyMessage(null);
     setSelectedFile(null);
-    scrollViewRef.current?.scrollToEnd({ animated: true });
   };
 
   return (
