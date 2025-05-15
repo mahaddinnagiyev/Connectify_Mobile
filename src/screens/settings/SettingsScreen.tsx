@@ -1,21 +1,30 @@
 import { View, Text, Pressable, SafeAreaView, ScrollView } from "react-native";
 import React, { useRef, useState, useEffect } from "react";
-import { color } from "@/colors";
+import { styles } from "./style/settingScreen.styles";
+
+// Navigation
 import { useNavigation } from "@react-navigation/native";
 import type { StackParamList } from "@navigation/UserStack";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+// Components
+import FaceIDModal from "@components/modals/auth/FaceIDModal";
+import ConfirmModal from "@components/modals/confirm/ConfirmModal";
 import AccountSettings from "@components/settings/AccountSettings";
 import PrivacySettings from "@components/settings/PrivacySettings";
+
+// Services
 import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
+import { PrivacySettings as Privacy } from "@services/account/dto/privacy.dto";
+
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { setIsPrivachSettingsChagned } from "@redux/profile/myProfileSlice";
+
+// Hooks
 import { useUpdateProfile } from "@hooks/useUpdateProfile";
-import { PrivacySettings as Privacy } from "@services/account/dto/privacy.dto";
-import ConfirmModal from "@components/modals/confirm/ConfirmModal";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { styles } from "./style/settingScreen.styles";
-import FaceIDModal from "@components/modals/auth/FaceIDModal";
+import SoundSettings from "@/src/components/settings/SoundSettings";
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
@@ -169,6 +178,9 @@ const SettingsScreen = () => {
               </Pressable>
             </View>
           )} */}
+
+          {/* Sound Preferences Section */}
+          <SoundSettings />
 
           {/* Account Settings Section */}
           <AccountSettings

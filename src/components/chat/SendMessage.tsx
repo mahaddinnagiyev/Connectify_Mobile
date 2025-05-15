@@ -66,6 +66,9 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { inputHeight } = useSelector((state: RootState) => state.chat);
+  const { soundPreferences } = useSelector(
+    (state: RootState) => state.settings
+  );
   const { blockList = [], blockerList = [] } = useSelector(
     (state: RootState) => state.myFriends
   );
@@ -250,7 +253,7 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
       setInput("");
       dispatch(setInputHeight(0));
 
-      soundRef.current?.replayAsync();
+      if (soundPreferences.sentSound) soundRef.current?.replayAsync();
     } catch (error) {
       dispatch(setErrorMessage("Failed to send message"));
     } finally {
@@ -331,7 +334,7 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
       });
 
       setReplyMessage(null);
-      soundRef.current?.replayAsync();
+      if (soundPreferences.sentSound) soundRef.current?.replayAsync();
     } catch (error) {
       dispatch(
         setErrorMessage((error as Error).message ?? "Failed to stop recording")

@@ -77,6 +77,9 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
     (state: RootState) => state.chat
   );
   const { userData } = useSelector((state: RootState) => state.myProfile);
+  const { soundPreferences } = useSelector(
+    (state: RootState) => state.settings
+  );
 
   const socket = useSocketContext();
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
@@ -128,7 +131,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       LayoutAnimation.easeInEaseOut();
       dispatch(addMessage(msg));
       addNewMessageToStorage(chat.id, msg);
-      if (msg.sender_id !== userData.user.id) {
+      if (msg.sender_id !== userData.user.id && soundPreferences.receiveSound) {
         soundRef.current?.replayAsync();
       }
     };
@@ -140,7 +143,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
 
     const onDeleted = (data: { messageId: string; roomId: string }) => {
       if (data.roomId !== chat.id) return;
-      // remove from unsending set if pending
       dispatch(clearUnsending(data.messageId));
       dispatch(removeMessage(data.messageId));
       removeMessageFromStorage(chat.id, data.messageId);
@@ -197,8 +199,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       const isMine = item.sender_id === userData.user.id;
       const bubbleStyle = isMine ? styles.sentBubble : styles.receivedBubble;
       const textStyle = isMine ? styles.sentText : styles.receivedText;
-
-      // if pending unsend, show loader instead of content
 
       // content
       let content: React.ReactNode;
