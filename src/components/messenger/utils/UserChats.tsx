@@ -144,6 +144,7 @@ const UserChats = () => {
     const handleUserPresence = (payload: {
       userId: string;
       online: boolean;
+      
     }) => {
       setOnlineUsers((prev) => {
         const next = new Set(prev);
