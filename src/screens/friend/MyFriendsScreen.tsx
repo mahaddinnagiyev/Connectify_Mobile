@@ -122,9 +122,9 @@ const MyFriendsScreen = () => {
           otherUserPrivacySettings: userInfo?.privacy_settings!,
         };
 
-        dispatch(addChat(newChat));
+        dispatch(addChat({ ...newChat, unreadCount: 0 }));
         navigate("Chat", {
-          chat: newChat,
+          chat: { ...newChat, unreadCount: 0 },
         });
       }
     });

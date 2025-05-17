@@ -235,9 +235,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         };
 
         setIsCreatingRoom(false);
-        dispatch(addChat(newChat));
+        dispatch(addChat({ ...newChat, unreadCount: 0 }));
         navigate("Chat", {
-          chat: newChat,
+          chat: {
+            ...newChat,
+            unreadCount: 0,
+          },
         });
       }
     });
