@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  LayoutChangeEvent,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 
 // Expo
@@ -21,35 +27,13 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
+  const [progressBarWidth, setProgressBarWidth] = useState(0);
+  const isSent = message.sender_id !== chat.otherUser.id;
+
   const soundRef = useRef<ExpoAudio.Sound | null>(null);
   const [playing, setPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    ExpoAudio.Sound.createAsync(
-      { uri: message.content },
-      { shouldPlay: false },
-      (status: AVPlaybackStatus) => {
-        if (!isMounted || !status.isLoaded) return;
-        setDuration(status.durationMillis || 0);
-      }
-    ).then(({ sound }) => {
-      soundRef.current = sound;
-      sound.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
-        if (!isMounted || !status.isLoaded) return;
-        setPlaying(status.isPlaying);
-        setPosition(status.positionMillis);
-      });
-    });
-
-    return () => {
-      isMounted = false;
-      soundRef.current?.unloadAsync();
-    };
-  }, [message.content]);
 
   const togglePlay = async () => {
     const sound = soundRef.current;
@@ -62,39 +46,92 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
     }
   };
 
+  const handleProgressPress = async (event: any) => {
+    if (!soundRef.current || duration === 0) return;
+
+    const touchX = event.nativeEvent.locationX;
+    const newPosition = (touchX / progressBarWidth) * duration;
+
+    await soundRef.current.setPositionAsync(Math.floor(newPosition));
+  };
+
+  const handleProgressLayout = (e: LayoutChangeEvent) => {
+    setProgressBarWidth(e.nativeEvent.layout.width);
+  };
+
   const progressPercent = duration > 0 ? (position / duration) * 100 : 0;
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSound = async () => {
+      ExpoAudio.Sound.createAsync(
+        { uri: message.content },
+        { shouldPlay: false },
+        (status: AVPlaybackStatus) => {
+          if (!isMounted || !status.isLoaded) return;
+          setDuration(status.durationMillis || 0);
+        }
+      ).then(({ sound }) => {
+        soundRef.current = sound;
+        sound.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
+          if (!isMounted || !status.isLoaded) return;
+          setPlaying(status.isPlaying);
+          setPosition(status.positionMillis);
+        });
+      });
+    };
+
+    loadSound();
+    return () => {
+      isMounted = false;
+      soundRef.current?.unloadAsync();
+    };
+  }, [message.content]);
+
   return (
-    <View style={[styles.audioContainer, bubbleStyle]}>
-      <TouchableOpacity style={styles.playButton} onPress={togglePlay}>
+    <View
+      style={[
+        styles.audioContainer,
+        isSent ? styles.sentBubble : styles.receivedBubble,
+        bubbleStyle,
+      ]}
+    >
+      <TouchableOpacity
+        style={[styles.playButton, isSent && styles.sentPlayButton]}
+        onPress={togglePlay}
+      >
         <MaterialIcons
           name={playing ? "pause" : "play-arrow"}
           size={24}
-          color={message.sender_id !== chat.otherUser.id ? "white" : "black"}
+          color={isSent ? "#fff" : "#000"}
         />
       </TouchableOpacity>
 
       <View style={styles.progressWrapper}>
-        <View style={styles.progressBarBackground}>
+        <TouchableOpacity
+          style={styles.progressTouchable}
+          onPress={handleProgressPress}
+          activeOpacity={0.7}
+          onLayout={handleProgressLayout}
+        >
           <View
             style={[
-              styles.progressBarFill,
-              {
-                width: `${progressPercent}%`,
-                backgroundColor:
-                  message.sender_id !== chat.otherUser.id
-                    ? "rgba(255,255,255,0.8)"
-                    : "#666",
-              },
+              styles.progressBarBackground,
+              isSent && styles.sentProgressBackground,
             ]}
-          />
-        </View>
-        <Text
-          style={[
-            styles.timeText,
-            message.sender_id !== chat.otherUser.id && styles.sentTimeText,
-          ]}
-        >
+          >
+            <View
+              style={[
+                styles.progressBarFill,
+                { width: `${progressPercent}%` },
+                isSent ? styles.sentProgressFill : styles.receivedProgressFill,
+              ]}
+            />
+          </View>
+        </TouchableOpacity>
+
+        <Text style={[styles.timeText, isSent && styles.sentTimeText]}>
           {formatTime(Math.floor(position / 1000))} /{" "}
           {formatTime(Math.floor(duration / 1000))}
         </Text>
@@ -117,36 +154,58 @@ const styles = StyleSheet.create({
   audioContainer: {
     marginHorizontal: 10,
     maxWidth: "75%",
-    borderRadius: 15,
-    overflow: "hidden",
-    padding: 12,
+    borderRadius: 20,
+    paddingVertical: 9,
+    paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
   },
+  sentBubble: {
+    backgroundColor: "#2979FF",
+  },
+  receivedBubble: {
+    backgroundColor: "#F1F0F5",
+  },
   playButton: {
-    paddingHorizontal: 4,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 20,
+    padding: 8,
+  },
+  sentPlayButton: {
+    backgroundColor: "rgba(255,255,255,0.3)",
   },
   progressWrapper: {
     flex: 1,
-    gap: 6,
+    gap: 8,
+  },
+  progressTouchable: {
+    width: "100%",
   },
   progressBarBackground: {
-    height: 4,
+    height: 7,
     backgroundColor: "rgba(0,0,0,0.1)",
-    borderRadius: 2,
+    borderRadius: 3,
     overflow: "hidden",
+  },
+  sentProgressBackground: {
+    backgroundColor: "rgba(255,255,255,0.3)",
   },
   progressBarFill: {
     height: "100%",
-    borderRadius: 2,
+    borderRadius: 3,
+  },
+  sentProgressFill: {
+    backgroundColor: "rgba(255,255,255,0.9)",
+  },
+  receivedProgressFill: {
+    backgroundColor: "#666",
   },
   timeText: {
     fontSize: 12,
     color: "rgba(0,0,0,0.6)",
-    alignSelf: "flex-end",
   },
   sentTimeText: {
-    color: "rgba(255,255,255,0.8)",
+    color: "rgba(255,255,255,0.9)",
   },
 });
