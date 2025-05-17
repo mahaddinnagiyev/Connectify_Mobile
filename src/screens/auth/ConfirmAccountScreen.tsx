@@ -8,6 +8,7 @@ import {
   setCode,
   setIsAuthenticated,
   setSignupForm,
+  setToken,
 } from "@redux/auth/authSlice";
 import { RootState } from "@redux/store";
 import React, { useState, useRef, useEffect } from "react";
@@ -23,6 +24,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Audio } from "expo-av";
+import { getTokenFromSession } from "@/src/services/auth/token.service";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -66,6 +68,11 @@ const ConfirmAccountScreen = () => {
       const response = await confirmAccount(Number(code.join("")));
 
       if (response.success) {
+        const token = await getTokenFromSession();
+        if (!token) return;
+
+        dispatch(setToken(token));
+
         dispatch(
           setSuccessMessage(
             "Account confirmed successfully. Welcome to Connectify"
