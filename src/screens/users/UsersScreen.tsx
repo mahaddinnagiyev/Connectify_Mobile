@@ -1,163 +1,180 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  SafeAreaView,
+  Animated,
+  Dimensions,
+  TextInput,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
 import MyFriends from "@components/friends/MyFriends";
 import FriendRequests from "@components/friends/FriendRequests";
 import AllUsers from "@components/users/AllUsers";
 
-const UsersScreen = () => {
-  const [activeTab, setActiveTab] = useState<
-    "ALL_USERS" | "MY_FRIENDS" | "REQUESTS"
-  >("ALL_USERS");
+const { width } = Dimensions.get("window");
+const TABS = [
+  { key: "ALL_USERS", label: "All", icon: "people" },
+  { key: "MY_FRIENDS", label: "Friends", icon: "diversity-3" },
+  { key: "REQUESTS", label: "Requests", icon: "mail" },
+] as const;
+
+type TabKey = (typeof TABS)[number]["key"];
+
+const UsersScreen: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TabKey>("ALL_USERS");
+  const indicatorX = useRef(new Animated.Value(0)).current;
+  const inputRef = useRef<TextInput>(null);
+  const [searchText, setSearchText] = useState("");
+
+  const onTabPress = (index: number, key: TabKey) => {
+    setActiveTab(key);
+    Animated.spring(indicatorX, {
+      toValue: ((width * 0.9) / TABS.length) * index,
+      stiffness: 150,
+      damping: 15,
+      mass: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "MY_FRIENDS":
+        return <MyFriends isMyProfileScreen={false} />;
+      case "REQUESTS":
+        return <FriendRequests />;
+      default:
+        return <AllUsers />;
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      {/* Title */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>All Users</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      {/* Gradient Header */}
+      <LinearGradient
+        colors={[color.primary, color.primaryDark]}
+        start={[0, 0]}
+        end={[1, 1]}
+        style={styles.headerContainer}
+      >
+        <Text style={styles.headerTitle}>Explore Users</Text>
+      </LinearGradient>
 
-      {/* Tabs */}
+      {/* Tabs with Icons */}
       <View style={styles.tabContainer}>
-        <Pressable
+        {TABS.map(({ key, label, icon }, idx) => {
+          const active = key === activeTab;
+          return (
+            <Pressable
+              key={key}
+              onPress={() => onTabPress(idx, key)}
+              style={[styles.tabButton, active && styles.tabButtonActive]}
+            >
+              <MaterialIcons
+                name={icon as any}
+                size={24}
+                color={active ? color.white : color.primaryDark}
+              />
+              <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
+        <Animated.View
           style={[
-            activeTab === "ALL_USERS" ? styles.activeTabTitle : styles.tabTitle,
-            { borderTopLeftRadius: 50, borderBottomLeftRadius: 50 },
+            styles.indicator,
+            { transform: [{ translateX: indicatorX }] },
           ]}
-          onPress={() => setActiveTab("ALL_USERS")}
-        >
-          <Text
-            style={
-              activeTab === "ALL_USERS" ? styles.activeTabText : styles.tabText
-            }
-          >
-            All Users
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={
-            activeTab === "MY_FRIENDS" ? styles.activeTabTitle : styles.tabTitle
-          }
-          onPress={() => setActiveTab("MY_FRIENDS")}
-        >
-          <Text
-            style={
-              activeTab === "MY_FRIENDS" ? styles.activeTabText : styles.tabText
-            }
-          >
-            My Friends
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[
-            activeTab === "REQUESTS" ? styles.activeTabTitle : styles.tabTitle,
-            { borderTopRightRadius: 50, borderBottomRightRadius: 50 },
-          ]}
-          onPress={() => setActiveTab("REQUESTS")}
-        >
-          <Text
-            style={
-              activeTab === "REQUESTS" ? styles.activeTabText : styles.tabText
-            }
-          >
-            Requests
-          </Text>
-        </Pressable>
+        />
       </View>
 
-      {/* Content */}
-      {activeTab === "ALL_USERS" && <AllUsers />}
-      {activeTab === "MY_FRIENDS" && <MyFriends />}
-      {activeTab === "REQUESTS" && <FriendRequests />}
-    </View>
+      {/* Content Area */}
+      <View style={styles.contentContainer}>{renderContent()}</View>
+    </SafeAreaView>
   );
 };
+
+export default UsersScreen;
+
+const tabWidth = (width * 0.9) / TABS.length;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: color.background,
+  },
+  headerContainer: {
+    width: "100%",
+    paddingVertical: 30,
     alignItems: "center",
-    backgroundColor: "#fff",
+    justifyContent: "center",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    elevation: 4,
   },
-
-  titleContainer: {
-    width: "95%",
-    marginTop: 75,
-    marginBottom: 10,
-    marginLeft: "auto",
-    justifyContent: "flex-start",
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: color.white,
+    letterSpacing: 1,
+    marginTop: 20,
   },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: color.primaryColor,
-  },
-
   tabContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10,
-    width: "94%",
-    marginBottom: 10,
+    alignSelf: "center",
+    width: width * 0.9,
+    marginTop: 10,
+    position: "relative",
+    paddingVertical: 8,
+    backgroundColor: color.white,
+    borderRadius: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-
-  tabTitle: {
-    width: "31%",
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: "#f5f5f5",
-    borderColor: color.primaryColor,
-    borderWidth: 2,
-  },
-
-  tabText: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: color.primaryColor,
-    margin: "auto",
-  },
-
-  activeTabTitle: {
-    width: "31%",
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: color.primaryColor,
-    borderColor: color.primaryColor,
-    color: "#fff",
-    borderWidth: 2,
-  },
-
-  activeTabText: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#fff",
-    margin: "auto",
-  },
-
-  searchContainer: {
-    width: "92%",
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-
-  searchIcon: {
-    marginRight: 8,
-  },
-
-  searchInput: {
+  tabButton: {
     flex: 1,
-    height: 40,
-    color: "#333",
+    alignItems: "center",
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  tabButtonActive: {
+    backgroundColor: color.primary,
+    marginHorizontal: 8,
+  },
+  tabLabel: {
+    marginTop: 4,
+    fontSize: 14,
+    fontWeight: "600",
+    color: color.primaryDark,
+  },
+  tabLabelActive: {
+    color: color.white,
+  },
+  indicator: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: tabWidth,
+    height: 3,
+    backgroundColor: color.darkColor,
+    borderRadius: 2,
+  },
+  contentContainer: {
+    flex: 1,
+    marginTop: 10,
+    width: "100%",
   },
 });
-
-export default UsersScreen;

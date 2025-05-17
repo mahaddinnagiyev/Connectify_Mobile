@@ -52,8 +52,6 @@ const AllUsers: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>All Users</Text>
-
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#666" />
         <TextInput
@@ -139,14 +137,11 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 16,
     backgroundColor: "#fff",
+    margin: "auto",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
 
-  headerText: {
-    fontSize: 24,
-    margin: "auto",
-    fontWeight: "700",
-    marginBottom: 20,
-  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",

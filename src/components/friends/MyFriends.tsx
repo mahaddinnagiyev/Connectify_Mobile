@@ -30,10 +30,15 @@ import { useSocketContext } from "@context/SocketContext";
 // Services
 import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
 
-const MyFriends: React.FC = () => {
+interface Props {
+  isMyProfileScreen?: boolean;
+}
+
+const MyFriends: React.FC<Props> = ({ isMyProfileScreen = true }) => {
   const dispatch = useDispatch();
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
+
   const { isLoading, fetchAllMyFriends } = useFriendData();
   const { getUserByID } = useUserData();
 
@@ -78,9 +83,9 @@ const MyFriends: React.FC = () => {
           otherUserPrivacySettings: userInfo?.privacy_settings!,
         };
 
-        dispatch(addChat(newChat));
+        dispatch(addChat({ ...newChat, unreadCount: 0 }));
         navigate("Chat", {
-          chat: newChat,
+          chat: { ...newChat, unreadCount: 0 },
         });
       }
     });
@@ -89,7 +94,7 @@ const MyFriends: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Title */}
-      <Text style={styles.headerText}>My Friends</Text>
+      {isMyProfileScreen && <Text style={styles.headerText}>My Friends</Text>}
 
       {/* Search bar */}
       <View style={styles.searchContainer}>
