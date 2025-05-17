@@ -54,6 +54,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
 
   const { isModalVisible } = useSelector((state: RootState) => state.header);
   const { userData } = useSelector((state: RootState) => state.myProfile);
+  const { chats } = useSelector((state: RootState) => state.messenger);
   const { receivedFriendshipRequests } = useSelector(
     (state: RootState) => state.myFriends
   );
@@ -115,6 +116,11 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
     }
   };
 
+  const totalUnread = React.useMemo(
+    () => chats.reduce((sum, c) => sum + (c.unreadCount ?? 0), 0),
+    [chats]
+  );
+
   return (
     <>
       {isLogoutLoading && (
@@ -128,15 +134,29 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
       )}
 
       <View style={style.header}>
+        {/* Messenger */}
         <TouchableOpacity
           onPress={() => onTabChange("messenger")}
           style={style.menuContainer}
         >
-          {activeTab === "Messenger" ? (
-            <MaterialIcons name="chat" size={30} color={color.primaryColor} />
-          ) : (
-            <MaterialIcons name="chat-bubble-outline" size={30} color="black" />
-          )}
+          <View style={style.iconWrapper}>
+            {activeTab === "Messenger" ? (
+              <MaterialIcons name="chat" size={30} color={color.primaryColor} />
+            ) : (
+              <MaterialIcons
+                name="chat-bubble-outline"
+                size={30}
+                color="black"
+              />
+            )}
+            {totalUnread > 0 && (
+              <View style={style.badge}>
+                <Text style={style.badgeText}>
+                  {totalUnread > 99 ? "99+" : totalUnread}
+                </Text>
+              </View>
+            )}
+          </View>
           <Text
             style={[
               style.menuText,
@@ -150,6 +170,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
             Messenger
           </Text>
         </TouchableOpacity>
+
+        {/* Groups */}
         <TouchableOpacity
           onPress={() => setIsAlertVisible(true)}
           style={style.menuContainer}
@@ -171,6 +193,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
             Groups
           </Text>
         </TouchableOpacity>
+
+        {/* Users */}
         <TouchableOpacity
           onPress={() => onTabChange("users")}
           style={style.menuContainer}
@@ -206,6 +230,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
             Users
           </Text>
         </TouchableOpacity>
+
+        {/* My Profile */}
         <TouchableOpacity
           onLongPress={() => dispatch(toggleModal())}
           onPress={() => onTabChange("myProfile")}

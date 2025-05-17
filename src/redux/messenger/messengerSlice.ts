@@ -4,13 +4,16 @@ import {
   MessageStatus,
 } from "@services/messenger/messenger.dto";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { MessengerFilter } from "@enums/messenger.enum";
 
 interface MessengerState {
+  menuFilter: MessengerFilter;
   chats: Chat[];
   filteredChats: Chat[];
 }
 
 const initialState: MessengerState = {
+  menuFilter: MessengerFilter.LATEST,
   chats: [],
   filteredChats: [],
 };
@@ -19,6 +22,12 @@ export const messengerSlice = createSlice({
   name: "messenger",
   initialState,
   reducers: {
+    // Menu Filter
+    setMenuFilter: (state, action: PayloadAction<MessengerFilter>) => {
+      state.menuFilter = action.payload;
+    },
+
+    // Chats
     setChats: (state, action: PayloadAction<MessengerState["chats"]>) => {
       state.chats = action.payload;
       state.filteredChats = action.payload;
@@ -141,6 +150,7 @@ export const messengerSlice = createSlice({
 });
 
 export const {
+  setMenuFilter,
   setChats,
   filterChats,
   bumpChat,

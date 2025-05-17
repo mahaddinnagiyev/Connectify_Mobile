@@ -9,6 +9,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Components
 import FaceIDModal from "@components/modals/auth/FaceIDModal";
+import SoundSettings from "@components/settings/SoundSettings";
 import ConfirmModal from "@components/modals/confirm/ConfirmModal";
 import AccountSettings from "@components/settings/AccountSettings";
 import PrivacySettings from "@components/settings/PrivacySettings";
@@ -24,7 +25,6 @@ import { setIsPrivachSettingsChagned } from "@redux/profile/myProfileSlice";
 
 // Hooks
 import { useUpdateProfile } from "@hooks/useUpdateProfile";
-import SoundSettings from "@/src/components/settings/SoundSettings";
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();

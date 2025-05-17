@@ -1,16 +1,3 @@
-import { color } from "@/colors";
-import {
-  setErrorMessage,
-  setSuccessMessage,
-} from "@redux/messages/messageSlice";
-import { confirmAccount, signup } from "@services/auth/auth.service";
-import {
-  setCode,
-  setIsAuthenticated,
-  setSignupForm,
-  setToken,
-} from "@redux/auth/authSlice";
-import { RootState } from "@redux/store";
 import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
@@ -22,9 +9,26 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { Audio } from "expo-av";
-import { getTokenFromSession } from "@/src/services/auth/token.service";
+import { color } from "@/colors";
+
+// Redux
+import {
+  setErrorMessage,
+  setSuccessMessage,
+} from "@redux/messages/messageSlice";
+import {
+  setCode,
+  setIsAuthenticated,
+  setSignupForm,
+  setToken,
+} from "@redux/auth/authSlice";
+import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
+
+// Services
+import { getTokenFromSession } from "@services/auth/token.service";
+import { confirmAccount, signup } from "@services/auth/auth.service";
 
 const { width: screenWidth } = Dimensions.get("window");
 

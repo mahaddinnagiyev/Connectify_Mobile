@@ -43,11 +43,16 @@ import {
 // Context
 import { useSocketContext } from "@context/SocketContext";
 
+// Enums
+import { MessengerFilter } from "@enums/messenger.enum";
+
 const UserChats = () => {
   const dispatch = useDispatch();
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
-  const { filteredChats } = useSelector((state: RootState) => state.messenger);
+  const { filteredChats, menuFilter } = useSelector(
+    (state: RootState) => state.messenger
+  );
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { fetchChats, isChatsLoading } = useMessengerData();
 
@@ -144,7 +149,6 @@ const UserChats = () => {
     const handleUserPresence = (payload: {
       userId: string;
       online: boolean;
-      
     }) => {
       setOnlineUsers((prev) => {
         const next = new Set(prev);
@@ -168,6 +172,27 @@ const UserChats = () => {
       tintColor={color.primaryColor}
     />
   );
+
+  const displayChats = React.useMemo(() => {
+    let list = [...filteredChats];
+
+    switch (menuFilter) {
+      case MessengerFilter.OLDEST:
+        list.reverse();
+        break;
+      case MessengerFilter.ACTIVE_USERS:
+        list = list.filter((c) => onlineUsers.has(c.otherUser.id));
+        break;
+      case MessengerFilter.UNREAD:
+        list = list.filter((c) => c.unreadCount > 0);
+        break;
+      case MessengerFilter.LATEST:
+      default:
+        break;
+    }
+
+    return list;
+  }, [filteredChats, menuFilter, onlineUsers]);
 
   return (
     <View style={styles.container}>
@@ -196,7 +221,7 @@ const UserChats = () => {
               showsVerticalScrollIndicator={false}
               refreshControl={refreshControl}
             >
-              {filteredChats.map((chat) => {
+              {displayChats.map((chat) => {
                 const isUserOnline = onlineUsers.has(chat.otherUser.id);
                 const name = chat.name
                   ? truncate(chat.name, 25)
