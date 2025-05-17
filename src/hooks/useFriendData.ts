@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Response } from "./useUpdateProfile";
 
 // Redux
@@ -68,6 +68,17 @@ export function useFriendData() {
 
   const { token } = useSelector((state: RootState) => state.auth);
   const { userData } = useSelector((state: RootState) => state.myProfile);
+
+  useEffect(() => {
+    const loadDatas = async () => {
+      await fetchAllMyFriends();
+      await fetchAllFriendReuqest();
+      await fetchBlockList();
+      await fetchBlockerList();
+    };
+
+    loadDatas();
+  }, [token]);
 
   const fetchAllMyFriends = async () => {
     try {
