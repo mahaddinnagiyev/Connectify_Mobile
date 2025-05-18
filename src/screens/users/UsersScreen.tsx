@@ -10,13 +10,17 @@ import {
   TextInput,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { color } from "@/colors";
+
+// Components
 import MyFriends from "@components/friends/MyFriends";
 import FriendRequests from "@components/friends/FriendRequests";
 import AllUsers from "@components/users/AllUsers";
+
+// Redux
 import { useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { RootState } from "@redux/store";
 
 const { width } = Dimensions.get("window");
 const TABS = [
@@ -115,7 +119,15 @@ const UsersScreen: React.FC = () => {
         <Animated.View
           style={[
             styles.indicator,
-            { transform: [{ translateX: indicatorX }] },
+            {
+              transform: [{ translateX: indicatorX }],
+              marginLeft:
+                activeTab === "ALL_USERS"
+                  ? 10
+                  : activeTab === "MY_FRIENDS"
+                  ? 3
+                  : -2,
+            },
           ]}
         />
       </View>
@@ -189,7 +201,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
-    width: tabWidth,
+    width: tabWidth * 0.95,
     height: 3,
     backgroundColor: color.darkColor,
     borderRadius: 2,
