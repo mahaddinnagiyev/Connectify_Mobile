@@ -46,6 +46,9 @@ import { StackParamList } from "@navigation/UserStack";
 import { useUserData } from "@hooks/useUserData";
 import { useFriendData } from "@hooks/useFriendData";
 
+// Enums
+import { FriendshipAction } from "@enums/friendship.enum";
+
 interface PersonalInfoProps {
   isMyProfileScreen: boolean;
   isLoading: boolean;
@@ -122,6 +125,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     isRemovingOrAdding: isFriendDataLoading,
     sentFriendshipRequest,
     removeFriend,
+    acceptAndRejectFrienship,
+    isAccepting,
+    isRejecting,
   } = useFriendData();
 
   const handleBlockAndUnblockUser = async () => {
@@ -257,10 +263,56 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     });
   };
 
+  const handleAcceptAndRejectFriendship = async (status: FriendshipAction) => {
+    const friendRequest = receivedFriendshipRequests.find(
+      (request) => request.requester.id === userData.user.id
+    );
+
+    await acceptAndRejectFrienship(status, friendRequest!.id);
+  };
+
   return (
     <>
       <View style={styles.container}>
         {/* Title And Profile Photo */}
+
+        {receivedFriendshipRequests.find(
+          (req) => req.requester.id === userData.user.id
+        ) && (
+          <View style={styles.friendRequestBox}>
+            <Text
+              style={styles.requestTitle}
+            >{`${userData.user.first_name} ${userData.user.last_name} sent you a friend request`}</Text>
+            <View style={styles.requestButtonRow}>
+              <TouchableOpacity
+                style={[styles.requestButton, styles.accept]}
+                onPress={() =>
+                  handleAcceptAndRejectFriendship(FriendshipAction.accept)
+                }
+                disabled={isAccepting || isRejecting}
+              >
+                {isAccepting ? (
+                  <ActivityIndicator color={"white"} size={"small"} />
+                ) : (
+                  <Text style={styles.buttonText}>Accept</Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.requestButton, styles.decline]}
+                onPress={() =>
+                  handleAcceptAndRejectFriendship(FriendshipAction.reject)
+                }
+                disabled={isRejecting || isAccepting}
+              >
+                {isRejecting ? (
+                  <ActivityIndicator color={"white"} size={"small"} />
+                ) : (
+                  <Text style={styles.buttonText}>Reject</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
             {isLoading ? (
