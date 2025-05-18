@@ -142,7 +142,10 @@ const MessengerHeader: React.FC = () => {
         </Animated.View>
 
         {/* Search Input */}
-        <Animated.View style={[styles.searchWrapper, searchStyle]}>
+        <Animated.View
+          style={[styles.searchWrapper, searchStyle]}
+          pointerEvents={searchActive ? "auto" : "none"}
+        >
           <TouchableOpacity onPress={toggleSearch} style={styles.iconBtn}>
             <Ionicons name="arrow-back" size={24} color={color.primaryColor} />
           </TouchableOpacity>
