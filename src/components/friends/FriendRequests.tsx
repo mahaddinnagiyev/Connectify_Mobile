@@ -41,7 +41,11 @@ interface RequestItem {
   timestamp: Date;
 }
 
-const FriendRequests: React.FC = () => {
+interface Props {
+  isMyProfileScreen: boolean;
+}
+
+const FriendRequests: React.FC<Props> = ({ isMyProfileScreen = true }) => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
 
@@ -164,8 +168,12 @@ const FriendRequests: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerText}>Friendship Requests</Text>
+    <View
+      style={[styles.container, { paddingTop: isMyProfileScreen ? 16 : 8 }]}
+    >
+      {isMyProfileScreen && (
+        <Text style={styles.headerText}>Friendship Requests</Text>
+      )}
 
       <View style={styles.tabBar}>
         <Pressable

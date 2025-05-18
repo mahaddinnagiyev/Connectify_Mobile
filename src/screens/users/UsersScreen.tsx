@@ -15,21 +15,31 @@ import { color } from "@/colors";
 import MyFriends from "@components/friends/MyFriends";
 import FriendRequests from "@components/friends/FriendRequests";
 import AllUsers from "@components/users/AllUsers";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
 
 const { width } = Dimensions.get("window");
 const TABS = [
-  { key: "ALL_USERS", label: "All", icon: "people" },
-  { key: "MY_FRIENDS", label: "Friends", icon: "diversity-3" },
-  { key: "REQUESTS", label: "Requests", icon: "mail" },
+  { key: "ALL_USERS", label: "All", icon: "people", isBadgeActive: false },
+  {
+    key: "MY_FRIENDS",
+    label: "Friends",
+    icon: "diversity-3",
+    isBadgeActive: false,
+  },
+  { key: "REQUESTS", label: "Requests", icon: "mail", isBadgeActive: true },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
 
 const UsersScreen: React.FC = () => {
+  const { receivedFriendshipRequests = [] } = useSelector(
+    (state: RootState) => state.myFriends
+  );
+
   const [activeTab, setActiveTab] = useState<TabKey>("ALL_USERS");
   const indicatorX = useRef(new Animated.Value(0)).current;
   const inputRef = useRef<TextInput>(null);
-  const [searchText, setSearchText] = useState("");
 
   const onTabPress = (index: number, key: TabKey) => {
     setActiveTab(key);
@@ -51,7 +61,7 @@ const UsersScreen: React.FC = () => {
       case "MY_FRIENDS":
         return <MyFriends isMyProfileScreen={false} />;
       case "REQUESTS":
-        return <FriendRequests />;
+        return <FriendRequests isMyProfileScreen={false} />;
       default:
         return <AllUsers />;
     }
@@ -71,7 +81,7 @@ const UsersScreen: React.FC = () => {
 
       {/* Tabs with Icons */}
       <View style={styles.tabContainer}>
-        {TABS.map(({ key, label, icon }, idx) => {
+        {TABS.map(({ key, label, icon, isBadgeActive }, idx) => {
           const active = key === activeTab;
           return (
             <Pressable
@@ -79,11 +89,23 @@ const UsersScreen: React.FC = () => {
               onPress={() => onTabPress(idx, key)}
               style={[styles.tabButton, active && styles.tabButtonActive]}
             >
-              <MaterialIcons
-                name={icon as any}
-                size={24}
-                color={active ? color.white : color.primaryDark}
-              />
+              <View style={styles.iconWrapper}>
+                <MaterialIcons
+                  name={icon as any}
+                  size={24}
+                  color={active ? color.white : color.primaryDark}
+                />
+
+                {isBadgeActive && receivedFriendshipRequests.length > 0 && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {receivedFriendshipRequests.length > 99
+                        ? "99+"
+                        : receivedFriendshipRequests.length}
+                    </Text>
+                  </View>
+                )}
+              </View>
               <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
                 {label}
               </Text>
@@ -176,5 +198,25 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 10,
     width: "100%",
+  },
+  iconWrapper: {
+    position: "relative",
+  },
+  badge: {
+    position: "absolute",
+    top: -4,
+    right: -6,
+    backgroundColor: "red",
+    borderRadius: 10,
+    minWidth: 14,
+    height: 14,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 9,
+    fontWeight: "bold",
   },
 });
