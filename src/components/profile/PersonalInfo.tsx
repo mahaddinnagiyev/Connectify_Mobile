@@ -158,17 +158,28 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
     if (
       sentFriendshipRequests.find(
-        (request) => request.requestee.id === userData.user.id
+        (req) => req.requestee.id === userData.user.id
       ) ||
       receivedFriendshipRequests.find(
-        (request) => request.requester.id === userData.user.id
+        (req) => req.requester.id === userData.user.id
       )
     ) {
+      const pendingReq = sentFriendshipRequests.find(
+        (req) => req.requestee.id === userData.user.id
+      )!;
       return (
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: color.primaryColor }]}
+          onPress={async () => {
+            console.log("pending");
+            await removeFriend(pendingReq.id);
+          }}
         >
-          <MaterialIcons name="access-time" size={20} color="white" />
+          {isFriendDataLoading ? (
+            <ActivityIndicator size={"small"} color={"white"} />
+          ) : (
+            <MaterialIcons name="access-time" size={20} color="white" />
+          )}
           <Text style={styles.actionButtonText}>Pending</Text>
         </TouchableOpacity>
       );

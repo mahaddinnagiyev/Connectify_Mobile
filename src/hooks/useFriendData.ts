@@ -71,10 +71,12 @@ export function useFriendData() {
 
   useEffect(() => {
     const loadDatas = async () => {
-      await fetchAllMyFriends();
-      await fetchAllFriendReuqest();
-      await fetchBlockList();
-      await fetchBlockerList();
+      await Promise.all([
+        fetchAllMyFriends(),
+        fetchAllFriendReuqest(),
+        fetchBlockList(),
+        fetchBlockerList(),
+      ]);
     };
 
     loadDatas();
@@ -263,7 +265,7 @@ export function useFriendData() {
       );
 
       if (data.success) {
-        await fetchAllMyFriends();
+        await Promise.all([fetchAllMyFriends(), fetchAllFriendReuqest()]);
         dispatch(setSuccessMessage(data.message ?? "Friend removed"));
       } else {
         dispatch(
