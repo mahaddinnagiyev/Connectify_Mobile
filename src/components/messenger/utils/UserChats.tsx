@@ -126,12 +126,15 @@ const UserChats = () => {
       dispatch(updateLastMessageStatus(paylaod));
     };
 
-    const handleChatRoomsUpdated = async (payload: { room: ChatRoomsDTO }) => {
-      const isChatExist = filteredChats.find((c) => c.id === payload.room.id);
+    const handleChatRoomsUpdated = async (payload: {
+      room: { room: ChatRoomsDTO; isNew: boolean };
+    }) => {
+      const isChatExist = filteredChats.find(
+        (c) => c.id === payload.room.room.id
+      );
 
-      if (isChatExist) return;
-
-      const otherUserId = payload.room.user_ids.find(
+      if (isChatExist || !payload.room.isNew) return;
+      const otherUserId = payload.room.room.user_ids.find(
         (id) => id !== userData.user.id
       );
 
@@ -142,9 +145,9 @@ const UserChats = () => {
       if (!otherUserData) return;
 
       const newChat = {
-        ...payload.room,
-        unreadCount: payload.room.unreadCount || 0,
-        name: payload.room.name ?? null,
+        ...payload.room.room,
+        unreadCount: payload.room.room.unreadCount || 0,
+        name: payload.room.room.name ?? null,
         otherUser: otherUserData.user,
         otherUserAccount: otherUserData.account,
         otherUserPrivacySettings: otherUserData.privacy_settings,
@@ -155,14 +158,14 @@ const UserChats = () => {
 
     socket?.on("newMessage", handleNewGlobal);
     socket?.on("roomNameChanged", handleRoomNameChanged);
-    socket?.on("chatRoumsUpdated", handleChatRoomsUpdated);
+    socket?.on("chatRoomsUpdated", handleChatRoomsUpdated);
     socket?.on("messagesRead", handleUpdateLastMessageStatus);
     socket?.on("unreadCountUpdated", handleUpdateUnreadCount);
     socket?.on("lastMessageUpdated", handleLastMessageUpdated);
     return () => {
       socket?.off("newMessage", handleNewGlobal);
       socket?.off("roomNameChanged", handleRoomNameChanged);
-      socket?.off("chatRoumsUpdated", handleChatRoomsUpdated);
+      socket?.off("chatRoomsUpdated", handleChatRoomsUpdated);
       socket?.off("messagesRead", handleUpdateLastMessageStatus);
       socket?.off("unreadCountUpdated", handleUpdateUnreadCount);
       socket?.off("lastMessageUpdated", handleLastMessageUpdated);
