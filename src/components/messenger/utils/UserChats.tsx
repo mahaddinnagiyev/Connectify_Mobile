@@ -19,6 +19,7 @@ import type { StackParamList } from "@navigation/UserStack";
 
 // Redux
 import {
+  addChat,
   bumpChat,
   changeRoomName,
   updateLastMessage,
@@ -35,6 +36,7 @@ import { formatTime } from "@functions/chat.functions";
 
 // Services
 import {
+  ChatRoomsDTO,
   MessagesDTO,
   MessageStatus,
   MessageType,
@@ -46,6 +48,9 @@ import { useSocketContext } from "@context/SocketContext";
 // Enums
 import { MessengerFilter } from "@enums/messenger.enum";
 
+// Hooks
+import { useUserData } from "@hooks/useUserData";
+
 const UserChats = () => {
   const dispatch = useDispatch();
   const { navigate } =
@@ -54,9 +59,10 @@ const UserChats = () => {
     (state: RootState) => state.messenger
   );
   const { userData } = useSelector((state: RootState) => state.myProfile);
-  const { fetchChats, isChatsLoading } = useMessengerData();
 
   const socket = useSocketContext();
+  const { getUserByID } = useUserData();
+  const { fetchChats, isChatsLoading } = useMessengerData();
 
   const [refrehing, setRefreshing] = React.useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = React.useState<Set<string>>(new Set());
@@ -120,14 +126,43 @@ const UserChats = () => {
       dispatch(updateLastMessageStatus(paylaod));
     };
 
+    const handleChatRoomsUpdated = async (payload: { room: ChatRoomsDTO }) => {
+      const isChatExist = filteredChats.find((c) => c.id === payload.room.id);
+
+      if (isChatExist) return;
+
+      const otherUserId = payload.room.user_ids.find(
+        (id) => id !== userData.user.id
+      );
+
+      if (!otherUserId) return;
+
+      const otherUserData = await getUserByID(otherUserId);
+
+      if (!otherUserData) return;
+
+      const newChat = {
+        ...payload.room,
+        unreadCount: payload.room.unreadCount || 0,
+        name: payload.room.name ?? null,
+        otherUser: otherUserData.user,
+        otherUserAccount: otherUserData.account,
+        otherUserPrivacySettings: otherUserData.privacy_settings,
+      };
+
+      dispatch(addChat(newChat));
+    };
+
     socket?.on("newMessage", handleNewGlobal);
     socket?.on("roomNameChanged", handleRoomNameChanged);
+    socket?.on("chatRoumsUpdated", handleChatRoomsUpdated);
     socket?.on("messagesRead", handleUpdateLastMessageStatus);
     socket?.on("unreadCountUpdated", handleUpdateUnreadCount);
     socket?.on("lastMessageUpdated", handleLastMessageUpdated);
     return () => {
       socket?.off("newMessage", handleNewGlobal);
       socket?.off("roomNameChanged", handleRoomNameChanged);
+      socket?.off("chatRoumsUpdated", handleChatRoomsUpdated);
       socket?.off("messagesRead", handleUpdateLastMessageStatus);
       socket?.off("unreadCountUpdated", handleUpdateUnreadCount);
       socket?.off("lastMessageUpdated", handleLastMessageUpdated);
