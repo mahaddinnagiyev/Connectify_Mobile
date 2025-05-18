@@ -141,22 +141,25 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       setMessagesReadInStorage(chat.id, p.ids);
     };
 
-    const onDeleted = (data: { messageId: string; roomId: string }) => {
+    const onUnsent = (data: { messageIds: string[]; roomId: string }) => {
       if (data.roomId !== chat.id) return;
-      dispatch(clearUnsending(data.messageId));
-      dispatch(removeMessage(data.messageId));
-      removeMessageFromStorage(chat.id, data.messageId);
+      console.log("data: ", data);
+      data.messageIds.forEach((id) => {
+        dispatch(clearUnsending(id));
+        dispatch(removeMessage(id));
+        removeMessageFromStorage(chat.id, id);
+      });
     };
 
     socket.on("messages", onAll);
     socket.on("newMessage", onNew);
     socket.on("messagesRead", onRead);
-    socket?.on("messageDeleted", onDeleted);
+    socket?.on("messageUnsent", onUnsent);
     return () => {
       socket.off("messages", onAll);
       socket.off("newMessage", onNew);
       socket.off("messagesRead", onRead);
-      socket?.off("messageDeleted", onDeleted);
+      socket?.off("messageUnsent", onUnsent);
     };
   }, [socket, chat.id, dispatch, unsendingIds]);
 
@@ -180,11 +183,13 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
 
   const unsend = useCallback(
     (id: string) => {
-      // show spinner for this message
       dispatch(markUnsending(id));
-      socket?.emit("unsendMessage", { roomId: chat.id, messageId: id });
+      socket?.emit("unsendMessage", {
+        roomId: chat.id,
+        messageIds: [id],
+      });
     },
-    [chat.id, socket]
+    [chat.id, socket, dispatch]
   );
 
   const renderMessage = useCallback(
