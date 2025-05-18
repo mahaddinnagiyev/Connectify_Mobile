@@ -1,69 +1,79 @@
+// styles.ts
 import { color } from "@/colors";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
 
 export const styles = StyleSheet.create({
-  header: {
+  headerContainer: {
     width: screenWidth,
-    paddingTop: 20,
-    paddingBottom: 8,
-    backgroundColor: "#fff",
-    zIndex: 1,
+    backgroundColor: color.white,
+    paddingTop: Platform.OS === "ios" ? 50 : 30,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderColor: color.inputBorderColor,
   },
-
   upperHeader: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    width: "96%",
-    marginBottom: 10,
+    marginBottom: 8,
+    height: 60,
+    overflow: "hidden",
   },
-
-  searchContainer: {
-    width: "94%",
-    margin: "auto",
-    borderWidth: 1,
+  headerContent: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
+    width: "100%",
+    position: "absolute",
   },
-  searchIcon: {
-    marginRight: 8,
+  iconBtn: {
+    padding: 8,
+  },
+  title: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: color.primaryColor,
+  },
+  searchWrapper: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: color.secondaryColor,
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    height: 55,
+    position: "absolute",
   },
   searchInput: {
     flex: 1,
-    height: 40,
+    height: 50,
+    fontSize: 16,
     color: "#333",
+    marginLeft: 8,
   },
-
   filterBar: {
     flexDirection: "row",
-    marginHorizontal: 15,
-    gap: 12,
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
   filterBtn: {
+    flex: 1,
+    marginHorizontal: 4,
     paddingVertical: 6,
-    paddingHorizontal: 12,
     borderRadius: 20,
     backgroundColor: "#eee",
-    width: 65,
+    alignItems: "center",
   },
   filterBtnActive: {
     backgroundColor: color.primaryColor,
-    width: 75,
   },
   filterBtnText: {
-    flexDirection: "row",
-    alignItems: "center",
-    fontSize: 11,
+    fontSize: 12,
     color: color.iconDark,
-    margin: "auto",
   },
   filterBtnTextActive: {
-    color: color.white,
+    color: "#fff",
   },
 });
