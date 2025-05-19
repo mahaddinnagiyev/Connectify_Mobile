@@ -22,7 +22,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 // Redux
 import { useDispatch } from "react-redux";
 import { setSuccessMessage } from "@redux/messages/messageSlice";
-import { addDownloadMessage } from "@redux/chat/chatSlice";
+import {
+  addDownloadMessage,
+  addSelectedMessages,
+  setSelectedMenuVisible,
+} from "@redux/chat/chatSlice";
 
 // Types & Colors
 import { MessagesDTO } from "@services/messenger/messenger.dto";
@@ -172,6 +176,7 @@ const ContextMenu: React.FC<Props> = ({
             icon: "download",
           },
         ]),
+    { id: "select", title: "Select", icon: "check-circle" } as const,
     {
       id: "details",
       title: "Details",
@@ -201,6 +206,10 @@ const ContextMenu: React.FC<Props> = ({
         break;
       case "download":
         dispatch(addDownloadMessage(message));
+        break;
+      case "select":
+        dispatch(setSelectedMenuVisible(true));
+        dispatch(addSelectedMessages(message.id));
         break;
     }
   };

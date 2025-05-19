@@ -18,6 +18,10 @@ import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { StackParamList } from "@navigation/UserStack";
 import { RouteProp, useRoute } from "@react-navigation/native";
 
+// Redux
+import { RootState } from "@redux/store";
+import { useSelector } from "react-redux";
+
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
@@ -26,6 +30,8 @@ interface Props {
 const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
+
+  const { selectedMessages } = useSelector((state: RootState) => state.chat);
 
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const isSent = message.sender_id !== chat.otherUser.id;
@@ -100,6 +106,7 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
       <TouchableOpacity
         style={[styles.playButton, isSent && styles.sentPlayButton]}
         onPress={togglePlay}
+        disabled={selectedMessages.length > 0}
       >
         <MaterialIcons
           name={playing ? "pause" : "play-arrow"}
@@ -114,6 +121,7 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
           onPress={handleProgressPress}
           activeOpacity={0.7}
           onLayout={handleProgressLayout}
+          disabled={selectedMessages.length > 0}
         >
           <View
             style={[

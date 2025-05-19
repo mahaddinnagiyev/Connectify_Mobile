@@ -1,20 +1,22 @@
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { color } from "@/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+
+// Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
+
+// Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+
+// Functions
 import { truncate } from "@functions/messages.function";
-import { useDispatch } from "react-redux";
+
+// Redux
+import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { addDownloadMessage } from "@redux/chat/chatSlice";
-import { setSuccessMessage } from "@redux/messages/messageSlice";
 
 interface Props {
   message: MessagesDTO;
@@ -23,6 +25,8 @@ interface Props {
 
 const File: React.FC<Props> = ({ message, bubbleStyle }) => {
   const dispatch = useDispatch();
+
+  const { selectedMessages } = useSelector((state: RootState) => state.chat);
 
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
@@ -64,6 +68,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
       <TouchableOpacity
         onPress={handleDownload}
         style={styles.downloadIconContainer}
+        disabled={selectedMessages.length > 0}
       >
         <MaterialIcons name="file-download" size={24} color={iconColor} />
       </TouchableOpacity>

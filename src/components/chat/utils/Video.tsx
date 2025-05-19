@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Pressable } from "react-native";
 
 // Expo
 import { Video, ResizeMode } from "expo-av";
@@ -13,10 +13,19 @@ import CustomVideoPlayer from "../../modals/chat/CustomVideoPlayer";
 // Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import {
+  addSelectedMessages,
+  removeSelectedMessages,
+} from "@redux/chat/chatSlice";
+
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
   thumbnailStyle?: any;
+  isSelected?: boolean;
   onLongPress?: () => void;
 }
 
@@ -25,7 +34,11 @@ const VideoWithModal: React.FC<Props> = ({
   bubbleStyle,
   thumbnailStyle,
   onLongPress,
+  isSelected,
 }) => {
+  const dispatch = useDispatch();
+  const { isSelectMenuVisible } = useSelector((state: RootState) => state.chat);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const openModal = () => setModalVisible(true);
@@ -33,10 +46,25 @@ const VideoWithModal: React.FC<Props> = ({
 
   return (
     <>
-      <TouchableOpacity
-        onPress={openModal}
+      <Pressable
         onLongPress={onLongPress}
         hitSlop={10}
+        onPress={() => {
+          if (!isSelectMenuVisible) {
+            openModal();
+          } else {
+            isSelected
+              ? dispatch(removeSelectedMessages(message.id))
+              : dispatch(addSelectedMessages(message.id));
+          }
+        }}
+        style={({ pressed }) => [
+          {
+            backgroundColor:
+              pressed || isSelected ? color.solidColor : "transparent",
+            borderRadius: 50,
+          },
+        ]}
       >
         <View style={[styles.videoContainer, bubbleStyle]}>
           <Video
@@ -55,7 +83,7 @@ const VideoWithModal: React.FC<Props> = ({
             />
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
 
       <Modal
         isVisible={modalVisible}

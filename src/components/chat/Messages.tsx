@@ -27,11 +27,15 @@ import { RootState } from "@redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addMessage,
+  addSelectedMessages,
+  clearSelectedMessages,
   clearUnsending,
   markUnsending,
   removeMessage,
+  removeSelectedMessages,
   setMessages,
   setMessagesRead,
+  setSelectedMenuVisible,
 } from "@redux/chat/chatSlice";
 
 // Navigation
@@ -73,9 +77,13 @@ const ITEM_BATCH = 20;
 
 const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const dispatch = useDispatch();
-  const { showBackToBottom, messages, unsendingIds } = useSelector(
-    (state: RootState) => state.chat
-  );
+  const {
+    showBackToBottom,
+    messages,
+    unsendingIds,
+    isSelectMenuVisible,
+    selectedMessages,
+  } = useSelector((state: RootState) => state.chat);
   const { userData } = useSelector((state: RootState) => state.myProfile);
   const { soundPreferences } = useSelector(
     (state: RootState) => state.settings
@@ -106,10 +114,18 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedMessages.length === 0) {
+      dispatch(setSelectedMenuVisible(false));
+    }
+  }, [selectedMessages]);
+
   // ---- INITIAL LOAD & SOCKET HANDLERS ----
   useEffect(() => {
     if (!socket) return;
     dispatch(setMessages([]));
+    dispatch(setSelectedMenuVisible(false));
+    dispatch(clearSelectedMessages());
     setReplyMessage(null);
     socket.emit("setMessageRead", { roomId: chat.id });
 
@@ -204,6 +220,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       const isMine = item.sender_id === userData.user.id;
       const bubbleStyle = isMine ? styles.sentBubble : styles.receivedBubble;
       const textStyle = isMine ? styles.sentText : styles.receivedText;
+      const isSelected = selectedMessages.includes(item.id);
 
       // content
       let content: React.ReactNode;
@@ -214,9 +231,11 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
               message={item}
               bubbleStyle={bubbleStyle}
               onLongPress={() => {
+                if (isSelectMenuVisible) return;
                 setSelectedMessage(item);
                 setContextMenuVisible(true);
               }}
+              isSelected={isSelected}
             />
           );
           break;
@@ -226,34 +245,64 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
               message={item}
               bubbleStyle={bubbleStyle}
               onLongPress={() => {
+                if (isSelectMenuVisible) return;
                 setSelectedMessage(item);
                 setContextMenuVisible(true);
               }}
+              isSelected={isSelected}
             />
           );
           break;
         case MessageType.AUDIO:
           content = (
-            <TouchableOpacity
+            <Pressable
               onLongPress={() => {
+                if (isSelectMenuVisible) return;
                 setSelectedMessage(item);
                 setContextMenuVisible(true);
               }}
+              onPress={() => {
+                if (!isSelectMenuVisible) return;
+                isSelected
+                  ? dispatch(removeSelectedMessages(item.id))
+                  : dispatch(addSelectedMessages(item.id));
+              }}
+              style={({ pressed }) => [
+                {
+                  backgroundColor:
+                    pressed || isSelected ? color.solidColor : "transparent",
+                  borderRadius: 10,
+                },
+              ]}
             >
               <Audio message={item} bubbleStyle={bubbleStyle} />
-            </TouchableOpacity>
+            </Pressable>
           );
           break;
         case MessageType.FILE:
           content = (
-            <TouchableOpacity
+            <Pressable
               onLongPress={() => {
+                if (isSelectMenuVisible) return;
                 setSelectedMessage(item);
                 setContextMenuVisible(true);
               }}
+              onPress={() => {
+                if (!isSelectMenuVisible) return;
+                isSelected
+                  ? dispatch(removeSelectedMessages(item.id))
+                  : dispatch(addSelectedMessages(item.id));
+              }}
+              style={({ pressed }) => [
+                {
+                  backgroundColor:
+                    pressed || isSelected ? color.solidColor : "transparent",
+                  borderRadius: 10,
+                },
+              ]}
             >
               <File message={item} bubbleStyle={bubbleStyle} />
-            </TouchableOpacity>
+            </Pressable>
           );
           break;
         case MessageType.DEFAULT:
@@ -265,11 +314,25 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
           break;
         default:
           content = (
-            <TouchableOpacity
+            <Pressable
               onLongPress={() => {
+                if (isSelectMenuVisible) return;
                 setSelectedMessage(item);
                 setContextMenuVisible(true);
               }}
+              onPress={() => {
+                if (!isSelectMenuVisible) return;
+                isSelected
+                  ? dispatch(removeSelectedMessages(item.id))
+                  : dispatch(addSelectedMessages(item.id));
+              }}
+              style={({ pressed }) => [
+                {
+                  backgroundColor:
+                    pressed || isSelected ? color.solidColor : "transparent",
+                  borderRadius: 10,
+                },
+              ]}
             >
               <View style={[styles.messageBubble, bubbleStyle]}>
                 {isUrl(item.content) ? (
@@ -283,7 +346,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                   <Text style={textStyle}>{item.content}</Text>
                 )}
               </View>
-            </TouchableOpacity>
+            </Pressable>
           );
       }
 
@@ -376,7 +439,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
         </React.Fragment>
       );
     },
-    [messages, chat, setReplyMessage]
+    [messages, chat, setReplyMessage, selectedMessages, isSelectMenuVisible]
   );
 
   const keyExtractor = useCallback((item: MessagesDTO) => item.id, []);

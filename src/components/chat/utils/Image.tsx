@@ -1,32 +1,61 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Image as RNImage,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Image as RNImage, View, Pressable } from "react-native";
+import { color } from "@/colors";
 import Modal from "react-native-modal";
 import ImageViewer from "react-native-image-zoom-viewer";
 
 // Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
 
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import {
+  addSelectedMessages,
+  removeSelectedMessages,
+} from "@redux/chat/chatSlice";
+
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
   thumbnailStyle?: any;
+  isSelected?: boolean;
   onLongPress?: () => void;
 }
 
-const Image: React.FC<Props> = ({ message, bubbleStyle, thumbnailStyle,onLongPress }) => {
+const Image: React.FC<Props> = ({
+  message,
+  bubbleStyle,
+  thumbnailStyle,
+  onLongPress,
+  isSelected,
+}) => {
+  const dispatch = useDispatch();
+  const { isSelectMenuVisible } = useSelector((state: RootState) => state.chat);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
+      <Pressable
         hitSlop={10}
         onLongPress={onLongPress}
+        onPress={() => {
+          if (!isSelectMenuVisible) {
+            setModalVisible(true);
+          } else {
+            isSelected
+              ? dispatch(removeSelectedMessages(message.id))
+              : dispatch(addSelectedMessages(message.id));
+          }
+        }}
+        style={({ pressed }) => [
+          {
+            backgroundColor:
+              pressed || isSelected ? color.solidColor : "transparent",
+            borderRadius: 10,
+          },
+        ]}
       >
         <View style={[styles.imageContainer, bubbleStyle]}>
           <RNImage
@@ -35,7 +64,7 @@ const Image: React.FC<Props> = ({ message, bubbleStyle, thumbnailStyle,onLongPre
             resizeMode="cover"
           />
         </View>
-      </TouchableOpacity>
+      </Pressable>
 
       <Modal
         isVisible={modalVisible}

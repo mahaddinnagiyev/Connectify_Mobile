@@ -7,6 +7,9 @@ interface ChatState {
   messages: MessagesDTO[];
   downloadMessages: MessagesDTO[];
   unsendingIds: string[];
+
+  isSelectMenuVisible: boolean;
+  selectedMessages: string[];
 }
 
 const initialState: ChatState = {
@@ -15,6 +18,9 @@ const initialState: ChatState = {
   messages: [],
   downloadMessages: [],
   unsendingIds: [],
+
+  isSelectMenuVisible: false,
+  selectedMessages: [],
 };
 
 export const chatSlice = createSlice({
@@ -74,6 +80,22 @@ export const chatSlice = createSlice({
         (id) => id !== action.payload
       );
     },
+
+    setSelectedMenuVisible: (state, action: PayloadAction<boolean>) => {
+      state.isSelectMenuVisible = action.payload;
+    },
+    addSelectedMessages: (state, action: PayloadAction<string>) => {
+      if (state.selectedMessages.includes(action.payload)) return;
+      state.selectedMessages.push(action.payload);
+    },
+    removeSelectedMessages: (state, action: PayloadAction<string>) => {
+      state.selectedMessages = state.selectedMessages.filter(
+        (m) => m !== action.payload
+      );
+    },
+    clearSelectedMessages: (state) => {
+      state.selectedMessages = [];
+    },
   },
 });
 
@@ -92,5 +114,11 @@ export const {
 
   markUnsending,
   clearUnsending,
+
+  // Selected Messages
+  setSelectedMenuVisible,
+  addSelectedMessages,
+  removeSelectedMessages,
+  clearSelectedMessages,
 } = chatSlice.actions;
 export default chatSlice.reducer;
