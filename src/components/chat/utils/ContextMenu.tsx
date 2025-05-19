@@ -209,7 +209,7 @@ const ContextMenu: React.FC<Props> = ({
         break;
       case "select":
         dispatch(setSelectedMenuVisible(true));
-        dispatch(addSelectedMessages(message.id));
+        dispatch(addSelectedMessages(message));
         break;
     }
   };

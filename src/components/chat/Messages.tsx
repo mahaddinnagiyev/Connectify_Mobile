@@ -220,7 +220,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       const isMine = item.sender_id === userData.user.id;
       const bubbleStyle = isMine ? styles.sentBubble : styles.receivedBubble;
       const textStyle = isMine ? styles.sentText : styles.receivedText;
-      const isSelected = selectedMessages.includes(item.id);
+      const isSelected = selectedMessages.includes(item);
 
       // content
       let content: React.ReactNode;
@@ -264,8 +264,8 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
               onPress={() => {
                 if (!isSelectMenuVisible) return;
                 isSelected
-                  ? dispatch(removeSelectedMessages(item.id))
-                  : dispatch(addSelectedMessages(item.id));
+                  ? dispatch(removeSelectedMessages(item))
+                  : dispatch(addSelectedMessages(item));
               }}
               style={({ pressed }) => [
                 {
@@ -290,8 +290,8 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
               onPress={() => {
                 if (!isSelectMenuVisible) return;
                 isSelected
-                  ? dispatch(removeSelectedMessages(item.id))
-                  : dispatch(addSelectedMessages(item.id));
+                  ? dispatch(removeSelectedMessages(item))
+                  : dispatch(addSelectedMessages(item));
               }}
               style={({ pressed }) => [
                 {
@@ -323,8 +323,8 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
               onPress={() => {
                 if (!isSelectMenuVisible) return;
                 isSelected
-                  ? dispatch(removeSelectedMessages(item.id))
-                  : dispatch(addSelectedMessages(item.id));
+                  ? dispatch(removeSelectedMessages(item))
+                  : dispatch(addSelectedMessages(item));
               }}
               style={({ pressed }) => [
                 {

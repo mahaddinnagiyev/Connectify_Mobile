@@ -54,8 +54,8 @@ const VideoWithModal: React.FC<Props> = ({
             openModal();
           } else {
             isSelected
-              ? dispatch(removeSelectedMessages(message.id))
-              : dispatch(addSelectedMessages(message.id));
+              ? dispatch(removeSelectedMessages(message))
+              : dispatch(addSelectedMessages(message));
           }
         }}
         style={({ pressed }) => [

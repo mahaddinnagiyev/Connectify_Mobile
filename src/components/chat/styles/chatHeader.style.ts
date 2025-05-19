@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    width: width * 0.94,
   },
 
   userDetail: {
@@ -103,4 +104,7 @@ export const styles = StyleSheet.create({
   closeButton: {
     backgroundColor: "rgba(178, 190, 195, 0.9)",
   },
+  iconStyle: {
+    padding: 10
+  }
 });

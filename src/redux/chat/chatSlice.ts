@@ -9,7 +9,7 @@ interface ChatState {
   unsendingIds: string[];
 
   isSelectMenuVisible: boolean;
-  selectedMessages: string[];
+  selectedMessages: MessagesDTO[];
 }
 
 const initialState: ChatState = {
@@ -84,13 +84,13 @@ export const chatSlice = createSlice({
     setSelectedMenuVisible: (state, action: PayloadAction<boolean>) => {
       state.isSelectMenuVisible = action.payload;
     },
-    addSelectedMessages: (state, action: PayloadAction<string>) => {
+    addSelectedMessages: (state, action: PayloadAction<MessagesDTO>) => {
       if (state.selectedMessages.includes(action.payload)) return;
       state.selectedMessages.push(action.payload);
     },
-    removeSelectedMessages: (state, action: PayloadAction<string>) => {
+    removeSelectedMessages: (state, action: PayloadAction<MessagesDTO>) => {
       state.selectedMessages = state.selectedMessages.filter(
-        (m) => m !== action.payload
+        (m) => m.id !== action.payload.id
       );
     },
     clearSelectedMessages: (state) => {

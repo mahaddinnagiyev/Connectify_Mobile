@@ -45,8 +45,8 @@ const Image: React.FC<Props> = ({
             setModalVisible(true);
           } else {
             isSelected
-              ? dispatch(removeSelectedMessages(message.id))
-              : dispatch(addSelectedMessages(message.id));
+              ? dispatch(removeSelectedMessages(message))
+              : dispatch(addSelectedMessages(message));
           }
         }}
         style={({ pressed }) => [

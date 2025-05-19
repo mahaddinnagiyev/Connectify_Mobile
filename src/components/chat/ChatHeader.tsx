@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,11 @@ import {
   ActivityIndicator,
   Animated,
 } from "react-native";
+import { color } from "@/colors";
 import { styles } from "./styles/chatHeader.style";
-import { MaterialIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
+import * as Clipboard from "expo-clipboard";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 // Navigation
 import type { StackParamList } from "@navigation/UserStack";
@@ -23,8 +25,13 @@ import { useSocketContext } from "@context/SocketContext";
 import { truncate } from "@functions/messages.function";
 
 // Redux
+import {
+  clearSelectedMessages,
+  markUnsending,
+  setSelectedMenuVisible,
+} from "@redux/chat/chatSlice";
 import { RootState } from "@redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // Hooks
 import { useFriendData } from "@hooks/useFriendData";
@@ -32,7 +39,12 @@ import { useFriendData } from "@hooks/useFriendData";
 // Enums
 import { FriendshipAction } from "@enums/friendship.enum";
 
+// Services
+import { MessageType } from "@services/messenger/messenger.dto";
+
 const ChatHeader = () => {
+  const dispatch = useDispatch();
+
   const { navigate, goBack } =
     useNavigation<NativeStackNavigationProp<StackParamList>>();
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
@@ -51,9 +63,18 @@ const ChatHeader = () => {
     goBack();
   };
 
+  const handleCloseSelectMenu = () => {
+    dispatch(setSelectedMenuVisible(false));
+    dispatch(clearSelectedMessages());
+  };
+
+  const { userData } = useSelector((state: RootState) => state.myProfile);
   const { receivedFriendshipRequests = [] } = useSelector(
     (state: RootState) => state.myFriends
   );
+  const { isSelectMenuVisible, selectedMessages } = useSelector(
+    (state: RootState) => state.chat
+  )!;
 
   const [isOnline, setIsOnline] = useState<boolean>(false);
   const [isFriendRequestReceived, setIsFriendRequestReceived] =
@@ -93,6 +114,14 @@ const ChatHeader = () => {
     setIsFriendRequestReceived(isFriendRequestReceived);
   }, [receivedFriendshipRequests]);
 
+  const unsend = useCallback(() => {
+    selectedMessages.forEach((m) => dispatch(markUnsending(m.id)));
+    socket?.emit("unsendMessage", {
+      roomId: chat.id,
+      messageIds: [selectedMessages.map((m) => m.id)],
+    });
+  }, [chat.id, socket, dispatch, selectedMessages]);
+
   const handleAcceptAndRejectFriendship = async (action: FriendshipAction) => {
     const friendRequest = receivedFriendshipRequests.find(
       (request) => request.requester.id === chat.otherUser.id
@@ -101,80 +130,163 @@ const ChatHeader = () => {
     await acceptAndRejectFrienship(action, friendRequest!.id);
   };
 
+  const renderButtons = useCallback(() => {
+    if (isSelectMenuVisible) {
+      const pressableStyle = {
+        backgroundColor: color.secondaryColor,
+        borderRadius: 10,
+      };
+
+      const allDownloadable = selectedMessages.every(
+        (m) =>
+          m.message_type === MessageType.IMAGE ||
+          m.message_type === MessageType.VIDEO ||
+          m.message_type === MessageType.FILE
+      );
+
+      const isAllMine = selectedMessages.every(
+        (m) => m.sender_id === userData.user.id
+      );
+
+      return (
+        <React.Fragment>
+          {allDownloadable && (
+            <MaterialCommunityIcons
+              name="download"
+              size={24}
+              color={color.primaryColor}
+              style={styles.iconStyle}
+            />
+          )}
+          {selectedMessages.length === 1 &&
+            selectedMessages[0].message_type === MessageType.TEXT && (
+              <Pressable
+                onPress={async () =>
+                  await Clipboard.setStringAsync(selectedMessages[0].content)
+                }
+                style={({ pressed }) => [pressed && pressableStyle]}
+              >
+                <MaterialCommunityIcons
+                  name="content-copy"
+                  size={24}
+                  color={color.primaryColor}
+                  style={styles.iconStyle}
+                />
+              </Pressable>
+            )}
+          {isAllMine && (
+            <Pressable
+              onPress={unsend}
+              style={({ pressed }) => [pressed && pressableStyle]}
+            >
+              <MaterialCommunityIcons
+                name="delete-empty"
+                size={24}
+                color={color.danger}
+                style={styles.iconStyle}
+              />
+            </Pressable>
+          )}
+        </React.Fragment>
+      );
+    }
+  }, [selectedMessages]);
+
   return (
-    <>
+    <React.Fragment>
       <View style={styles.container}>
-        <View style={styles.leftHeader}>
+        <View
+          style={[
+            styles.leftHeader,
+            {
+              justifyContent: isSelectMenuVisible
+                ? "space-between"
+                : "flex-start",
+            },
+          ]}
+        >
           {/* Back Icon */}
           <View>
-            <Pressable onPress={handleBack}>
-              <MaterialIcons name="arrow-back" size={24} color="black" />
+            <Pressable
+              onPress={isSelectMenuVisible ? handleCloseSelectMenu : handleBack}
+            >
+              {isSelectMenuVisible ? (
+                <MaterialIcons name="close" size={24} color="black" />
+              ) : (
+                <MaterialIcons name="arrow-back" size={24} color="black" />
+              )}
             </Pressable>
           </View>
 
           {/* User Details */}
-          <Pressable
-            style={styles.userDetail}
-            onPress={() => navigate("ChatDetail", { chat: chat })}
-          >
-            <Image
-              source={
-                chat.otherUserAccount.profile_picture
-                  ? { uri: chat.otherUserAccount.profile_picture }
-                  : require("@assets/images/no-profile-photo.png")
-              }
-              style={styles.profilePhoto}
-            />
+          {isSelectMenuVisible ? (
+            <React.Fragment>
+              <View style={{ flexDirection: "row" }}>{renderButtons()}</View>
+            </React.Fragment>
+          ) : (
+            <Pressable
+              style={styles.userDetail}
+              onPress={() => navigate("ChatDetail", { chat: chat })}
+            >
+              <Image
+                source={
+                  chat.otherUserAccount.profile_picture
+                    ? { uri: chat.otherUserAccount.profile_picture }
+                    : require("@assets/images/no-profile-photo.png")
+                }
+                style={styles.profilePhoto}
+              />
 
-            <View style={{ gap: 5 }}>
-              <Text style={styles.roomName}>
-                {selectedChat.name
-                  ? truncate(selectedChat.name, 30)
-                  : truncate(
-                      `${selectedChat.otherUser.first_name} ${selectedChat.otherUser.last_name} | @${selectedChat.otherUser.username}`,
-                      30
-                    )}
-              </Text>
-              {isOnline ? (
-                <Animated.Text
-                  style={[
-                    styles.onlineStatus,
-                    {
-                      opacity: fadeAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0, 1],
-                      }),
-                    },
-                  ]}
-                >
-                  ● Online
-                </Animated.Text>
-              ) : (
-                <Animated.Text
-                  style={[
-                    styles.lastSeen,
-                    {
-                      opacity: fadeAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [1, 0],
-                      }),
-                    },
-                  ]}
-                >
-                  Last Seen:{" "}
-                  {new Date(
-                    chat.otherUserAccount.last_login! + "Z"
-                  ).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </Animated.Text>
-              )}
-            </View>
-          </Pressable>
+              <View style={{ gap: 5 }}>
+                <Text style={styles.roomName}>
+                  {selectedChat.name
+                    ? truncate(selectedChat.name, 30)
+                    : truncate(
+                        `${selectedChat.otherUser.first_name} ${selectedChat.otherUser.last_name} | @${selectedChat.otherUser.username}`,
+                        30
+                      )}
+                </Text>
+                {isOnline ? (
+                  <Animated.Text
+                    style={[
+                      styles.onlineStatus,
+                      {
+                        opacity: fadeAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, 1],
+                        }),
+                      },
+                    ]}
+                  >
+                    ● Online
+                  </Animated.Text>
+                ) : (
+                  <Animated.Text
+                    style={[
+                      styles.lastSeen,
+                      {
+                        opacity: fadeAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, 0],
+                        }),
+                      },
+                    ]}
+                  >
+                    Last Seen:{" "}
+                    {new Date(
+                      chat.otherUserAccount.last_login! + "Z"
+                    ).toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </Animated.Text>
+                )}
+              </View>
+            </Pressable>
+          )}
         </View>
       </View>
 
@@ -227,7 +339,7 @@ const ChatHeader = () => {
           </BlurView>
         </View>
       )}
-    </>
+    </React.Fragment>
   );
 };
 
