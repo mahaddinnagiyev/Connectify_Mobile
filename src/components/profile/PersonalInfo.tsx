@@ -176,10 +176,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
       return (
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: color.primaryColor }]}
-          onPress={async () => {
-            console.log("pending");
-            await removeFriend(pendingReq.id);
-          }}
+          onPress={async () => await removeFriend(pendingReq.id)}
         >
           {isFriendDataLoading ? (
             <ActivityIndicator size={"small"} color={"white"} />

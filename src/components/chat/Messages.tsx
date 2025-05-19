@@ -159,7 +159,6 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
 
     const onUnsent = (data: { messageIds: string[]; roomId: string }) => {
       if (data.roomId !== chat.id) return;
-      console.log("data: ", data);
       data.messageIds.forEach((id) => {
         dispatch(clearUnsending(id));
         dispatch(removeMessage(id));
