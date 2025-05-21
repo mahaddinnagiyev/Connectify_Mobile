@@ -39,10 +39,8 @@ const ChatScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ChatHeader />
-      <Messages
-        setReplyMessage={setReplyMessage}
-      />
+      <ChatHeader setReplyMessage={setReplyMessage} />
+      <Messages setReplyMessage={setReplyMessage} />
       <SendMessage
         setReplyMessage={setReplyMessage}
         replyMessage={replyMessage}

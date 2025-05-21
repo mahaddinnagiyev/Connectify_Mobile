@@ -40,9 +40,13 @@ import { useFriendData } from "@hooks/useFriendData";
 import { FriendshipAction } from "@enums/friendship.enum";
 
 // Services
-import { MessageType } from "@services/messenger/messenger.dto";
+import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 
-const ChatHeader = () => {
+interface Props {
+  setReplyMessage: (message: MessagesDTO | null) => void;
+}
+
+const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
   const dispatch = useDispatch();
 
   const { navigate, goBack } =
@@ -64,8 +68,9 @@ const ChatHeader = () => {
   };
 
   const handleCloseSelectMenu = () => {
-    dispatch(setSelectedMenuVisible(false));
-    dispatch(clearSelectedMessages());
+    setTimeout(() => {
+      dispatch(clearSelectedMessages());
+    }, 50);
   };
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
@@ -120,6 +125,7 @@ const ChatHeader = () => {
       roomId: chat.id,
       messageIds: [selectedMessages.map((m) => m.id)],
     });
+    handleCloseSelectMenu();
   }, [chat.id, socket, dispatch, selectedMessages]);
 
   const handleAcceptAndRejectFriendship = async (action: FriendshipAction) => {
@@ -137,6 +143,8 @@ const ChatHeader = () => {
         borderRadius: 10,
       };
 
+      const isSingle = selectedMessages.length === 1;
+
       const allDownloadable = selectedMessages.every(
         (m) =>
           m.message_type === MessageType.IMAGE ||
@@ -148,8 +156,50 @@ const ChatHeader = () => {
         (m) => m.sender_id === userData.user.id
       );
 
+      const textMessages = selectedMessages.filter(
+        (m) => m.message_type === MessageType.TEXT
+      );
+
+      const handleCopy = () => {
+        if (isSingle && selectedMessages[0].message_type === MessageType.TEXT)
+          return selectedMessages[0].content;
+
+        const formatted = textMessages.map((m) => {
+          const author =
+            m.sender_id === userData.user.id
+              ? userData.user.username
+              : chat.otherUser.username;
+          const time = new Date(m.created_at).toLocaleTimeString("az", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          return `[@${author}, at ${time}]: ${m.content}`;
+        });
+        return formatted.join("\n");
+      };
+
       return (
         <React.Fragment>
+          {isSingle && (
+            <Pressable
+              onPress={() => {
+                setReplyMessage(selectedMessages[0]);
+                handleCloseSelectMenu();
+              }}
+              style={({ pressed }) => [pressed && pressableStyle]}
+            >
+              <MaterialCommunityIcons
+                name="reply"
+                size={24}
+                color={color.primaryColor}
+                style={styles.iconStyle}
+              />
+            </Pressable>
+          )}
+
           {allDownloadable && (
             <MaterialCommunityIcons
               name="download"
@@ -158,22 +208,23 @@ const ChatHeader = () => {
               style={styles.iconStyle}
             />
           )}
-          {selectedMessages.length === 1 &&
-            selectedMessages[0].message_type === MessageType.TEXT && (
-              <Pressable
-                onPress={async () =>
-                  await Clipboard.setStringAsync(selectedMessages[0].content)
-                }
-                style={({ pressed }) => [pressed && pressableStyle]}
-              >
-                <MaterialCommunityIcons
-                  name="content-copy"
-                  size={24}
-                  color={color.primaryColor}
-                  style={styles.iconStyle}
-                />
-              </Pressable>
-            )}
+
+          <Pressable
+            onPress={async () => {
+              const textToCopy = handleCopy();
+              await Clipboard.setStringAsync(textToCopy);
+              handleCloseSelectMenu();
+            }}
+            style={({ pressed }) => [pressed && pressableStyle]}
+          >
+            <MaterialCommunityIcons
+              name="content-copy"
+              size={24}
+              color={color.primaryColor}
+              style={styles.iconStyle}
+            />
+          </Pressable>
+
           {isAllMine && (
             <Pressable
               onPress={unsend}
@@ -190,7 +241,13 @@ const ChatHeader = () => {
         </React.Fragment>
       );
     }
-  }, [selectedMessages]);
+  }, [
+    selectedMessages,
+    isSelectMenuVisible,
+    userData.user.id,
+    chat.otherUser.username,
+    unsend,
+  ]);
 
   return (
     <React.Fragment>

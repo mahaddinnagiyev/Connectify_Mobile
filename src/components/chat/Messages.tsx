@@ -219,7 +219,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       const isMine = item.sender_id === userData.user.id;
       const bubbleStyle = isMine ? styles.sentBubble : styles.receivedBubble;
       const textStyle = isMine ? styles.sentText : styles.receivedText;
-      const isSelected = selectedMessages.includes(item);
+      const isSelected = selectedMessages.some(m => m.id === item.id);
 
       // content
       let content: React.ReactNode;

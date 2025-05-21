@@ -84,9 +84,13 @@ export const chatSlice = createSlice({
     setSelectedMenuVisible: (state, action: PayloadAction<boolean>) => {
       state.isSelectMenuVisible = action.payload;
     },
-    addSelectedMessages: (state, action: PayloadAction<MessagesDTO>) => {
-      if (state.selectedMessages.includes(action.payload)) return;
-      state.selectedMessages.push(action.payload);
+    addSelectedMessages: (state, action) => {
+      const exists = state.selectedMessages.find(
+        (msg) => msg.id === action.payload.id
+      );
+      if (!exists) {
+        state.selectedMessages.push(action.payload);
+      }
     },
     removeSelectedMessages: (state, action: PayloadAction<MessagesDTO>) => {
       state.selectedMessages = state.selectedMessages.filter(
