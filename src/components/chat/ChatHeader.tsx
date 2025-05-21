@@ -26,6 +26,7 @@ import { truncate } from "@functions/messages.function";
 
 // Redux
 import {
+  addDownloadMessage,
   clearSelectedMessages,
   markUnsending,
   setSelectedMenuVisible,
@@ -160,6 +161,14 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
         (m) => m.message_type === MessageType.TEXT
       );
 
+      const handleDownload = () => {
+        if (!allDownloadable || selectedMessages.length === 0) return;
+        selectedMessages.forEach((message) => {
+          dispatch(addDownloadMessage(message));
+        });
+        handleCloseSelectMenu();
+      };
+
       const handleCopy = () => {
         if (isSingle && selectedMessages[0].message_type === MessageType.TEXT)
           return selectedMessages[0].content;
@@ -206,6 +215,7 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
               size={24}
               color={color.primaryColor}
               style={styles.iconStyle}
+              onPress={handleDownload}
             />
           )}
 
