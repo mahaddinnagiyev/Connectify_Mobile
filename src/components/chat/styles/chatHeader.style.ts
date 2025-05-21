@@ -105,6 +105,14 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(178, 190, 195, 0.9)",
   },
   iconStyle: {
-    padding: 10
-  }
+    padding: 0,
+  },
+  actionRow: { flexDirection: "row", marginLeft: "auto" },
+  actionBtn: {
+    padding: 8,
+    marginLeft: 8,
+    borderRadius: 8,
+    transitionProperty: "all 0.2s ease-in-out",
+    transitionDuration: "0.2s",
+  },
 });

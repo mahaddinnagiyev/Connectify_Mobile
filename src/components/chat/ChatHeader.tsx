@@ -29,7 +29,6 @@ import {
   addDownloadMessage,
   clearSelectedMessages,
   markUnsending,
-  setSelectedMenuVisible,
 } from "@redux/chat/chatSlice";
 import { RootState } from "@redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -139,11 +138,6 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
 
   const renderButtons = useCallback(() => {
     if (isSelectMenuVisible) {
-      const pressableStyle = {
-        backgroundColor: color.secondaryColor,
-        borderRadius: 10,
-      };
-
       const isSingle = selectedMessages.length === 1;
 
       const allDownloadable = selectedMessages.every(
@@ -163,8 +157,8 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
 
       const handleDownload = () => {
         if (!allDownloadable || selectedMessages.length === 0) return;
-        selectedMessages.forEach((message) => {
-          dispatch(addDownloadMessage(message));
+        selectedMessages.forEach((m) => {
+          dispatch(addDownloadMessage(m));
         });
         handleCloseSelectMenu();
       };
@@ -198,25 +192,44 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
                 setReplyMessage(selectedMessages[0]);
                 handleCloseSelectMenu();
               }}
-              style={({ pressed }) => [pressed && pressableStyle]}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? "rgba(0,0,0,0.2)"
+                    : color.secondaryColor,
+                },
+                styles.actionBtn,
+              ]}
             >
               <MaterialCommunityIcons
                 name="reply"
                 size={24}
-                color={color.primaryColor}
+                color={color.primary}
                 style={styles.iconStyle}
               />
             </Pressable>
           )}
 
           {allDownloadable && (
-            <MaterialCommunityIcons
-              name="download"
-              size={24}
-              color={color.primaryColor}
-              style={styles.iconStyle}
+            <Pressable
               onPress={handleDownload}
-            />
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? "rgba(0,0,0,0.05)"
+                    : color.secondaryColor,
+                },
+                styles.actionBtn,
+              ]}
+            >
+              <MaterialCommunityIcons
+                name="download"
+                size={24}
+                color={color.primary}
+                style={styles.iconStyle}
+                onPress={handleDownload}
+              />
+            </Pressable>
           )}
 
           <Pressable
@@ -225,12 +238,19 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
               await Clipboard.setStringAsync(textToCopy);
               handleCloseSelectMenu();
             }}
-            style={({ pressed }) => [pressed && pressableStyle]}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? "rgba(0,0,0,0.05)"
+                  : color.secondaryColor,
+              },
+              styles.actionBtn,
+            ]}
           >
             <MaterialCommunityIcons
               name="content-copy"
               size={24}
-              color={color.primaryColor}
+              color={color.primary}
               style={styles.iconStyle}
             />
           </Pressable>
@@ -238,7 +258,14 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
           {isAllMine && (
             <Pressable
               onPress={unsend}
-              style={({ pressed }) => [pressed && pressableStyle]}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed
+                    ? "rgba(0,0,0,0.05)"
+                    : color.secondaryColor,
+                },
+                styles.actionBtn,
+              ]}
             >
               <MaterialCommunityIcons
                 name="delete-empty"
@@ -288,7 +315,7 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
           {/* User Details */}
           {isSelectMenuVisible ? (
             <React.Fragment>
-              <View style={{ flexDirection: "row" }}>{renderButtons()}</View>
+              <View style={styles.actionRow}>{renderButtons()}</View>
             </React.Fragment>
           ) : (
             <Pressable
