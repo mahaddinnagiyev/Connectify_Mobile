@@ -4,6 +4,7 @@ import {
   View,
   Image,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { color } from "@/colors";
@@ -108,7 +109,13 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
         ) : activeTab === "files" ? (
           <View style={styles.fileList}>
             {filteredMedias.map((file) => (
-              <TouchableOpacity key={file.id} style={styles.fileItem}>
+              <TouchableOpacity
+                key={file.id}
+                style={styles.fileItem}
+                onPress={async () => {
+                  await Linking.openURL(file.content!);
+                }}
+              >
                 <Ionicons
                   name="document-outline"
                   size={24}

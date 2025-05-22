@@ -318,7 +318,15 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                 },
               ]}
             >
-              <File message={item} bubbleStyle={bubbleStyle} />
+              <File
+                message={item}
+                bubbleStyle={bubbleStyle}
+                onLongPress={() => {
+                  if (isSelectMenuVisible) return;
+                  setSelectedMessage(item);
+                  setContextMenuVisible(true);
+                }}
+              />
             </Pressable>
           );
           break;

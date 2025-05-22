@@ -1,6 +1,5 @@
 import {
   Linking,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,17 +9,8 @@ import React from "react";
 import { color } from "@/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 
-// Expo
-import * as FileSystem from "expo-file-system";
-import * as IntentLauncher from "expo-intent-launcher";
-import * as Sharing from "expo-sharing";
-
 // Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
-
-// Navigation
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { StackParamList } from "@navigation/UserStack";
 
 // Functions
 import { truncate } from "@functions/messages.function";
@@ -33,18 +23,16 @@ import { addDownloadMessage } from "@redux/chat/chatSlice";
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
+  onLongPress: () => void;
 }
 
-const File: React.FC<Props> = ({ message, bubbleStyle }) => {
+const File: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
   const dispatch = useDispatch();
 
   const { selectedMessages } = useSelector((state: RootState) => state.chat);
   const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const isMine = message.sender_id === userData.user.id;
-
-  const route = useRoute<RouteProp<StackParamList, "Chat">>();
-  const { chat } = route.params;
 
   const iconColor = isMine ? "white" : color.primaryColor;
 
@@ -59,7 +47,11 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
   return (
     <View style={[styles.fileContainer, bubbleStyle]}>
       <MaterialIcons name="insert-drive-file" size={24} color={iconColor} />
-      <TouchableOpacity onPress={openFile}>
+      <TouchableOpacity
+        onPress={openFile}
+        onLongPress={onLongPress}
+        disabled={selectedMessages.length > 0}
+      >
         <View style={styles.fileDetails}>
           <Text
             style={[isMine ? styles.sentText : styles.receivedText]}
@@ -82,6 +74,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
       <TouchableOpacity
         onPress={handleDownload}
         style={styles.downloadIconContainer}
+        onLongPress={onLongPress}
         disabled={selectedMessages.length > 0}
       >
         <MaterialIcons name="file-download" size={24} color={iconColor} />
