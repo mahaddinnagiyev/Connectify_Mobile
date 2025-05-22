@@ -9,6 +9,7 @@ import {
   LayoutAnimation,
   FlatList,
   ListRenderItemInfo,
+  ImageBackground,
 } from "react-native";
 import { color } from "@/colors";
 import { styles } from "./styles/messages.style";
@@ -219,7 +220,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
       const isMine = item.sender_id === userData.user.id;
       const bubbleStyle = isMine ? styles.sentBubble : styles.receivedBubble;
       const textStyle = isMine ? styles.sentText : styles.receivedText;
-      const isSelected = selectedMessages.some(m => m.id === item.id);
+      const isSelected = selectedMessages.some((m) => m.id === item.id);
 
       // content
       let content: React.ReactNode;
@@ -389,13 +390,10 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                 style={[
                   styles.timeContainer,
                   {
-                    justifyContent:
-                      item.sender_id === chat.otherUser.id
-                        ? "flex-start"
-                        : "flex-end",
+                    justifyContent: isMine ? "flex-end" : "flex-start",
 
-                    marginRight: item.sender_id === chat.otherUser.id ? 0 : 10,
-                    marginLeft: item.sender_id === chat.otherUser.id ? 10 : 0,
+                    marginRight: !isMine ? 0 : 10,
+                    marginLeft: !isMine ? 10 : 0,
                   },
                 ]}
               >
@@ -405,7 +403,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                     minute: "2-digit",
                   })}
                 </Text>
-                {item.sender_id !== chat.otherUser.id && (
+                {isMine && (
                   <Ionicons
                     name="checkmark-done-sharp"
                     size={15}
@@ -438,13 +436,24 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
         </React.Fragment>
       );
     },
-    [messages, chat, setReplyMessage, selectedMessages, isSelectMenuVisible]
+    [
+      messages,
+      chat,
+      setReplyMessage,
+      selectedMessages,
+      isSelectMenuVisible,
+      userData,
+    ]
   );
 
   const keyExtractor = useCallback((item: MessagesDTO) => item.id, []);
 
   return (
-    <View style={styles.outerContainer}>
+    <ImageBackground
+      style={styles.outerContainer}
+      source={require("@assets/background/image10.jpg")}
+      imageStyle={{ resizeMode: "cover" }}
+    >
       <FlatList
         ref={listRef}
         data={messages}
@@ -503,7 +512,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
           message={selectedMessage}
         />
       )}
-    </View>
+    </ImageBackground>
   );
 };
 

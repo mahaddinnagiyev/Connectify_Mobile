@@ -27,12 +27,14 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
   const dispatch = useDispatch();
 
   const { selectedMessages } = useSelector((state: RootState) => state.chat);
+  const { userData } = useSelector((state: RootState) => state.myProfile);
+
+  const isMine = message.sender_id === userData.user.id;
 
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
 
-  const iconColor =
-    message.sender_id !== chat.otherUser.id ? "white" : color.primaryColor;
+  const iconColor = isMine ? "white" : color.primaryColor;
 
   const handleDownload = async () => {
     dispatch(addDownloadMessage(message));
@@ -43,11 +45,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
       <MaterialIcons name="insert-drive-file" size={24} color={iconColor} />
       <View style={styles.fileDetails}>
         <Text
-          style={{
-            ...(message.sender_id !== chat.otherUser.id
-              ? styles.sentText
-              : styles.receivedText),
-          }}
+          style={[isMine ? styles.sentText : styles.receivedText]}
           numberOfLines={1}
         >
           {message.message_name
@@ -57,9 +55,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
         <Text
           style={[
             styles.fileSizeText,
-            message.sender_id !== chat.otherUser.id
-              ? styles.sentFileSize
-              : styles.receivedFileSize,
+            isMine ? styles.sentFileSize : styles.receivedFileSize,
           ]}
         >
           {(message.message_size! / 1024).toFixed(1)} KB
