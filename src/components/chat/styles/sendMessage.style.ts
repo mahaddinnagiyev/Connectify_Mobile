@@ -1,16 +1,11 @@
-// sendMessage.style.ts
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import { color } from "@/colors";
-
-const { width, height } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: color.background,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderTopWidth: 1,
-    borderTopColor: color.border,
   },
   inputContainer: {
     flexDirection: "row",

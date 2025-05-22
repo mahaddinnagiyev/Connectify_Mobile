@@ -1,16 +1,16 @@
 import { color } from "@/colors";
 import { Dimensions, StyleSheet } from "react-native";
+
 const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
     width: width,
+    backgroundColor: color.background,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 15,
-    borderBottomColor: color.borderColor,
-    borderBottomWidth: 1,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
     height: 75,
@@ -20,8 +20,19 @@ export const styles = StyleSheet.create({
   leftHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 12,
     width: width * 0.94,
+  },
+
+  backIconStyle: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.9)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
   userDetail: {
@@ -111,8 +122,13 @@ export const styles = StyleSheet.create({
   actionBtn: {
     padding: 8,
     marginLeft: 8,
-    borderRadius: 8,
+    borderRadius: 20,
     transitionProperty: "all 0.2s ease-in-out",
     transitionDuration: "0.2s",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });

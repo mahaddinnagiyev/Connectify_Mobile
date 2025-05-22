@@ -204,7 +204,7 @@ const ChatHeader: React.FC<Props> = ({
                 {
                   backgroundColor: pressed
                     ? "rgba(0,0,0,0.2)"
-                    : color.secondaryColor,
+                    : "rgba(255,255,255,0.9)",
                 },
                 styles.actionBtn,
               ]}
@@ -332,9 +332,19 @@ const ChatHeader: React.FC<Props> = ({
               onPress={isSelectMenuVisible ? handleCloseSelectMenu : handleBack}
             >
               {isSelectMenuVisible ? (
-                <MaterialIcons name="close" size={24} color="black" />
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color="black"
+                  style={styles.backIconStyle}
+                />
               ) : (
-                <MaterialIcons name="arrow-back" size={24} color="black" />
+                <MaterialIcons
+                  name="arrow-back"
+                  size={24}
+                  color="black"
+                  style={styles.backIconStyle}
+                />
               )}
             </Pressable>
           </View>
@@ -362,10 +372,7 @@ const ChatHeader: React.FC<Props> = ({
                 <Text style={styles.roomName}>
                   {selectedChat.name
                     ? truncate(selectedChat.name, 30)
-                    : truncate(
-                        `${selectedChat.otherUser.first_name} ${selectedChat.otherUser.last_name} | @${selectedChat.otherUser.username}`,
-                        30
-                      )}
+                    : truncate(`${selectedChat.otherUser.username}`, 30)}
                 </Text>
                 {isOnline ? (
                   <Animated.Text
