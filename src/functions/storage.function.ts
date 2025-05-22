@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MessagesDTO, MessageStatus } from "@services/messenger/messenger.dto";
 
+// Messages
 export const getMessagesFromStorage = async (id: string) => {
   const messages = await AsyncStorage.getItem(id);
   return messages ? JSON.parse(messages) : [];
@@ -47,6 +48,17 @@ export const clearMessagesFromStorage = async (id: string) => {
   await AsyncStorage.removeItem(id);
 };
 
-export const clearAllMessagesFromStorage = async () => {
+export const clearStorage = async () => {
   await AsyncStorage.clear();
+};
+
+// Theme
+export const setThemeKeyToStorage = async (key: string) =>
+  await AsyncStorage.setItem("bgThemeKey", key);
+
+export const getThemeKeyFromStorage = async () =>
+  (await AsyncStorage.getItem("bgThemeKey")) || "default";
+
+export const updateThemeToStorage = async (themeKey: string) => {
+  await AsyncStorage.mergeItem("backgroundTheme", themeKey);
 };

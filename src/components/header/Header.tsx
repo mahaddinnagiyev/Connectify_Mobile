@@ -23,7 +23,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Services
 import { logout } from "@services/auth/auth.service";
-import { clearAllMessagesFromStorage } from "@functions/storage.function";
+
+// Functions
+import { clearStorage } from "@functions/storage.function";
 
 // Redux
 import { RootState } from "@redux/store";
@@ -93,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
         dispatch(clearDownloadMessages());
         dispatch(setToken(null));
 
-        await clearAllMessagesFromStorage();
+        await clearStorage();
       } else {
         dispatch(
           setErrorMessage(

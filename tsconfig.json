@@ -18,6 +18,7 @@
       "@navigation/*": ["src/navigation/*"],
       "@redux/*": ["src/redux/*"],
       "@color": ["./colors.ts"],
+      "@theme": ["./themes.ts"],
       "@assets/*": ["./assets/*"],
       "@enums/*": ["./src/enums/*"],
       "@services/*": ["./src/services/*"],

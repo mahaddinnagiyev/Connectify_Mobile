@@ -5,13 +5,14 @@ import {
   Pressable,
   ActivityIndicator,
   Linking,
-  TouchableOpacity,
   LayoutAnimation,
   FlatList,
   ListRenderItemInfo,
   ImageBackground,
+  ImageSourcePropType,
 } from "react-native";
 import { color } from "@/colors";
+import { backgroundThemes } from "@/themes";
 import { styles } from "./styles/messages.style";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Audio as ExpoAudio } from "expo-av";
@@ -54,10 +55,12 @@ import {
 } from "@functions/messages.function";
 import {
   addNewMessageToStorage,
+  getThemeKeyFromStorage,
   getMessagesFromStorage,
   removeMessageFromStorage,
   setMessagesReadInStorage,
   setMessagesToStorage,
+  setThemeKeyToStorage,
 } from "@functions/storage.function";
 
 // Utils And Components
@@ -100,9 +103,21 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   const [selectedMessage, setSelectedMessage] = useState<MessagesDTO | null>(
     null
   );
+  const [backgroundTheme, setBackgroundTheme] =
+    useState<keyof typeof backgroundThemes>("default");
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [contextMenuVisible, setContextMenuVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      const saved = await getThemeKeyFromStorage();
+      setBackgroundTheme(saved as keyof typeof backgroundThemes);
+    })();
+  }, []);
+
+  // look up the actual require(...) based on the key
+  const bgSource = backgroundThemes[backgroundTheme];
 
   useEffect(() => {
     ExpoAudio.Sound.createAsync(
@@ -454,7 +469,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
   return (
     <ImageBackground
       style={styles.outerContainer}
-      source={require("@assets/background/image10.jpg")}
+      source={bgSource}
       imageStyle={{ resizeMode: "cover" }}
     >
       <FlatList

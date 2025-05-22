@@ -13,6 +13,7 @@ import SoundSettings from "@components/settings/SoundSettings";
 import ConfirmModal from "@components/modals/confirm/ConfirmModal";
 import AccountSettings from "@components/settings/AccountSettings";
 import PrivacySettings from "@components/settings/PrivacySettings";
+import ThemeSettings from "@components/settings/ThemeSettings";
 
 // Services
 import { PrivacySettingsChoice } from "@services/account/dto/privacy.dto";
@@ -178,6 +179,9 @@ const SettingsScreen = () => {
               </Pressable>
             </View>
           )} */}
+
+          {/* Theme Settings Section */}
+          <ThemeSettings />
 
           {/* Sound Preferences Section */}
           <SoundSettings />

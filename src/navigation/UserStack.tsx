@@ -9,6 +9,7 @@ import ContactUsScreen from "@screens/contact/ContactUsScreen";
 import MainTabsScreen from "@screens/MainTabsScreen";
 import UserProfileScreen from "@screens/profile/UserProfileScreen";
 import ChatDetailScreen from "@screens/messenger/ChatDetailScreen";
+import BackgrounThemeScreen from "@/src/screens/settings/BackgrounThemeScreen";
 
 // Services
 import { Chat } from "@services/messenger/messenger.dto";
@@ -23,6 +24,7 @@ export type StackParamList = {
   Settings: undefined;
   ContactUs: undefined;
   OtherUserProfile: { username: string };
+  BackgrounTheme: undefined;
 };
 
 export default function UserStack() {
@@ -38,6 +40,7 @@ export default function UserStack() {
       <Stack.Screen name="OtherUserProfile" component={UserProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="ContactUs" component={ContactUsScreen} />
+      <Stack.Screen name="BackgrounTheme" component={BackgrounThemeScreen} />
     </Stack.Navigator>
   );
 }
