@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ChatHeader from "@components/chat/ChatHeader";
 import Messages from "@components/chat/Messages";
 import SendMessage from "@components/chat/SendMessage";
+import ForwardModal from "@components/modals/chat/ForwardModal";
 
 // Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
@@ -29,6 +30,7 @@ const ChatScreen = () => {
     state.messenger.filteredChats.find((c) => c.id === chat.id)
   )!;
 
+  const [showForwardModal, setShowForwardModal] = useState<boolean>(false);
   const [replyMessage, setReplyMessage] = useState<MessagesDTO | null>(null);
 
   const socket = useSocketContext();
@@ -38,14 +40,24 @@ const ChatScreen = () => {
   }, [socket]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ChatHeader setReplyMessage={setReplyMessage} />
-      <Messages setReplyMessage={setReplyMessage} />
-      <SendMessage
-        setReplyMessage={setReplyMessage}
-        replyMessage={replyMessage}
+    <React.Fragment>
+      <SafeAreaView style={styles.container}>
+        <ChatHeader
+          setReplyMessage={setReplyMessage}
+          setShowForwardModal={setShowForwardModal}
+        />
+        <Messages setReplyMessage={setReplyMessage} />
+        <SendMessage
+          setReplyMessage={setReplyMessage}
+          replyMessage={replyMessage}
+        />
+      </SafeAreaView>
+
+      <ForwardModal
+        onClose={() => setShowForwardModal(false)}
+        visible={showForwardModal}
       />
-    </SafeAreaView>
+    </React.Fragment>
   );
 };
 

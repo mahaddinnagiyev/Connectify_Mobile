@@ -11,7 +11,11 @@ import { color } from "@/colors";
 import { styles } from "./styles/chatHeader.style";
 import { BlurView } from "expo-blur";
 import * as Clipboard from "expo-clipboard";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import {
+  Entypo,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
 // Navigation
 import type { StackParamList } from "@navigation/UserStack";
@@ -44,9 +48,13 @@ import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
 
 interface Props {
   setReplyMessage: (message: MessagesDTO | null) => void;
+  setShowForwardModal: (value: boolean) => void;
 }
 
-const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
+const ChatHeader: React.FC<Props> = ({
+  setReplyMessage,
+  setShowForwardModal,
+}) => {
   const dispatch = useDispatch();
 
   const { navigate, goBack } =
@@ -209,6 +217,25 @@ const ChatHeader: React.FC<Props> = ({ setReplyMessage }) => {
               />
             </Pressable>
           )}
+
+          <Pressable
+            onPress={() => setShowForwardModal(true)}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? "rgba(0,0,0,0.2)"
+                  : color.secondaryColor,
+              },
+              styles.actionBtn,
+            ]}
+          >
+            <Entypo
+              name="forward"
+              size={24}
+              color={color.primary}
+              style={styles.iconStyle}
+            />
+          </Pressable>
 
           {allDownloadable && (
             <Pressable
