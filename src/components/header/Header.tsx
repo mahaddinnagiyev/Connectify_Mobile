@@ -18,7 +18,7 @@ import Alert from "../modals/error/Alert";
 
 // Navigation
 import { useNavigation } from "@react-navigation/native";
-import type { StackParamList } from "@navigation/Navigator";
+import type { StackParamList } from "@navigation/UserStack";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Services
@@ -288,6 +288,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
             <View style={style.handleContainer} {...panResponder.panHandlers}>
               <View style={style.handleBar} />
             </View>
+            {/* Settings */}
             <Pressable
               style={({ pressed }) => [
                 style.menuItem,
@@ -307,6 +308,29 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
                 style={style.chevron}
               />
             </Pressable>
+
+            {/* Change Theme */}
+            <Pressable
+              style={({ pressed }) => [
+                style.menuItem,
+                pressed && style.pressedItem,
+              ]}
+              onPress={() => {
+                dispatch(toggleModal());
+                navigation.navigate("BackgrounTheme");
+              }}
+            >
+              <MaterialIcons name="palette" size={24} color="#444" />
+              <Text style={style.menuText}>Change Theme</Text>
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color="#666"
+                style={style.chevron}
+              />
+            </Pressable>
+
+            {/* Contact Us */}
             <Pressable
               style={({ pressed }) => [
                 style.menuItem,
@@ -326,6 +350,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
                 style={style.chevron}
               />
             </Pressable>
+
+            {/* Logout */}
             <Pressable
               style={({ pressed }) => [
                 style.menuItem,
