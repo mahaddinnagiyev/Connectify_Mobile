@@ -1,7 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { color } from "@/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+
+// Expo
+import * as FileSystem from "expo-file-system";
+import * as IntentLauncher from "expo-intent-launcher";
+import * as Sharing from "expo-sharing";
 
 // Services
 import { MessagesDTO } from "@services/messenger/messenger.dto";
@@ -40,27 +52,33 @@ const File: React.FC<Props> = ({ message, bubbleStyle }) => {
     dispatch(addDownloadMessage(message));
   };
 
+  const openFile = async () => {
+    await Linking.openURL(message.content!);
+  };
+
   return (
     <View style={[styles.fileContainer, bubbleStyle]}>
       <MaterialIcons name="insert-drive-file" size={24} color={iconColor} />
-      <View style={styles.fileDetails}>
-        <Text
-          style={[isMine ? styles.sentText : styles.receivedText]}
-          numberOfLines={1}
-        >
-          {message.message_name
-            ? truncate(message.message_name, 20)
-            : "Imported file"}
-        </Text>
-        <Text
-          style={[
-            styles.fileSizeText,
-            isMine ? styles.sentFileSize : styles.receivedFileSize,
-          ]}
-        >
-          {(message.message_size! / 1024).toFixed(1)} KB
-        </Text>
-      </View>
+      <TouchableOpacity onPress={openFile}>
+        <View style={styles.fileDetails}>
+          <Text
+            style={[isMine ? styles.sentText : styles.receivedText]}
+            numberOfLines={1}
+          >
+            {message.message_name
+              ? truncate(message.message_name, 20)
+              : "Imported file"}
+          </Text>
+          <Text
+            style={[
+              styles.fileSizeText,
+              isMine ? styles.sentFileSize : styles.receivedFileSize,
+            ]}
+          >
+            {(message.message_size! / 1024).toFixed(1)} KB
+          </Text>
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={handleDownload}
         style={styles.downloadIconContainer}
