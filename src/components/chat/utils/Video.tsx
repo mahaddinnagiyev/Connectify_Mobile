@@ -58,10 +58,9 @@ const VideoWithModal: React.FC<Props> = ({
               : dispatch(addSelectedMessages(message));
           }
         }}
-        style={({ pressed }) => [
+        style={[
           {
-            backgroundColor:
-              pressed || isSelected ? color.solidColor : "transparent",
+            backgroundColor: isSelected ? color.solidColor : "transparent",
             borderRadius: 50,
           },
         ]}

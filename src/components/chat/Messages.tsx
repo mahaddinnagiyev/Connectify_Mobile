@@ -267,10 +267,11 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                   ? dispatch(removeSelectedMessages(item))
                   : dispatch(addSelectedMessages(item));
               }}
-              style={({ pressed }) => [
+              style={[
                 {
-                  backgroundColor:
-                    pressed || isSelected ? color.solidColor : "transparent",
+                  backgroundColor: isSelected
+                    ? color.solidColor
+                    : "transparent",
                   borderRadius: 10,
                 },
               ]}
@@ -293,10 +294,11 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                   ? dispatch(removeSelectedMessages(item))
                   : dispatch(addSelectedMessages(item));
               }}
-              style={({ pressed }) => [
+              style={[
                 {
-                  backgroundColor:
-                    pressed || isSelected ? color.solidColor : "transparent",
+                  backgroundColor: isSelected
+                    ? color.solidColor
+                    : "transparent",
                   borderRadius: 10,
                 },
               ]}
@@ -326,10 +328,11 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                   ? dispatch(removeSelectedMessages(item))
                   : dispatch(addSelectedMessages(item));
               }}
-              style={({ pressed }) => [
+              style={[
                 {
-                  backgroundColor:
-                    pressed || isSelected ? color.solidColor : "transparent",
+                  backgroundColor: isSelected
+                    ? color.solidColor
+                    : "transparent",
                   borderRadius: 10,
                 },
               ]}
