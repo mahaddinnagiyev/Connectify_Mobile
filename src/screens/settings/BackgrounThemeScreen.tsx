@@ -15,10 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./style/backgroundThemeScreen.style";
 
 // Functions
-import {
-  getThemeKeyFromStorage,
-  setThemeKeyToStorage,
-} from "@functions/storage.function";
+import { getThemeKeyFromStorage } from "@functions/storage.function";
 
 // Navigation
 import { useNavigation } from "@react-navigation/native";
@@ -34,7 +31,8 @@ type ThemeGroup = {
 };
 
 const BackgroundThemeScreen: React.FC = () => {
-  const { goBack } = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const { goBack, navigate } =
+    useNavigation<NativeStackNavigationProp<StackParamList>>();
   const [selectedKey, setSelectedKey] = useState<string>("default");
 
   useEffect(() => {
@@ -59,9 +57,11 @@ const BackgroundThemeScreen: React.FC = () => {
   }, []);
 
   const selectTheme = async (themeKey: string) => {
-    setSelectedKey(themeKey);
-
-    await setThemeKeyToStorage(themeKey);
+    navigate("Preview", {
+      theme: backgroundThemes[themeKey as keyof typeof backgroundThemes],
+      themeKey: themeKey,
+      setSelectedKey: setSelectedKey,
+    });
   };
 
   const renderGroup = ({ item }: { item: ThemeGroup }) => (
@@ -123,7 +123,7 @@ const BackgroundThemeScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Settings</Text>
+        <Text style={styles.title}>Background Themes</Text>
         <Pressable
           style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
           onPress={goBack}
