@@ -57,11 +57,11 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
     handleUploadAudio,
     isUploadingAudio,
     handleUploadImage,
-    isImageUploading,
+    imageProgress,
     handleUploadVideo,
-    isVideoUploading,
+    videoProgress,
     handleFileUpload,
-    isFileUploading,
+    fileProgress,
   } = useChatData();
 
   const { userData } = useSelector((state: RootState) => state.myProfile);
@@ -88,9 +88,6 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
   const [isRecording, setIsRecording] = React.useState<boolean>(false);
   const [showMediaModal, setShowMediaModal] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState<FileData | null>(null);
-  const [uploadProgress, setUploadProgress] = React.useState<
-    number | undefined
-  >();
 
   const [input, setInput] = React.useState<string>("");
 
@@ -688,7 +685,13 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
       <SelectedModal
         visible={!!selectedFile}
         file={selectedFile}
-        uploadProgress={uploadProgress}
+        uploadProgress={
+          selectedFile && selectedFile.type === "image"
+            ? imageProgress
+            : selectedFile && selectedFile.type === "video"
+            ? videoProgress
+            : fileProgress
+        }
         onCancel={() => setSelectedFile(null)}
         onUpload={uploadAndSend}
       />

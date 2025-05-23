@@ -61,7 +61,7 @@ const VideoWithModal: React.FC<Props> = ({
         style={[
           {
             backgroundColor: isSelected ? color.solidColor : "transparent",
-            borderRadius: 50,
+            borderRadius: 10,
           },
         ]}
       >

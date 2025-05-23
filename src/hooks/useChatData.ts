@@ -32,8 +32,11 @@ export function useChatData() {
   const [isMediasLoading, setIsMediasLoading] = useState<boolean>(false);
   const [isUploadingAudio, setIsUploadingAudio] = useState<boolean>(false);
   const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
+  const [imageProgress, setImageProgress] = useState<number>(0);
   const [isVideoUploading, setIsVideoUploading] = useState<boolean>(false);
+  const [videoProgress, setVideoProgress] = useState<number>(0);
   const [isFileUploading, setIsFileUploading] = useState<boolean>(false);
+  const [fileProgress, setFileProgress] = useState<number>(0);
 
   const fetchMedias = async (roomId: string) => {
     try {
@@ -126,6 +129,12 @@ export function useChatData() {
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total!
+            );
+            setImageProgress(percentCompleted);
+          },
         }
       );
 
@@ -166,6 +175,12 @@ export function useChatData() {
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total!
+            );
+            setVideoProgress(percentCompleted);
+          },
         }
       );
 
@@ -196,7 +211,7 @@ export function useChatData() {
     senderId: string
   ) => {
     try {
-      setIsVideoUploading(true);
+      setIsFileUploading(true);
       const { data } = await axios.post<UploadResponse>(
         `${process.env.SERVER_URL}/messenger/upload-file?roomId=${roomId}&senderId=${senderId}`,
         formData,
@@ -206,6 +221,12 @@ export function useChatData() {
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total!
+            );
+            setFileProgress(percentCompleted);
+          },
         }
       );
 
@@ -226,7 +247,7 @@ export function useChatData() {
       }
       dispatch(setErrorMessage((error as Error).message));
     } finally {
-      setIsVideoUploading(false);
+      setIsFileUploading(false);
     }
   };
 
@@ -242,13 +263,16 @@ export function useChatData() {
     // Image
     handleUploadImage,
     isImageUploading,
+    imageProgress,
 
     // Video
     handleUploadVideo,
     isVideoUploading,
+    videoProgress,
 
     // File
     handleFileUpload,
     isFileUploading,
+    fileProgress,
   };
 }
