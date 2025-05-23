@@ -44,6 +44,16 @@ const File: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
     await Linking.openURL(message.content!);
   };
 
+  const formatFileSize = (size: number) => {
+    if (size < 1024) {
+      return `${size} bytes`;
+    } else if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(1)} KB`;
+    } else {
+      return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+    }
+  };
+
   return (
     <View style={[styles.fileContainer, bubbleStyle]}>
       <MaterialIcons name="insert-drive-file" size={24} color={iconColor} />
@@ -67,7 +77,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
               isMine ? styles.sentFileSize : styles.receivedFileSize,
             ]}
           >
-            {(message.message_size! / 1024).toFixed(1)} KB
+            {formatFileSize(message.message_size!)}
           </Text>
         </View>
       </TouchableOpacity>
