@@ -326,6 +326,12 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                   setSelectedMessage(item);
                   setContextMenuVisible(true);
                 }}
+                onPress={() => {
+                  if (!isSelectMenuVisible) return;
+                  isSelected
+                    ? dispatch(removeSelectedMessages(item))
+                    : dispatch(addSelectedMessages(item));
+                }}
               />
             </Pressable>
           );

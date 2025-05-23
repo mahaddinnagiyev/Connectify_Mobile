@@ -1,5 +1,6 @@
 import {
   Linking,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -24,9 +25,15 @@ interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
   onLongPress: () => void;
+  onPress: () => void;
 }
 
-const File: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
+const File: React.FC<Props> = ({
+  message,
+  bubbleStyle,
+  onLongPress,
+  onPress,
+}) => {
   const dispatch = useDispatch();
 
   const { selectedMessages } = useSelector((state: RootState) => state.chat);
@@ -55,7 +62,15 @@ const File: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
   };
 
   return (
-    <View style={[styles.fileContainer, bubbleStyle]}>
+    <Pressable
+      style={({ pressed }) => [
+        styles.fileContainer,
+        bubbleStyle,
+        pressed && { backgroundColor: color.solidColor },
+      ]}
+      onLongPress={onLongPress}
+      onPress={onPress}
+    >
       <MaterialIcons name="insert-drive-file" size={24} color={iconColor} />
       <TouchableOpacity
         onPress={openFile}
@@ -89,7 +104,7 @@ const File: React.FC<Props> = ({ message, bubbleStyle, onLongPress }) => {
       >
         <MaterialIcons name="file-download" size={24} color={iconColor} />
       </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 };
 
