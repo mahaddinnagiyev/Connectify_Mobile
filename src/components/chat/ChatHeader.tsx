@@ -109,7 +109,7 @@ const ChatHeader: React.FC<Props> = ({
       online: boolean;
       inRoom?: boolean;
     }) => {
-      if (payload.userId === chat.otherUser.id) {
+      if (payload.userId !== userData.user.id) {
         setIsOnline(payload.online);
       }
     };
@@ -118,11 +118,11 @@ const ChatHeader: React.FC<Props> = ({
     return () => {
       socket?.off("userPresence", handleUserPresence);
     };
-  }, [socket, chat.otherUser.id]);
+  }, [socket, userData.user.id]);
 
   useEffect(() => {
     const isFriendRequestReceived = receivedFriendshipRequests.some(
-      (friend) => friend.requester.id === chat.otherUser.id
+      (friend) => friend.requester.id !== userData.user.id
     );
     setIsFriendRequestReceived(isFriendRequestReceived);
   }, [receivedFriendshipRequests]);
@@ -138,7 +138,7 @@ const ChatHeader: React.FC<Props> = ({
 
   const handleAcceptAndRejectFriendship = async (action: FriendshipAction) => {
     const friendRequest = receivedFriendshipRequests.find(
-      (request) => request.requester.id === chat.otherUser.id
+      (request) => request.requester.id !== userData.user.id
     );
 
     await acceptAndRejectFrienship(action, friendRequest!.id);

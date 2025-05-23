@@ -32,9 +32,10 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
   const { chat } = route.params;
 
   const { selectedMessages } = useSelector((state: RootState) => state.chat);
+  const { userData } = useSelector((state: RootState) => state.myProfile);
 
   const [progressBarWidth, setProgressBarWidth] = useState(0);
-  const isSent = message.sender_id !== chat.otherUser.id;
+  const isSent = message.sender_id === userData.user.id;
 
   const soundRef = useRef<ExpoAudio.Sound | null>(null);
   const [playing, setPlaying] = useState(false);

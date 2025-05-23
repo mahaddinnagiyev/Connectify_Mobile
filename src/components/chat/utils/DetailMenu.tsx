@@ -1,15 +1,27 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
+import { Text, View, Modal, TouchableOpacity } from "react-native";
 import React from "react";
+import { styles } from "../styles/detailMenu.style";
+import { color } from "@/colors";
+
+// Expo And Native
 import * as Animatable from "react-native-animatable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { color } from "@/colors";
+
+// Services
 import { MessagesDTO, MessageType } from "@services/messenger/messenger.dto";
+
+// Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+
+// Functions
 import { truncate } from "@functions/messages.function";
 import { formatFileSize } from "@functions/chat.functions";
-import { styles } from "../styles/detailMenu.style";
+
+// Redux
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
 interface Props {
   visible: boolean;
@@ -18,6 +30,8 @@ interface Props {
 }
 
 const DetailMenu = ({ visible, onClose, message }: Props) => {
+  const { userData } = useSelector((state: RootState) => state.myProfile);
+
   const insets = useSafeAreaInsets();
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
   const { chat } = route.params;
@@ -113,7 +127,7 @@ const DetailMenu = ({ visible, onClose, message }: Props) => {
             <DetailRow
               label="Sender"
               value={
-                message.sender_id === chat.otherUser.id
+                message.sender_id !== userData.user.id
                   ? `@${chat.otherUser.username}`
                   : "You"
               }

@@ -7,7 +7,13 @@ import {
 } from "@services/messenger/messenger.dto";
 import { color } from "@/colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+// Functions
 import { isUrl } from "@functions/messages.function";
+
+// Redux
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
 interface Props {
   message: MessagesDTO;
@@ -15,6 +21,8 @@ interface Props {
 }
 
 const ParentMessage: React.FC<Props> = ({ message, chat }) => {
+  const { userData } = useSelector((state: RootState) => state.myProfile);
+
   const renderMessageContent = () => {
     switch (message.parent_message_id.message_type) {
       case MessageType.AUDIO:
@@ -93,7 +101,7 @@ const ParentMessage: React.FC<Props> = ({ message, chat }) => {
     <View
       style={[
         styles.parentPreview,
-        message.sender_id === chat.otherUser.id
+        message.sender_id !== userData.user.id
           ? styles.parentPreviewLeft
           : styles.parentPreviewRight,
       ]}
@@ -101,7 +109,7 @@ const ParentMessage: React.FC<Props> = ({ message, chat }) => {
       <View style={styles.parentPreviewLine} />
       <View style={styles.parentPreviewContent}>
         <Text style={styles.parentPreviewSender}>
-          {message.parent_message_id.sender_id !== chat.otherUser.id
+          {message.parent_message_id.sender_id === userData.user.id
             ? "You"
             : `@${chat.otherUser.username}`}
         </Text>

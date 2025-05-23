@@ -108,13 +108,13 @@ const SendMessage: React.FC<Props> = ({ replyMessage, setReplyMessage }) => {
   }, [replyMessage]);
 
   useEffect(() => {
-    if (blockList.find((b) => b.blocked_id === chat.otherUser.id)) {
+    if (blockList.find((b) => b.blocked_id !== userData.user.id)) {
       setIsBlocked(true);
     }
     if (blockerList.find((b) => b.blocked_id === userData.user.id)) {
       setIsBlockedBy(true);
     }
-  }, [blockList, blockerList, chat.otherUser.id, userData.user.id]);
+  }, [blockList, blockerList, userData.user.id]);
 
   useEffect(() => {
     Audio.Sound.createAsync(
