@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { BackHandler, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Components
@@ -15,7 +15,7 @@ import { MessagesDTO } from "@services/messenger/messenger.dto";
 import { useSocketContext } from "@context/SocketContext";
 
 // Navigation
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute, useFocusEffect } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
 
 // Redux
@@ -38,6 +38,21 @@ const ChatScreen = () => {
   useEffect(() => {
     socket?.emit("joinRoom", { user2Id: selectedChat.otherUser.id });
   }, [socket]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        socket?.emit("leaveRoom", { roomId: selectedChat.id });
+        return false;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [socket, selectedChat.id])
+  );
 
   return (
     <React.Fragment>
