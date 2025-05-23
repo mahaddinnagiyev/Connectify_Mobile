@@ -143,7 +143,6 @@ const SignupForm = () => {
             />
           </View>
         </View>
-
         {/* Username & Email */}
         <View style={styles.row}>
           <View style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}>
@@ -168,7 +167,6 @@ const SignupForm = () => {
             />
           </View>
         </View>
-
         {/* Gender Selection */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Select Gender</Text>
@@ -197,7 +195,6 @@ const SignupForm = () => {
             ))}
           </View>
         </View>
-
         {/* Password */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Password</Text>
@@ -233,7 +230,6 @@ const SignupForm = () => {
             lowercase letter, 1 number, and 1 special character
           </Text>
         </View>
-
         {/* Confirm Password */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Confirm Password</Text>
@@ -253,7 +249,6 @@ const SignupForm = () => {
             style={styles.eyeIcon}
           />
         </View>
-
         {/* Terms Checkbox */}
         <Pressable
           style={styles.checkboxContainer}
@@ -265,10 +260,16 @@ const SignupForm = () => {
             color={acceptedTerms ? color.primaryColor : "#666"}
           />
           <Text style={styles.checkboxText}>
-            I read the Terms and conditions and agree
+            I read the{" "}
+            <Text
+              style={styles.linkText}
+              onPress={() => navigate("TermsAndConditions")}
+            >
+              Terms and conditions
+            </Text>{" "}
+            and agree
           </Text>
         </Pressable>
-
         {/* Sign Up Button */}
         <Pressable
           style={[

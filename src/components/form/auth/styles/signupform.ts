@@ -83,12 +83,18 @@ export const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
     marginVertical: 16,
+    height: 28,
   },
   checkboxText: {
     color: "#666",
-    flex: 1,
+    lineHeight: 28,
+    textAlignVertical: "center",
+    flexShrink: 1,
+  },
+  linkText: {
+    color: color.primaryColor,
+    fontWeight: "bold",
   },
   signupButton: {
     backgroundColor: color.primaryColor,
