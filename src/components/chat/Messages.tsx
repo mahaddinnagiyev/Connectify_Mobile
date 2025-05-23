@@ -360,7 +360,24 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                 },
               ]}
             >
-              <View style={[styles.messageBubble, bubbleStyle]}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.messageBubble,
+                  bubbleStyle,
+                  pressed && { backgroundColor: color.solidColor },
+                ]}
+                onLongPress={() => {
+                  if (isSelectMenuVisible) return;
+                  setSelectedMessage(item);
+                  setContextMenuVisible(true);
+                }}
+                onPress={() => {
+                  if (!isSelectMenuVisible) return;
+                  isSelected
+                    ? dispatch(removeSelectedMessages(item))
+                    : dispatch(addSelectedMessages(item));
+                }}
+              >
                 {isUrl(item.content) ? (
                   <Text
                     style={styles.url}
@@ -371,7 +388,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                 ) : (
                   <Text style={textStyle}>{item.content}</Text>
                 )}
-              </View>
+              </Pressable>
             </Pressable>
           );
       }
