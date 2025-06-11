@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   buttonText: {
-    color: "white",
+    color: color.white,
     fontSize: 16,
     fontWeight: "600",
   },

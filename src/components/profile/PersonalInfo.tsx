@@ -153,9 +153,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           }
         >
           {isFriendDataLoading ? (
-            <ActivityIndicator size={"small"} color={"white"} />
+            <ActivityIndicator size={"small"} color={color.white} />
           ) : (
-            <MaterialIcons name="person-remove" size={20} color="white" />
+            <MaterialIcons name="person-remove" size={20} color={color.white} />
           )}
           <Text style={styles.actionButtonText}>Remove</Text>
         </TouchableOpacity>
@@ -179,9 +179,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           onPress={async () => await removeFriend(pendingReq.id)}
         >
           {isFriendDataLoading ? (
-            <ActivityIndicator size={"small"} color={"white"} />
+            <ActivityIndicator size={"small"} color={color.white} />
           ) : (
-            <MaterialIcons name="access-time" size={20} color="white" />
+            <MaterialIcons name="access-time" size={20} color={color.white} />
           )}
           <Text style={styles.actionButtonText}>Pending</Text>
         </TouchableOpacity>
@@ -194,9 +194,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         onPress={async () => await sentFriendshipRequest(userData.user.id)}
       >
         {isFriendDataLoading ? (
-          <ActivityIndicator size={"small"} color={"white"} />
+          <ActivityIndicator size={"small"} color={color.white} />
         ) : (
-          <MaterialIcons name="person-add" size={20} color="white" />
+          <MaterialIcons name="person-add" size={20} color={color.white} />
         )}
         <Text style={styles.actionButtonText}>Add</Text>
       </TouchableOpacity>
@@ -212,7 +212,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
             setShowConfirmModal(true);
           }}
         >
-          <MaterialIcons name="person-remove" size={20} color="white" />
+          <MaterialIcons name="person-remove" size={20} color={color.white} />
           <Text style={styles.actionButtonText}>Unblock</Text>
         </TouchableOpacity>
       );
@@ -224,7 +224,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           setShowConfirmModal(true);
         }}
       >
-        <MaterialCommunityIcons name="block-helper" size={20} color="white" />
+        <MaterialCommunityIcons name="block-helper" size={20} color={color.white} />
         <Text style={styles.actionButtonText}>Block</Text>
       </TouchableOpacity>
     );
@@ -289,7 +289,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 disabled={isAccepting || isRejecting}
               >
                 {isAccepting ? (
-                  <ActivityIndicator color={"white"} size={"small"} />
+                  <ActivityIndicator color={color.white} size={"small"} />
                 ) : (
                   <Text style={styles.buttonText}>Accept</Text>
                 )}
@@ -302,7 +302,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 disabled={isRejecting || isAccepting}
               >
                 {isRejecting ? (
-                  <ActivityIndicator color={"white"} size={"small"} />
+                  <ActivityIndicator color={color.white} size={"small"} />
                 ) : (
                   <Text style={styles.buttonText}>Reject</Text>
                 )}
@@ -336,7 +336,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                 style={styles.profilePhotoEditIcon}
                 onPress={() => setShowModal(true)}
               >
-                <Ionicons name="camera" size={24} color="white" />
+                <Ionicons name="camera" size={24} color={color.white} />
               </Pressable>
             ) : (
               <>
@@ -350,7 +350,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                       style={styles.actionButton}
                       onPress={() => handleGoChat(userData.user.id)}
                     >
-                      <Ionicons name="chatbubble" size={20} color="white" />
+                      <Ionicons name="chatbubble" size={20} color={color.white} />
                       <Text style={styles.actionButtonText}>Message</Text>
                     </TouchableOpacity>
 

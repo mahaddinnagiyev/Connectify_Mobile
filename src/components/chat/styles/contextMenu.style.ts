@@ -56,7 +56,7 @@ export const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
     paddingVertical: 8,
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 12,
   },
   menuItem: {

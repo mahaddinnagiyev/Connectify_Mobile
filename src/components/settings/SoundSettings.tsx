@@ -41,7 +41,7 @@ const SoundSettings = () => {
           <Ionicons
             name={receiveSound ? "volume-high" : "volume-mute"}
             size={16}
-            color={receiveSound ? "white" : color.primaryColor}
+            color={receiveSound ? color.white : color.primaryColor}
           />
           <Text
             style={[styles.buttonText, receiveSound && styles.activeButtonText]}
@@ -65,7 +65,7 @@ const SoundSettings = () => {
           <Ionicons
             name={sentSound ? "volume-high" : "volume-mute"}
             size={16}
-            color={sentSound ? "white" : color.primaryColor}
+            color={sentSound ? color.white : color.primaryColor}
           />
           <Text
             style={[styles.buttonText, sentSound && styles.activeButtonText]}

@@ -31,6 +31,7 @@ import { FriendshipAction } from "@enums/friendship.enum";
 import { useNavigation } from "@react-navigation/native";
 import type { StackParamList } from "@navigation/UserStack";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { color } from "@/colors";
 
 interface RequestItem {
   id: string;
@@ -134,9 +135,9 @@ const FriendRequests: React.FC<Props> = ({ isMyProfileScreen = true }) => {
             }
           >
             {isAccepting ? (
-              <ActivityIndicator size={"small"} color={"white"} />
+              <ActivityIndicator size={"small"} color={color.white} />
             ) : (
-              <Ionicons name="checkmark" size={18} color="white" />
+              <Ionicons name="checkmark" size={18} color={color.white} />
             )}
           </Pressable>
           <Pressable
@@ -146,9 +147,9 @@ const FriendRequests: React.FC<Props> = ({ isMyProfileScreen = true }) => {
             }
           >
             {isRejecting ? (
-              <ActivityIndicator size={"small"} color={"white"} />
+              <ActivityIndicator size={"small"} color={color.white} />
             ) : (
-              <Ionicons name="close" size={18} color="white" />
+              <Ionicons name="close" size={18} color={color.white} />
             )}
           </Pressable>
           <Pressable
@@ -158,7 +159,7 @@ const FriendRequests: React.FC<Props> = ({ isMyProfileScreen = true }) => {
               setShowConfirmModal(true);
             }}
           >
-            <Ionicons name="ban" size={16} color="white" />
+            <Ionicons name="ban" size={16} color={color.white} />
           </Pressable>
         </View>
       ) : (

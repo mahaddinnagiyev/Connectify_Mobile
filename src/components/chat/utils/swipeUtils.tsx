@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Swipeable } from "react-native-gesture-handler";
 import { MessagesDTO } from "@services/messenger/messenger.dto";
+import { color } from "@/colors";
 
 interface SwipeableMessageProps {
   message: MessagesDTO;
@@ -23,13 +24,13 @@ export const SwipeableMessage: React.FC<SwipeableMessageProps> = ({
 
   const renderReplyAction = () => (
     <View style={styles.replyAction}>
-      <MaterialIcons name="reply" size={24} color="white" />
+      <MaterialIcons name="reply" size={24} color={color.white} />
     </View>
   );
 
   const renderDtailAction = () => (
     <View style={styles.detailAction}>
-      <MaterialIcons name="info" size={24} color="white" />
+      <MaterialIcons name="info" size={24} color={color.white} />
     </View>
   );
 

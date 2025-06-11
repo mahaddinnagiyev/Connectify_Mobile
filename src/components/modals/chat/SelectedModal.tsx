@@ -49,7 +49,7 @@ const SelectedModal = ({
             />
           ) : file.type === "video" ? (
             <View style={styles.videoPreview}>
-              <Ionicons name="play-circle" size={50} color="white" />
+              <Ionicons name="play-circle" size={50} color={color.white} />
             </View>
           ) : (
             <View style={styles.filePreview}>
@@ -110,7 +110,7 @@ const SelectedModal = ({
               pressed && { backgroundColor: "#00cc00" },
             ]}
           >
-            <MaterialIcons name="cloud-upload" size={24} color="white" />
+            <MaterialIcons name="cloud-upload" size={24} color={color.white} />
             <Text style={styles.uploadText}>Sent</Text>
           </Pressable>
         </View>

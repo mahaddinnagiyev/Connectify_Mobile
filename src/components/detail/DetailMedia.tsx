@@ -162,7 +162,7 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
                     <Ionicons
                       name="play-circle"
                       size={32}
-                      color="white"
+                      color={color.white}
                       style={styles.playIcon}
                     />
                   </View>
@@ -190,7 +190,7 @@ const DetailMedia: React.FC<Props> = ({ chat }) => {
                 style={styles.closeButton}
                 onPress={() => setIsModalVisible(false)}
               >
-                <Ionicons name="close" size={24} color="white" />
+                <Ionicons name="close" size={24} color={color.white} />
               </TouchableOpacity>
             )}
           />

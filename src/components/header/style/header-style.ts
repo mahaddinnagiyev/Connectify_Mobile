@@ -104,7 +104,7 @@ export const style = StyleSheet.create({
     paddingHorizontal: 4,
   },
   badgeText: {
-    color: "white",
+    color: color.white,
     fontSize: 9,
     fontWeight: "bold",
   },

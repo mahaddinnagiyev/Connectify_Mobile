@@ -91,12 +91,12 @@ const InfoMessage: React.FC<InfoMessageProps> = ({ message, onClose }) => {
         <MaterialIcons
           name="info"
           size={24}
-          color="white"
+          color={color.white}
           style={styles.icon}
         />
         <Text style={styles.messageText}>{message}</Text>
         <Pressable onPress={onClose} style={styles.closeButton}>
-          <MaterialIcons name="close" size={20} color="white" />
+          <MaterialIcons name="close" size={20} color={color.white} />
         </Pressable>
       </LinearGradient>
       <Animated.View
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 3,
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
   },

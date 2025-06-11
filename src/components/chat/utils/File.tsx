@@ -24,8 +24,8 @@ import { addDownloadMessage } from "@redux/chat/chatSlice";
 interface Props {
   message: MessagesDTO;
   bubbleStyle: any;
-  onLongPress: () => void;
-  onPress: () => void;
+  onLongPress?: () => void;
+  onPress?: () => void;
 }
 
 const File: React.FC<Props> = ({
@@ -41,7 +41,7 @@ const File: React.FC<Props> = ({
 
   const isMine = message.sender_id === userData.user.id;
 
-  const iconColor = isMine ? "white" : color.primaryColor;
+  const iconColor = isMine ? color.white : color.primaryColor;
 
   const handleDownload = async () => {
     dispatch(addDownloadMessage(message));
@@ -112,7 +112,7 @@ export default File;
 
 const styles = StyleSheet.create({
   sentText: {
-    color: "white",
+    color: color.white,
     fontSize: 14,
   },
   receivedText: {

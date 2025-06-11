@@ -130,7 +130,7 @@ const AccountSettings = ({
             <Ionicons
               name={faceIdEnabled ? "lock-closed" : "lock-open"}
               size={16}
-              color={faceIdEnabled ? "white" : color.primaryColor}
+              color={faceIdEnabled ? color.white : color.primaryColor}
             />
             <Text
               style={[

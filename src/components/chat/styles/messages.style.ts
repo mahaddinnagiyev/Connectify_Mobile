@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
   },
   sentText: {
-    color: "white",
+    color: color.white,
     fontSize: 14,
   },
   receivedText: {
@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     zIndex: 50,
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 50,
     padding: 4,
   },
@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 15,
     paddingVertical: 6,
     paddingHorizontal: 12,

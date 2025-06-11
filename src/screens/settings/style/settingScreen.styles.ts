@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
     minWidth: 80,
   },
   enableButtonText: {
-    color: "white",
+    color: color.white,
     fontWeight: "500",
     fontSize: 14,
   },

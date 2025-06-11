@@ -237,7 +237,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                 <>
                   <ActivityIndicator
                     size="small"
-                    color="white"
+                    color={color.white}
                     style={{ marginRight: 8 }}
                   />
                   <Text style={styles.saveButtonText}>Saving...</Text>
@@ -248,7 +248,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                   <MaterialIcons
                     name="arrow-forward"
                     size={20}
-                    color="white"
+                    color={color.white}
                     style={{ marginLeft: 8 }}
                   />
                 </>

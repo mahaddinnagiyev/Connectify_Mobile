@@ -435,7 +435,7 @@ const ChatHeader: React.FC<Props> = ({
                   disabled={isAccepting || isRejecting}
                 >
                   {isAccepting ? (
-                    <ActivityIndicator size={"small"} color={"white"} />
+                    <ActivityIndicator size={"small"} color={color.white} />
                   ) : (
                     <Text style={styles.btnText}>Accept</Text>
                   )}
@@ -449,7 +449,7 @@ const ChatHeader: React.FC<Props> = ({
                   disabled={isAccepting || isRejecting}
                 >
                   {isRejecting ? (
-                    <ActivityIndicator size={"small"} color={"white"} />
+                    <ActivityIndicator size={"small"} color={color.white} />
                   ) : (
                     <Text style={styles.btnText}>Reject</Text>
                   )}

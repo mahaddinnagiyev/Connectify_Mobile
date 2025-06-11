@@ -160,7 +160,7 @@ const DownloadModal = () => {
         <MaterialCommunityIcons
           name="progress-download"
           size={28}
-          color="white"
+          color={color.white}
         />
         {downloadMessages.length > 0 && (
           <View style={styles.badge}>

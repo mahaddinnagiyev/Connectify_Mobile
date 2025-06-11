@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   infoContainer: {
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 16,
     padding: 20,
     elevation: 3,

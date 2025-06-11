@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.5 }],
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 20,
     width: "80%",
     elevation: 5,

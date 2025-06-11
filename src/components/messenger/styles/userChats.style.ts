@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#4CD964",
     borderWidth: 2,
-    borderColor: "white",
+    borderColor: color.white,
   },
 
   chatDetail: {
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     height: 20,
     borderRadius: 50,
     fontWeight: "bold",
-    color: "white",
+    color: color.white,
     textAlign: "center",
     position: "absolute",
     right: -60,

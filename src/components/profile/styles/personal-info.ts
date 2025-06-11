@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 6,
     borderWidth: 2,
-    borderColor: "white",
+    borderColor: color.white,
   },
 
   actionButtonsContainer: {
@@ -61,13 +61,13 @@ export const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   actionButtonText: {
-    color: "white",
+    color: color.white,
     fontSize: 14,
     fontWeight: "500",
   },
 
   personalContainer: {
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 16,
     padding: 20,
     elevation: 3,
@@ -171,7 +171,7 @@ export const styles = StyleSheet.create({
   },
 
   changeProfilePhotoText: {
-    color: "white",
+    color: color.white,
     fontWeight: "700",
     fontSize: 14,
   },
@@ -206,7 +206,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.avatarBorder,
   },
   buttonText: {
-    color: "white",
+    color: color.white,
     fontWeight: "600",
   },
 });

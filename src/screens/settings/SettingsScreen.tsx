@@ -174,7 +174,7 @@ const SettingsScreen = () => {
                 <MaterialCommunityIcons
                   name="face-recognition"
                   size={18}
-                  color="white"
+                  color={color.white}
                 />
               </Pressable>
             </View>

@@ -86,7 +86,7 @@ const BlockList = () => {
                 setShowConfirmModal(true);
               }}
             >
-              <Ionicons name="lock-open" size={20} color="white" />
+              <Ionicons name="lock-open" size={20} color={color.white} />
               <Text style={styles.buttonText}>Unblock</Text>
             </Pressable>
           </View>
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   buttonText: {
-    color: "white",
+    color: color.white,
     fontWeight: "500",
     fontSize: 14,
   },

@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     padding: 5,
   },
   linkCard: {
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 12,
     padding: 15,
     marginBottom: 12,

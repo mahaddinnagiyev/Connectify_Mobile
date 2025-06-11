@@ -126,7 +126,7 @@ const DetailActions: React.FC<Props> = ({ chat }) => {
               disabled={isAccepting || isRejecting}
             >
               {isAccepting ? (
-                <ActivityIndicator color={"white"} size={"small"} />
+                <ActivityIndicator color={color.white} size={"small"} />
               ) : (
                 <Text style={styles.buttonText}>Accept</Text>
               )}
@@ -139,7 +139,7 @@ const DetailActions: React.FC<Props> = ({ chat }) => {
               disabled={isRejecting || isAccepting}
             >
               {isRejecting ? (
-                <ActivityIndicator color={"white"} size={"small"} />
+                <ActivityIndicator color={color.white} size={"small"} />
               ) : (
                 <Text style={styles.buttonText}>Reject</Text>
               )}

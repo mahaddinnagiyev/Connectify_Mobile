@@ -108,12 +108,12 @@ const ErrorMessage: React.FC<Props> = ({ message, onClose }) => {
         <MaterialIcons
           name="error-outline"
           size={28}
-          color="white"
+          color={color.white}
           style={styles.icon}
         />
         <Text style={styles.messageText}>{message}</Text>
         <Pressable style={styles.closeButton} onPress={dismiss}>
-          <MaterialIcons name="close" size={20} color="white" />
+          <MaterialIcons name="close" size={20} color={color.white} />
         </Pressable>
       </LinearGradient>
     </Animated.View>

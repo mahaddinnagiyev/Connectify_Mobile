@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: color.white,
     width: "80%",
     borderRadius: 16,
     paddingVertical: 16,

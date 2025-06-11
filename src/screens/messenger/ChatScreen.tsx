@@ -21,6 +21,7 @@ import { StackParamList } from "@navigation/UserStack";
 // Redux
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
+import { color } from "@/colors";
 
 const ChatScreen = () => {
   const route = useRoute<RouteProp<StackParamList, "Chat">>();
@@ -81,6 +82,6 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: color.white,
   },
 });

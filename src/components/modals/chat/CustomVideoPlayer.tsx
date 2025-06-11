@@ -100,7 +100,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                   : "play-arrow"
               }
               size={32}
-              color="white"
+              color={color.white}
             />
           </Pressable>
 
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   timeText: {
-    color: "white",
+    color: color.white,
     fontSize: 12,
     minWidth: 40,
     textAlign: "center",

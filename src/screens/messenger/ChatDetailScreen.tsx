@@ -10,6 +10,7 @@ import DetailMedia from "@components/detail/DetailMedia";
 // Navigation
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StackParamList } from "@navigation/UserStack";
+import { color } from "@/colors";
 
 const ChatDetailScreen = () => {
   const route = useRoute<RouteProp<StackParamList, "ChatDetail">>();
@@ -36,7 +37,7 @@ export default ChatDetailScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: color.white,
   },
   scrollContainer: {
     paddingBottom: 30,

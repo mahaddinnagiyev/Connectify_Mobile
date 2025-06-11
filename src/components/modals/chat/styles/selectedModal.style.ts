@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
-    backgroundColor: "white",
+    backgroundColor: color.white,
     width: width * 0.9,
     borderRadius: 15,
     overflow: "hidden",
@@ -91,7 +91,7 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
   },
   uploadText: {
-    color: "white",
+    color: color.white,
     fontWeight: "600",
   },
 });

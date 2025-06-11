@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   modal: {
     width: "90%",
-    backgroundColor: "white",
+    backgroundColor: color.white,
     borderRadius: 20,
     padding: 25,
     shadowColor: color.black,
@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   saveButtonText: {
-    color: "white",
+    color: color.white,
     fontWeight: "600",
     fontSize: 14,
   },

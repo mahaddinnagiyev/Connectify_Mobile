@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.avatarBorder,
   },
   buttonText: {
-    color: "white",
+    color: color.white,
     fontWeight: "600",
   },
 });

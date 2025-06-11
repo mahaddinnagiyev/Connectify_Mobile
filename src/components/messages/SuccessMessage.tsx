@@ -112,11 +112,11 @@ const SuccessMessage: React.FC<Props> = ({ message, onClose }) => {
         style={styles.gradient}
       >
         <View style={styles.iconContainer}>
-          <FontAwesome name="check-circle" size={28} color="white" />
+          <FontAwesome name="check-circle" size={28} color={color.white} />
         </View>
         <Text style={styles.messageText}>{message}</Text>
         <Pressable style={styles.closeButton} onPress={dismiss}>
-          <MaterialIcons name="close" size={20} color="white" />
+          <MaterialIcons name="close" size={20} color={color.white} />
         </Pressable>
       </LinearGradient>
     </Animated.View>
