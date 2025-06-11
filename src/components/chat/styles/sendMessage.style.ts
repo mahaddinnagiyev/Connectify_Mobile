@@ -150,7 +150,7 @@ export const styles = StyleSheet.create({
     gap: 4,
   },
   urlText: {
-    color: "blue",
+    color: color.blue,
     textDecorationLine: "underline",
   },
 });

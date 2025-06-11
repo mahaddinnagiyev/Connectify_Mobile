@@ -224,7 +224,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
                 style={{
                   textAlign: "center",
                   fontSize: 16,
-                  color: "gray",
+                  color: color.gray,
                   marginTop: 10,
                   marginBottom: 20,
                   fontWeight: "bold",

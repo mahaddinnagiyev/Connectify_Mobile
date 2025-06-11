@@ -77,10 +77,10 @@ const ParentMessage: React.FC<Props> = ({ message, chat }) => {
                 style={[
                   styles.parentPreviewText,
                   {
-                    color: "blue",
+                    color: color.blue,
                     fontWeight: "bold",
                     textDecorationLine: "underline",
-                    textDecorationColor: "blue",
+                    textDecorationColor: color.blue,
                   },
                 ]}
                 numberOfLines={3}

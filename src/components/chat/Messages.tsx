@@ -419,7 +419,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
               >
                 <ActivityIndicator size="small" color={color.primaryColor} />
                 <Text
-                  style={{ fontSize: 12, fontStyle: "italic", color: "gray" }}
+                  style={{ fontSize: 12, fontStyle: "italic", color: color.gray }}
                 >
                   Unsending...
                 </Text>

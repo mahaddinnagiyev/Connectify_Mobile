@@ -30,6 +30,7 @@ export const color = {
   white: "#ffffff",
   black: "#000000",
   gray: "#7f8c8d",
+  blue: "#0000ff",
   gradientStart: "#1abc9c",
   gradientEnd: "#3498db",
   replyBackground: "#f8f9fa",

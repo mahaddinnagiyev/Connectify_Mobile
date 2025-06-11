@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
 
   menuText: {
     fontSize: 14,
-    color: "gray",
+    color: color.gray,
     fontWeight: "800",
   },
 

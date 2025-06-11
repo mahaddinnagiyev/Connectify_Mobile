@@ -47,9 +47,9 @@ export const styles = StyleSheet.create({
   },
   url: {
     fontWeight: "bold",
-    color: "blue",
+    color: color.blue,
     textDecorationLine: "underline",
-    textDecorationColor: "blue",
+    textDecorationColor: color.blue,
   },
   timeContainer: {
     flexDirection: "row",
