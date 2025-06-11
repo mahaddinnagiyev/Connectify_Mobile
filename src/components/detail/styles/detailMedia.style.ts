@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     marginTop: 25,
-    borderBottomColor: "#eee",
+    borderBottomColor: color.grayLight1,
     borderBottomWidth: 1,
   },
   tabItem: {
@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: color.grayLight1,
   },
   fileName: {
     marginLeft: 10,

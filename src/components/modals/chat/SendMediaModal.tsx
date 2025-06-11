@@ -54,7 +54,7 @@ const SendMediaModal: React.FC<Props> = ({
               }}
             >
               <View
-                style={[styles.iconContainer, { backgroundColor: "#e8f5e9" }]}
+                style={[styles.iconContainer, { backgroundColor: "#495057"2 }]}
               >
                 <MaterialIcons name="photo-camera" size={32} color={color.primaryColor} />
               </View>
@@ -73,7 +73,7 @@ const SendMediaModal: React.FC<Props> = ({
               <View
                 style={[styles.iconContainer, { backgroundColor: "#e3f2fd" }]}
               >
-                <Ionicons name="videocam" size={32} color="#2196f3" />
+                <Ionicons name="videocam" size={32} color={color.lightBlue} />
               </View>
               <Text style={styles.optionText}>Video</Text>
             </Pressable>

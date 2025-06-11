@@ -107,7 +107,7 @@ const ContextMenu: React.FC<Props> = ({
             backgroundColor: color.primaryColor,
           }
         : {
-            backgroundColor: "#eee",
+            backgroundColor: color.grayLight1,
           },
     ];
 
@@ -181,7 +181,7 @@ const ContextMenu: React.FC<Props> = ({
       id: "details",
       title: "Details",
       icon: "info",
-      color: "#2196F3",
+      color: color.lightBlue,
     },
     ...(message.sender_id === userId
       ? [{ id: "delete", title: "Unsend", icon: "delete", color: "red" }]

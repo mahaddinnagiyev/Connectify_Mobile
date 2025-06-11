@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     borderBottomRightRadius: 0,
   },
   receivedBubble: {
-    backgroundColor: "#eee",
+    backgroundColor: color.grayLight1,
     borderBottomLeftRadius: 0,
   },
   sentText: { color: color.white, fontSize: 14 },

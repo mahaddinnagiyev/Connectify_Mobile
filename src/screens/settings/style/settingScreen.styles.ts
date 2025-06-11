@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 1,
-    borderColor: color.softPinkBg,
+    borderColor: "#ffe4e9",
     marginBottom: 8,
   },
   bannerLeft: {
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
   },
   bannerIcon: {
     padding: 6,
-    backgroundColor: color.lightBlueBg,
+    backgroundColor: "#e8effe",
     borderRadius: 6,
   },
   bannerTextContainer: {
@@ -63,12 +63,12 @@ export const styles = StyleSheet.create({
   bannerTitle: {
     fontSize: 15,
     fontWeight: "600",
-    color: color.deepSlate,
+    color: "#2a3342",
     lineHeight: 20,
   },
   bannerDescription: {
     fontSize: 13,
-    color: color.slateGray,
+    color: "#687083",
     lineHeight: 18,
     flexWrap: "wrap",
   },

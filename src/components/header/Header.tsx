@@ -299,7 +299,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
                 navigation.navigate("Settings");
               }}
             >
-              <MaterialIcons name="settings" size={24} color="#444" />
+              <MaterialIcons name="settings" size={24} color={color.grayDark3} />
               <Text style={style.menuText}>Settings</Text>
               <MaterialIcons
                 name="chevron-right"
@@ -320,7 +320,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
                 navigation.navigate("BackgrounTheme");
               }}
             >
-              <MaterialIcons name="palette" size={24} color="#444" />
+              <MaterialIcons name="palette" size={24} color={color.grayDark3} />
               <Text style={style.menuText}>Change Theme</Text>
               <MaterialIcons
                 name="chevron-right"
@@ -341,7 +341,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
                 navigation.navigate("ContactUs");
               }}
             >
-              <MaterialIcons name="contact-phone" size={24} color="#444" />
+              <MaterialIcons name="contact-phone" size={24} color={color.grayDark3} />
               <Text style={style.menuText}>Contact Us</Text>
               <MaterialIcons
                 name="chevron-right"

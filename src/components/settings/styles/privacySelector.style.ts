@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#E9ECEF",
+    borderColor: "#e9ecef",
     width: 115,
   },
   triggerButtonPressed: {
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#212529",
+    color: "#495057"2,
     marginBottom: 16,
     textAlign: "center",
   },

@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   iconContainer: {
-    backgroundColor: "#f0fff0",
+    backgroundColor: color."#f0fff0",
     padding: 15,
     borderRadius: 50,
     marginBottom: 15,

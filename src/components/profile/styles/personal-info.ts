@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
 
   fieldIcon: {
     padding: 8,
-    backgroundColor: "#E8F5E9",
+    backgroundColor: "#495057"2,
     borderRadius: 8,
   },
 
@@ -180,7 +180,7 @@ export const styles = StyleSheet.create({
     margin: 15,
     marginTop: 0,
     padding: 20,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
     borderRadius: 12,
   },
   requestTitle: {

@@ -86,7 +86,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     <Animated.View
       style={[
         {
-          backgroundColor: "#E1E1E1",
+          backgroundColor: color.backgroundAlt,
           borderRadius: 4,
         },
         style,

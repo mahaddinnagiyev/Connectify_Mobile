@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
     color: color.inputTextColor,
   },
   charCounterContainer: {
@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   cancelButton: {
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
   },
   saveButton: {
     shadowColor: color.primaryColor,

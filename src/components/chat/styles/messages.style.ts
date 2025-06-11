@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   },
   receivedBubble: {
     alignSelf: "flex-start",
-    backgroundColor: "#eee",
+    backgroundColor: color.grayLight1,
     borderBottomLeftRadius: 0,
   },
   sentText: {

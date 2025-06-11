@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   borderBottom: {
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: color.grayLight1,
   },
   actionText: {
     fontSize: 16,
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   friendRequestBox: {
     margin: 15,
     padding: 20,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
     borderRadius: 12,
   },
   requestTitle: {

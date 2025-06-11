@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
     borderBottomLeftRadius: 0,
-    backgroundColor: "#eee",
+    backgroundColor: color.grayLight1,
   },
   textBubble: {
     padding: 8,
@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
   },
   menuItemsContainer: {
     borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
+    borderTopColor: color.divider,
     paddingVertical: 8,
     backgroundColor: color.white,
     borderRadius: 12,

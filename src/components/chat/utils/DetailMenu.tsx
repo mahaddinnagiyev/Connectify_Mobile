@@ -180,9 +180,9 @@ const DetailRow = ({
   const statusColor = () => {
     switch (status?.toLowerCase()) {
       case "sent":
-        return "#4CAF50";
+        return color.lightBlue;
       case "read":
-        return "#2196F3";
+        return color.lightBlue;
       case "pending":
         return "#FF9800";
       default:

@@ -63,7 +63,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 4,
     paddingVertical: 6,
     borderRadius: 20,
-    backgroundColor: "#eee",
+    backgroundColor: color.grayLight1,
     alignItems: "center",
   },
   filterBtnActive: {

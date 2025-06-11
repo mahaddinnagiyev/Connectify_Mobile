@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
   },
   permissionText: {
     fontSize: 14,
-    color: "#555",
+    color: color.grayDark2,
     textAlign: "center",
     marginBottom: 20,
   },

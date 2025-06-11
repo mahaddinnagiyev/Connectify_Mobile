@@ -11,7 +11,7 @@ export const style = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     zIndex: 50,
-    borderTopColor: "#ccc",
+    borderTopColor: color.grayLight2,
     borderTopWidth: 1,
     backgroundColor: color.white,
   },
@@ -56,7 +56,7 @@ export const style = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 10,
     paddingVertical: 15,
-    borderBottomColor: "#ccc",
+    borderBottomColor: color.grayLight2,
     borderBottomWidth: 1,
   },
   menuImage: {
@@ -82,7 +82,7 @@ export const style = StyleSheet.create({
     borderRadius: 4,
   },
   pressedItem: {
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
     transform: [{ scale: 0.98 }],
   },
   chevron: {

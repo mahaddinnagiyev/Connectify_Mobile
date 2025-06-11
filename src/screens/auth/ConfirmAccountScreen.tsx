@@ -172,7 +172,7 @@ const ConfirmAccountScreen = () => {
           {
             backgroundColor: code.every((c) => c)
               ? color.primaryColor
-              : "#e0e0e0",
+              : color.divider,
             opacity: loading ? 0.7 : 1,
           },
         ]}

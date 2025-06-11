@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   previewContainer: {
     maxHeight: 300,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   },
   filePreview: {
     padding: 20,
-    backgroundColor: "#f0fff0",
+    backgroundColor: color."#f0fff0",
     borderRadius: 50,
   },
   infoContainer: {
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   progressBar: {
     height: 4,
-    backgroundColor: "#eee",
+    backgroundColor: color.grayLight1,
     borderRadius: 2,
     overflow: "hidden",
   },
@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: "#eee",
+    borderTopColor: color.grayLight1,
   },
   button: {
     flex: 1,
@@ -81,7 +81,7 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   cancelButton: {
-    backgroundColor: "#f8f8f8",
+    backgroundColor: color.backgroundAlt,
   },
   uploadButton: {
     backgroundColor: color.primaryColor,
