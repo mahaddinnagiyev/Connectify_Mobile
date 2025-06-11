@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.primaryColor + "20",
   },
   genderText: {
-    color: "#666",
+    color: color.grayDark1,
     fontWeight: "500",
   },
   selectedGenderText: {
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
   },
   passwordHint: {
     fontSize: 12,
-    color: "#666",
+    color: color.grayDark1,
     marginTop: 8,
     lineHeight: 16,
   },
@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     height: 28,
   },
   checkboxText: {
-    color: "#666",
+    color: color.grayDark1,
     lineHeight: 28,
     textAlignVertical: "center",
     flexShrink: 1,

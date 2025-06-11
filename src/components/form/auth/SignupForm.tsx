@@ -257,7 +257,7 @@ const SignupForm = () => {
           <Ionicons
             name={acceptedTerms ? "checkbox" : "checkbox-outline"}
             size={24}
-            color={acceptedTerms ? color.primaryColor : "#666"}
+            color={acceptedTerms ? color.primaryColor : color.grayDark1}
           />
           <Text style={styles.checkboxText}>
             I read the{" "}

@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: "#666",
+    color: color.grayDark1,
     fontWeight: "500",
     flex: 1,
   },

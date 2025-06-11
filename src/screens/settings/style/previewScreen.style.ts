@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: color.primaryColor,
   },
-  dateText: { fontSize: 12, color: "#666" },
+  dateText: { fontSize: 12, color: color.grayDark1 },
   timeContainer: {
     flexDirection: "row",
     alignItems: "center",

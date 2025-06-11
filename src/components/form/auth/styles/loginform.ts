@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   forgotPasswordText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 14,
   },
   forgotPasswordLink: {

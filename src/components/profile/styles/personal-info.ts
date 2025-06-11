@@ -185,7 +185,7 @@ export const styles = StyleSheet.create({
   },
   requestTitle: {
     textAlign: "center",
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 14,
     marginBottom: 15,
   },

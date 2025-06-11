@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#666",
+    color: color.grayDark1,
     textAlign: "center",
     marginBottom: 40,
   },
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   resendText: {
-    color: "#666",
+    color: color.grayDark1,
   },
   resendLink: {
     fontWeight: "600",

@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
   },
   metaText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 14,
   },
   progressBar: {
@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.primaryColor,
   },
   cancelText: {
-    color: "#666",
+    color: color.grayDark1,
     fontWeight: "500",
   },
   uploadText: {

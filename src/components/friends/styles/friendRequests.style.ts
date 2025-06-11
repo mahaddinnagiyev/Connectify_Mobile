@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#666",
+    color: color.grayDark1,
   },
   requestItem: {
     flexDirection: "row",

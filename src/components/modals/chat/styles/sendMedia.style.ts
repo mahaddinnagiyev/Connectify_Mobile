@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#666",
+    color: color.grayDark1,
     textAlign: "center",
     marginTop: 4,
   },
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   cancelText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 16,
     fontWeight: "500",
   },

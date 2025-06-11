@@ -79,7 +79,7 @@ export const styles = StyleSheet.create({
     marginVertical: 5,
   },
   defaultText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 12,
     textAlign: "center",
   },
@@ -94,7 +94,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
   },
   dateText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 12,
     textAlign: "center",
   },

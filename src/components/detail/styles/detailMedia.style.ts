@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
   noMediaText: {
     textAlign: "center",
     marginTop: 20,
-    color: "#666",
+    color: color.grayDark1,
   },
   loadingContainer: {
     flex: 1,

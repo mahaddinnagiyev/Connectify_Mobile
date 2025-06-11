@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   username: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 16,
     marginBottom: 8,
   },

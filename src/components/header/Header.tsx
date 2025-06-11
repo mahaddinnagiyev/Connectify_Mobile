@@ -304,7 +304,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               <MaterialIcons
                 name="chevron-right"
                 size={24}
-                color="#666"
+                color={color.grayDark1}
                 style={style.chevron}
               />
             </Pressable>
@@ -325,7 +325,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               <MaterialIcons
                 name="chevron-right"
                 size={24}
-                color="#666"
+                color={color.grayDark1}
                 style={style.chevron}
               />
             </Pressable>
@@ -346,7 +346,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               <MaterialIcons
                 name="chevron-right"
                 size={24}
-                color="#666"
+                color={color.grayDark1}
                 style={style.chevron}
               />
             </Pressable>

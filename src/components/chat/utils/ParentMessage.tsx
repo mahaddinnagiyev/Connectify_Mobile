@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   parentPreviewText: {
     fontSize: 12,
-    color: "#666",
+    color: color.grayDark1,
     flexShrink: 1,
     paddingRight: 10,
   },

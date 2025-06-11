@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: "700", marginBottom: 8, color: color.inputTextColor },
   subtitle: {
     fontSize: 14,
-    color: "#666",
+    color: color.grayDark1,
     marginBottom: 20,
     textAlign: "center",
   },

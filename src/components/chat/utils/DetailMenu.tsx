@@ -114,7 +114,7 @@ const DetailMenu = ({ visible, onClose, message }: Props) => {
           <View style={styles.header}>
             <Text style={styles.title}>Message Details</Text>
             <TouchableOpacity onPress={onClose}>
-              <MaterialIcons name="close" size={24} color="#666" />
+              <MaterialIcons name="close" size={24} color={color.grayDark1} />
             </TouchableOpacity>
           </View>
 

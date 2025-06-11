@@ -166,7 +166,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                   {
                     color:
                       roomName.length < 25
-                        ? "#666"
+                        ? color.grayDark1
                         : roomName.length < 30
                         ? "orange"
                         : color.avatarBorder,

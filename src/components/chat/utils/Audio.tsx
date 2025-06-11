@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.9)",
   },
   receivedProgressFill: {
-    backgroundColor: "#666",
+    backgroundColor: color.grayDark1,
   },
   timeText: {
     fontSize: 12,

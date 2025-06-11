@@ -99,7 +99,7 @@ const MyFriends: React.FC<Props> = ({ isMyProfileScreen = true }) => {
 
       {/* Search bar */}
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#666" />
+        <Ionicons name="search" size={20} color={color.grayDark1} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search friends..."

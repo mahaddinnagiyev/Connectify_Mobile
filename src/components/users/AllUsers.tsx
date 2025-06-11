@@ -53,7 +53,7 @@ const AllUsers: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#666" />
+        <Ionicons name="search" size={20} color={color.grayDark1} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search users..."
@@ -75,7 +75,7 @@ const AllUsers: React.FC = () => {
         <Text
           style={{
             marginTop: 10,
-            color: "#666",
+            color: color.grayDark1,
             fontSize: 16,
             textAlign: "center",
           }}
@@ -88,7 +88,7 @@ const AllUsers: React.FC = () => {
         <Text
           style={{
             marginTop: 10,
-            color: "#666",
+            color: color.grayDark1,
             fontSize: 16,
             textAlign: "center",
           }}

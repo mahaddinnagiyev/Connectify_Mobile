@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   cancelButtonText: {
-    color: "#666",
+    color: color.grayDark1,
     fontWeight: "600",
     fontSize: 14,
   },

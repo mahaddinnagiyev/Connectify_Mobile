@@ -40,7 +40,7 @@ export default AuthFooter;
 
 const styles = StyleSheet.create({
   signupText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 14,
   },
   signupLink: {
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footerText: {
-    color: "#666",
+    color: color.grayDark1,
     fontSize: 12,
     marginTop: 30,
   },
