@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
-    borderColor: "#ECECEC",
+    borderColor: color.lightGray,
   },
   titleLeft: {
     flexDirection: "row",

@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     height: 60,
     backgroundColor: color.white,
     borderBottomWidth: 1,
-    borderColor: "#ececec",
+    borderColor: color.lightGray,
     elevation: 3,
     shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },

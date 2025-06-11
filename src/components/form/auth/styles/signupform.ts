@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 14,
     borderWidth: 1,
-    borderColor: "#ececec",
+    borderColor: color.lightGray,
     fontSize: 16,
   },
   genderContainer: {
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#ececec",
+    borderColor: color.lightGray,
     backgroundColor: color.replyBackground,
   },
   selectedGender: {

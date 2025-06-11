@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     padding: 14,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ececec",
+    borderColor: color.lightGray,
   },
   forgotPasswordButton: {
     alignSelf: "flex-start",

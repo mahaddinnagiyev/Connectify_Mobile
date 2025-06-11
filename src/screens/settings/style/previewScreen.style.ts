@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 10,
-    color: "#999",
+    color: color.mediumGray,
     marginTop: 4,
   },
 

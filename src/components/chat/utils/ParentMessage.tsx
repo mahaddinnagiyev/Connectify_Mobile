@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   parentPreviewTextDeleted: {
     fontSize: 12,
-    color: "#999",
+    color: color.mediumGray,
     fontStyle: "italic",
   },
 });

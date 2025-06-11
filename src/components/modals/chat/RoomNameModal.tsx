@@ -150,7 +150,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
               maxLength={30}
               autoFocus
               placeholder="Enter new room name"
-              placeholderTextColor="#999"
+              placeholderTextColor={color.mediumGray}
             />
             <View style={styles.charCounterContainer}>
               {roomName.length >= 25 && (

@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "#ececec",
+    backgroundColor: color.lightGray,
   },
   dividerText: {
     color: color.emptyText,
