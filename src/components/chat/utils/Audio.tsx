@@ -113,7 +113,7 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
         <MaterialIcons
           name={playing ? "pause" : "play-arrow"}
           size={24}
-          color={isSent ? color.white : "#000"}
+          color={isSent ? color.white : color.black}
         />
       </TouchableOpacity>
 

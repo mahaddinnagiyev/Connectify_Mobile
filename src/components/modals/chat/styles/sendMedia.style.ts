@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     width: width * 0.85,
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,

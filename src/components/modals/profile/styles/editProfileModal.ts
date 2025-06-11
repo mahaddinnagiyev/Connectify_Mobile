@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: color.inputBorderColor,
-    shadowColor: "#000",
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,

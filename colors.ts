@@ -28,6 +28,7 @@ export const color = {
   textSecondary: "#95a5a6",
   border: "#bdc3c7",
   white: "#ffffff",
+  black: "#000000",
   gray: "#7f8c8d",
   gradientStart: "#1abc9c",
   gradientEnd: "#3498db",

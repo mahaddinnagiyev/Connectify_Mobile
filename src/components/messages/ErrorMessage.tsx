@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
+import { color } from "@/colors";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 16,
-    shadowColor: "#000",
+    shadowColor: color.black,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     flex: 1,
-    color: "white",
+    color: color.white,
     fontSize: 16,
     fontWeight: "600",
     lineHeight: 22,

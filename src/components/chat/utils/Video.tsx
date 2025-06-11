@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000",
+    backgroundColor: color.black,
   },
   videoPreview: {
     width: 200,
