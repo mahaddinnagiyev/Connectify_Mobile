@@ -1,5 +1,5 @@
 export const color = {
-  primaryColor: "#00ff00",
+  primaryColor: "#2ecc71",
   solidColor: "#00ff0059",
   darkColor: "#00cc00",
   secondaryColor: "#f5f5f5",
@@ -19,7 +19,7 @@ export const color = {
   inputTextColor: "#333",
 
   // <----- ----->
-  primary: "#2ecc71",
+  primary: "#00ff00",
   primaryDark: "#27ae60",
   secondary: "#f1c40f",
   danger: "#e74c3c",

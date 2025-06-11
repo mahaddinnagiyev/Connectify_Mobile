@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#00ff0030",
+    backgroundColor: `${color.primaryColor}30`,
     justifyContent: "center",
     alignItems: "center",
   },
