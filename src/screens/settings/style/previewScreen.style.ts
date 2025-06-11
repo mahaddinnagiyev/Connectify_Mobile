@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#eee",
     borderBottomLeftRadius: 0,
   },
-  sentText: { color: "#fff", fontSize: 14 },
+  sentText: { color: color.white, fontSize: 14 },
   receivedText: { color: "#000", fontSize: 14 },
   dateSeparator: {
     alignSelf: "center",
@@ -107,5 +107,5 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: color.primaryColor,
   },
-  setText: { fontSize: 16, color: "#fff", fontWeight: "bold" },
+  setText: { fontSize: 16, color: color.white, fontWeight: "bold" },
 });

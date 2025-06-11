@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderBottomWidth: 1,
     borderColor: "#ececec",
     elevation: 3,
@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
   listContent: { padding: ITEM_SPACING },
   groupContainer: { marginBottom: ITEM_SPACING * 2 },
   groupHeader: { padding: 8, borderRadius: 8, marginBottom: 12 },
-  groupHeaderText: { fontSize: 16, fontWeight: "600", color: "#fff" },
+  groupHeaderText: { fontSize: 16, fontWeight: "600", color: color.white },
   imageWrapper: {
     width: ITEM_SIZE,
     height: ITEM_SIZE,
@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  captionText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+  captionText: { color: color.white, fontSize: 12, fontWeight: "600" },
   activeBadge: {
     position: "absolute",
     top: 8,
@@ -66,5 +66,5 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
-  activeText: { color: "#fff", fontSize: 10, marginLeft: 4 },
+  activeText: { color: color.white, fontSize: 10, marginLeft: 4 },
 });

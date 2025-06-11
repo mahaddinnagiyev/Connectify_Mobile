@@ -61,7 +61,7 @@ const PrivacyLegendModal: React.FC<PrivacyLegendModalProps> = ({
                 <View
                   style={[styles.iconContainer, { backgroundColor: "#FF6B6B" }]}
                 >
-                  <MaterialIcons name="lock-person" size={24} color="#fff" />
+                  <MaterialIcons name="lock-person" size={24} color={color.white} />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.label}>Private</Text>
@@ -75,7 +75,7 @@ const PrivacyLegendModal: React.FC<PrivacyLegendModalProps> = ({
                 <View
                   style={[styles.iconContainer, { backgroundColor: "#4ECDC4" }]}
                 >
-                  <MaterialIcons name="people-alt" size={24} color="#fff" />
+                  <MaterialIcons name="people-alt" size={24} color={color.white} />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.label}>Friends Only</Text>
@@ -91,7 +91,7 @@ const PrivacyLegendModal: React.FC<PrivacyLegendModalProps> = ({
                 <View
                   style={[styles.iconContainer, { backgroundColor: "#45B7D1" }]}
                 >
-                  <MaterialIcons name="public" size={24} color="#fff" />
+                  <MaterialIcons name="public" size={24} color={color.white} />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.label}>Public</Text>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: "90%",
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 20,
     overflow: "hidden",
     elevation: 10,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headerText: {
-    color: "#fff",
+    color: color.white,
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   okText: {
-    color: "#fff",
+    color: color.white,
     fontWeight: "700",
     letterSpacing: 0.5,
     fontSize: 15,

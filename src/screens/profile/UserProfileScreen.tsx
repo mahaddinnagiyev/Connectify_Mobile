@@ -85,7 +85,7 @@ const UserProfileScreen = () => {
 export default UserProfileScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", alignItems: "stretch" },
+  container: { flex: 1, backgroundColor: color.white, alignItems: "stretch" },
   scrollContainer: { flexGrow: 1 },
   header: {
     flexDirection: "row",
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderBottomWidth: 1,
     borderColor: "#ececec",
     elevation: 3,

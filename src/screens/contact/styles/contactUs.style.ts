@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderBottomWidth: 1,
     borderColor: "#ececec",
     elevation: 3,
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
   form: {
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -92,12 +92,12 @@ export const styles = StyleSheet.create({
     marginTop: 8,
   },
   sendButtonText: {
-    color: "#fff",
+    color: color.white,
     fontWeight: "600",
     fontSize: 16,
   },
   socialSection: {
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 12,
     padding: 16,
     elevation: 2,

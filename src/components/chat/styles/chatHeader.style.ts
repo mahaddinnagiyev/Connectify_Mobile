@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
   btnText: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#fff",
+    color: color.white,
   },
   acceptButton: {
     backgroundColor: "rgba(46, 213, 115, 0.9)",

@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.primaryColor,
   },
   activeButtonText: {
-    color: "#fff",
+    color: color.white,
   },
   buttonText: {
     fontSize: 14,

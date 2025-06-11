@@ -102,7 +102,7 @@ const BackgroundThemeScreen: React.FC = () => {
               >
                 {isActive && (
                   <View style={styles.activeBadge}>
-                    <MaterialIcons name="check-circle" size={20} color="#fff" />
+                    <MaterialIcons name="check-circle" size={20} color={color.white} />
                     <Text style={styles.activeText}>Active</Text>
                   </View>
                 )}

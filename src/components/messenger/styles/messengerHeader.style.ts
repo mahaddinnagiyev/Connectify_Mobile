@@ -74,6 +74,6 @@ export const styles = StyleSheet.create({
     color: color.iconDark,
   },
   filterBtnTextActive: {
-    color: "#fff",
+    color: color.white,
   },
 });

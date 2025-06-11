@@ -21,6 +21,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 // Redux
 import { RootState } from "@redux/store";
 import { useSelector } from "react-redux";
+import { color } from "@/colors";
 
 interface Props {
   message: MessagesDTO;
@@ -112,7 +113,7 @@ const Audio: React.FC<Props> = ({ message, bubbleStyle }) => {
         <MaterialIcons
           name={playing ? "pause" : "play-arrow"}
           size={24}
-          color={isSent ? "#fff" : "#000"}
+          color={isSent ? color.white : "#000"}
         />
       </TouchableOpacity>
 

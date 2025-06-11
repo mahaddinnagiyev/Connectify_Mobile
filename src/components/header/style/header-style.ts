@@ -13,7 +13,7 @@ export const style = StyleSheet.create({
     zIndex: 50,
     borderTopColor: "#ccc",
     borderTopWidth: 1,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -44,7 +44,7 @@ export const style = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     padding: 20,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,

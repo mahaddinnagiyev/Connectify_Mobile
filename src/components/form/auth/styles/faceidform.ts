@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   loginButtonText: {
-    color: "#fff",
+    color: color.white,
     fontSize: 16,
     fontWeight: "600",
   },

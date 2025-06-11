@@ -5,7 +5,7 @@ const { width: screenWidth } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     width: screenWidth * 0.95,
   },
   loadingOverlay: {
@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
     marginTop: 16,
   },
   signupButtonText: {
-    color: "#fff",
+    color: color.white,
     fontSize: 16,
     fontWeight: "600",
   },

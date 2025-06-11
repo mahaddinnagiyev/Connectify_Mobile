@@ -173,7 +173,7 @@ const ContactUsScreen = () => {
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
               >
-                <ActivityIndicator size="small" color="#fff" />
+                <ActivityIndicator size="small" color={color.white} />
                 <Text style={styles.sendButtonText}>Sending...</Text>
               </View>
             ) : (

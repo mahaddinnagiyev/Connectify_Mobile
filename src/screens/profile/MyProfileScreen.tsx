@@ -124,7 +124,7 @@ export default function MyProfileScreen() {
             contentContainerStyle={styles.scrollContainer}
             refreshControl={refreshControl}
           >
-            <FriendRequests />
+            <FriendRequests isMyProfileScreen={true} />
           </ScrollView>
         );
       case "blocked":
@@ -166,7 +166,7 @@ export default function MyProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", justifyContent: "center" },
+  container: { flex: 1, backgroundColor: color.white, justifyContent: "center" },
   tabView: { flex: 1 },
   scrollContainer: { paddingBottom: 100, flexGrow: 1 },
 });

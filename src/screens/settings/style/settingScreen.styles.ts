@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderBottomWidth: 1,
     borderColor: "#ececec",
     elevation: 3,

@@ -152,7 +152,7 @@ const ConfirmAccountScreen = () => {
               {
                 borderColor:
                   focusedIndex === index ? color.primaryColor : "#ddd",
-                backgroundColor: focusedIndex === index ? "#f5fff5" : "#fff",
+                backgroundColor: focusedIndex === index ? "#f5fff5" : color.white,
               },
             ]}
             keyboardType="number-pad"
@@ -180,7 +180,7 @@ const ConfirmAccountScreen = () => {
         disabled={!code.every((c) => c) || loading}
       >
         {loading ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={color.white} />
         ) : (
           <Text style={styles.buttonText}>Verify Account</Text>
         )}
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     width: screenWidth,
   },
   title: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     width: 160,
   },
   buttonText: {
-    color: "#fff",
+    color: color.white,
     fontSize: 18,
     fontWeight: "600",
   },

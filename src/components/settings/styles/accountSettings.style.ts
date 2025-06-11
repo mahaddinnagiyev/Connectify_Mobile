@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   section: {
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.primaryColor,
   },
   activeButtonText: {
-    color: "#fff",
+    color: color.white,
   },
   buttonText: {
     fontSize: 14,

@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
   box: {
     width: width * 0.9,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 20,
     padding: 24,
     alignItems: "center",
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 5,
   },
-  flipText: { color: "#fff", fontWeight: "600" },
+  flipText: { color: color.white, fontWeight: "600" },
   actions: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   cancel: { backgroundColor: "#F5F5F5" },
   login: { backgroundColor: color.primaryColor },
   cancelText: { color: "#333", fontWeight: "600" },
-  loginText: { color: "#fff", fontWeight: "600" },
+  loginText: { color: color.white, fontWeight: "600" },
   errorText: { marginTop: 12, color: "red" },
   // Permission modal styles
   permissionOverlay: {
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
   },
   permissionBox: {
     width: width * 0.8,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 12,
     padding: 20,
     alignItems: "center",

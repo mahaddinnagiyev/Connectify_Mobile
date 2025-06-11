@@ -5,6 +5,7 @@ import PrivacySelector from "./PrivacySelector";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { styles } from "./styles/privacySettings.style";
+import { color } from "@/colors";
 
 type Props = {
   privacySettings: Record<string, PrivacySettingsChoice>;
@@ -30,8 +31,8 @@ const PrivacySettings = ({
 
         {isPrivacySettingsChanged && (
           <Pressable style={styles.saveButton} onPress={onSave}>
-            {isSaving && <ActivityIndicator size="small" color="#fff" />}
-            <Text style={{ color: "#fff" }}>Save Changes</Text>
+            {isSaving && <ActivityIndicator size="small" color={color.white} />}
+            <Text style={{ color: color.white }}>Save Changes</Text>
           </Pressable>
         )}
       </View>
