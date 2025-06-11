@@ -29,6 +29,7 @@ import { useSocketContext } from "@context/SocketContext";
 
 // Services
 import { ChatRoomsDTO } from "@services/messenger/messenger.dto";
+import { color } from "@/colors";
 
 interface Props {
   isMyProfileScreen?: boolean;
@@ -102,7 +103,7 @@ const MyFriends: React.FC<Props> = ({ isMyProfileScreen = true }) => {
         <TextInput
           style={styles.searchInput}
           placeholder="Search friends..."
-          placeholderTextColor="#888"
+          placeholderTextColor={color.emptyText}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />

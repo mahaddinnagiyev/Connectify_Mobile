@@ -153,7 +153,7 @@ const MessengerHeader: React.FC = () => {
             ref={inputRef}
             style={styles.searchInput}
             placeholder="Search chats"
-            placeholderTextColor="#888"
+            placeholderTextColor={color.emptyText}
             value={searchQuery}
             onChangeText={setSearchQuery}
             returnKeyType="search"

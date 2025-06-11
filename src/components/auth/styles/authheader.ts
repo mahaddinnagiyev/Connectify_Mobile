@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#ececec",
   },
   dividerText: {
-    color: "#888",
+    color: color.emptyText,
     fontSize: 14,
   },
 });

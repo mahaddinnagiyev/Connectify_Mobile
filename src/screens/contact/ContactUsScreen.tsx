@@ -111,7 +111,7 @@ const ContactUsScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter your first"
-                placeholderTextColor="#888"
+                placeholderTextColor={color.emptyText}
                 value={formData.first_name}
                 onChangeText={(text) => handleChange("first_name", text)}
                 editable={!isSending}
@@ -122,7 +122,7 @@ const ContactUsScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter your last"
-                placeholderTextColor="#888"
+                placeholderTextColor={color.emptyText}
                 value={formData.last_name}
                 onChangeText={(text) => handleChange("last_name", text)}
                 editable={!isSending}
@@ -136,7 +136,7 @@ const ContactUsScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your email"
-              placeholderTextColor="#888"
+              placeholderTextColor={color.emptyText}
               keyboardType="email-address"
               autoCapitalize="none"
               value={formData.email}
@@ -151,7 +151,7 @@ const ContactUsScreen = () => {
             <TextInput
               style={[styles.input, { height: 120, textAlignVertical: "top" }]}
               placeholder="Write your message here"
-              placeholderTextColor="#888"
+              placeholderTextColor={color.emptyText}
               multiline
               numberOfLines={4}
               value={formData.message}

@@ -162,13 +162,13 @@ const MyFriendsScreen = () => {
         <Ionicons
           name="search"
           size={20}
-          color="#888"
+          color={color.emptyText}
           style={styles.searchIcon}
         />
         <TextInput
           style={styles.searchInput}
           placeholder="Search"
-          placeholderTextColor="#888"
+          placeholderTextColor={color.emptyText}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />

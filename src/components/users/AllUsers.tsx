@@ -57,7 +57,7 @@ const AllUsers: React.FC = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Search users..."
-          placeholderTextColor="#888"
+          placeholderTextColor={color.emptyText}
           value={searchQuery}
           onChangeText={handleSearch}
         />
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    color: "#636E72",
+    color: color.usernameText,
     marginTop: 2,
   },
   statusIndicator: {

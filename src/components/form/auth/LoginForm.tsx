@@ -100,7 +100,7 @@ const LoginForm = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter your username or email"
-            placeholderTextColor="#888"
+            placeholderTextColor={color.emptyText}
             onChange={(e) =>
               dispatch(
                 setLoginForm({
@@ -119,7 +119,7 @@ const LoginForm = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter your password"
-            placeholderTextColor="#888"
+            placeholderTextColor={color.emptyText}
             secureTextEntry={!isVisible}
             onChange={(e) =>
               dispatch(

@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
     borderColor: "#ececec",
   },
   placeholder: {
-    color: "#888",
+    color: color.emptyText,
   },
   sendButton: {
     backgroundColor: color.primaryColor,

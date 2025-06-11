@@ -24,7 +24,7 @@ import { RootState } from "@redux/store";
 
 // Services
 import { Chat, MessagesDTO } from "@services/messenger/messenger.dto";
-import { addNewMessageToStorage } from "@functions/storage.function"
+import { addNewMessageToStorage } from "@functions/storage.function";
 
 // Context
 import { useSocketContext } from "@context/SocketContext";
@@ -57,7 +57,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
       ? color.primaryColor
       : roomName.length < 30
       ? "orange"
-      : "#ff4444";
+      : color.avatarBorder;
 
   useEffect(() => {
     Animated.timing(scaleValue, {
@@ -157,7 +157,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                 <MaterialIcons
                   name="warning"
                   size={14}
-                  color={roomName.length < 30 ? "orange" : "#ff4444"}
+                  color={roomName.length < 30 ? "orange" : color.avatarBorder}
                 />
               )}
               <Text
@@ -169,7 +169,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                         ? "#666"
                         : roomName.length < 30
                         ? "orange"
-                        : "#ff4444",
+                        : color.avatarBorder,
                   },
                 ]}
               >
@@ -187,7 +187,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
             >
               {loading === "remove" ? (
                 <>
-                  <ActivityIndicator size="small" color="#ff4444" />
+                  <ActivityIndicator size="small" color={color.avatarBorder} />
                   <Text style={styles.removeButtonText}>Removing...</Text>
                 </>
               ) : (
@@ -195,7 +195,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                   <MaterialIcons
                     name="delete-outline"
                     size={18}
-                    color="#ff4444"
+                    color={color.avatarBorder}
                   />
                   <Text style={styles.removeButtonText}>Remove room name</Text>
                 </>

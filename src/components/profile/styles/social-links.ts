@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   },
   nameText: {
     fontSize: 14,
-    color: "#636E72",
+    color: color.usernameText,
     marginBottom: 4,
   },
   urlText: {

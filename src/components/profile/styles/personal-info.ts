@@ -127,7 +127,7 @@ export const styles = StyleSheet.create({
   },
 
   infoLabel: {
-    color: "#636E72",
+    color: color.usernameText,
     fontSize: 13,
     fontWeight: "500",
     marginBottom: 4,
@@ -203,7 +203,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.primaryColor,
   },
   decline: {
-    backgroundColor: "#ff4444",
+    backgroundColor: color.avatarBorder,
   },
   buttonText: {
     color: "white",

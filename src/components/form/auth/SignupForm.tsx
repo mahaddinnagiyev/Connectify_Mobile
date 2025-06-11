@@ -123,7 +123,7 @@ const SignupForm = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your first"
-              placeholderTextColor="#888"
+              placeholderTextColor={color.emptyText}
               value={signupForm.first_name}
               onChange={(e) =>
                 handleFormChange("first_name", e.nativeEvent.text)
@@ -135,7 +135,7 @@ const SignupForm = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your last"
-              placeholderTextColor="#888"
+              placeholderTextColor={color.emptyText}
               value={signupForm.last_name}
               onChange={(e) =>
                 handleFormChange("last_name", e.nativeEvent.text)
@@ -150,7 +150,7 @@ const SignupForm = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter username"
-              placeholderTextColor="#888"
+              placeholderTextColor={color.emptyText}
               value={signupForm.username}
               onChange={(e) => handleFormChange("username", e.nativeEvent.text)}
             />
@@ -160,7 +160,7 @@ const SignupForm = () => {
             <TextInput
               style={styles.input}
               placeholder="Enter your email"
-              placeholderTextColor="#888"
+              placeholderTextColor={color.emptyText}
               keyboardType="email-address"
               value={signupForm.email}
               onChange={(e) => handleFormChange("email", e.nativeEvent.text)}
@@ -201,7 +201,7 @@ const SignupForm = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter password"
-            placeholderTextColor="#888"
+            placeholderTextColor={color.emptyText}
             secureTextEntry={!isVisible}
             value={signupForm.password}
             onChange={(e) => handleFormChange("password", e.nativeEvent.text)}
@@ -236,7 +236,7 @@ const SignupForm = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter password again"
-            placeholderTextColor="#888"
+            placeholderTextColor={color.emptyText}
             secureTextEntry={!isPasswordVisible}
             value={signupForm.confirm}
             onChange={(e) => handleFormChange("confirm", e.nativeEvent.text)}

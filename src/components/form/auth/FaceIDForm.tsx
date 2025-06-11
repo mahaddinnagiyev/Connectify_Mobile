@@ -8,6 +8,7 @@ import {
   setFaceIdLoginForm,
 } from "@redux/auth/authSlice";
 import FaceIDModal from "../../modals/auth/FaceIDModal";
+import { color } from "@/colors";
 
 const FaceIDForm = () => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const FaceIDForm = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter your username or email"
-            placeholderTextColor="#888"
+            placeholderTextColor={color.emptyText}
             value={faceIdLoginForm.username_or_email_face_id}
             onChange={(e) => {
               dispatch(

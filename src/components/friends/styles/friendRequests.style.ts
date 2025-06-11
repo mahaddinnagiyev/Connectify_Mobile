@@ -68,12 +68,12 @@ export const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    color: "#636E72",
+    color: color.usernameText,
     marginTop: 2,
   },
   timestamp: {
     fontSize: 12,
-    color: "#888",
+    color: color.emptyText,
     marginTop: 4,
   },
   actions: {
@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#9E9E9E",
   },
   sentText: {
-    color: "#888",
+    color: color.emptyText,
     fontWeight: "500",
     marginRight: 8,
   },
@@ -106,7 +106,7 @@ export const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center",
-    color: "#888",
+    color: color.emptyText,
     marginTop: 20,
   },
 });

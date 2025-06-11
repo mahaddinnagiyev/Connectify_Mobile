@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
-    color: "#636E72",
+    color: color.usernameText,
     fontSize: 13,
     fontWeight: "500",
     marginBottom: 4,

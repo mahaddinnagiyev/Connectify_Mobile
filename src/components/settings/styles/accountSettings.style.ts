@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     color: color.primaryColor,
   },
   dangerText: {
-    color: "#ff4444",
+    color: color.avatarBorder,
   },
   dangerButton: {
     backgroundColor: "#ff444415",

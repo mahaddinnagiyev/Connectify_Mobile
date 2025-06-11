@@ -156,7 +156,7 @@ const AccountSettings = ({
             ]}
             onPress={() => setShowRemoveAccount(true)}
           >
-            <Ionicons name="trash" size={16} color="#ff4444" />
+            <Ionicons name="trash" size={16} color={color.avatarBorder} />
             <Text style={[styles.buttonText, styles.dangerText]}>Remove</Text>
           </Pressable>
         </View>

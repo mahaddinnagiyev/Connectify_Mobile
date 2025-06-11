@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: "#636E72",
+    color: color.usernameText,
     opacity: 0.8,
   },
   separator: {
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   footerDescriptionText: {
     fontSize: 15,
-    color: "#636E72",
+    color: color.usernameText,
     textAlign: "center",
   },
   footer: {

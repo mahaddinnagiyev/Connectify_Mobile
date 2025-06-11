@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bio: {
-    color: "#888",
+    color: color.emptyText,
     fontSize: 14,
     textAlign: "center",
     lineHeight: 20,

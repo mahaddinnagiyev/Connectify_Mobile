@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     backgroundColor: color.primaryColor,
   },
   decline: {
-    backgroundColor: "#ff4444",
+    backgroundColor: color.avatarBorder,
   },
   buttonText: {
     color: "white",

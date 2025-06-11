@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     marginTop: 20,
-    color: "#888",
+    color: color.emptyText,
     fontStyle: "italic",
     fontSize: 12,
   },

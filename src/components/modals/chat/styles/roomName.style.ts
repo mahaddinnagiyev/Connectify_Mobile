@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff0f0",
   },
   removeButtonText: {
-    color: "#ff4444",
+    color: color.avatarBorder,
     fontWeight: "600",
     marginLeft: 8,
     fontSize: 14,

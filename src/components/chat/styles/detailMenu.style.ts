@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
   },
   fileSize: {
     fontSize: 13,
-    color: "#888",
+    color: color.emptyText,
     marginTop: 4,
     fontWeight: "500",
   },
