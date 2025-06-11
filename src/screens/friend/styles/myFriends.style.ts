@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: color.secondaryColor,
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 16,
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
 
   sectionHeader: {
     fontWeight: "bold",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: color.secondaryColor,
     width: "100%",
     textAlign: "center",
     paddingVertical: 8,

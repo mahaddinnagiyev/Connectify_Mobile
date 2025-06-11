@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
   infoItem: {
     flex: 1,
     padding: 12,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: color.replyBackground,
     borderRadius: 8,
   },
 
@@ -121,7 +121,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 12,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: color.replyBackground,
     borderRadius: 8,
     gap: 12,
   },

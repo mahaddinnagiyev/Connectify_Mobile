@@ -220,7 +220,7 @@ const RoomNameModal: React.FC<RoomNameModalProps> = ({
                 {
                   backgroundColor:
                     !roomName.trim() || roomName === selectedChat.name
-                      ? "#ddd"
+                      ? color.inputBorderColor
                       : color.primaryColor,
                   opacity:
                     !roomName.trim() || roomName === selectedChat.name

@@ -151,7 +151,7 @@ const ConfirmAccountScreen = () => {
               styles.codeInput,
               {
                 borderColor:
-                  focusedIndex === index ? color.primaryColor : "#ddd",
+                  focusedIndex === index ? color.primaryColor : color.inputBorderColor,
                 backgroundColor: focusedIndex === index ? "#f5fff5" : color.white,
               },
             ]}

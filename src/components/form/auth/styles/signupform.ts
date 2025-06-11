@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#ececec",
-    backgroundColor: "#f8f9fa",
+    backgroundColor: color.replyBackground,
   },
   selectedGender: {
     borderColor: color.primaryColor,

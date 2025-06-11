@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#F8F9FA",
+    backgroundColor: color.replyBackground,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 10,
@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   optionPressed: {
-    backgroundColor: "#F8F9FA",
+    backgroundColor: color.replyBackground,
   },
   radioButton: {
     width: 20,

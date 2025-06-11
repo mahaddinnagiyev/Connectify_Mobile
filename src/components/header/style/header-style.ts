@@ -78,7 +78,7 @@ export const style = StyleSheet.create({
   handleBar: {
     width: 48,
     height: 5,
-    backgroundColor: "#ddd",
+    backgroundColor: color.inputBorderColor,
     borderRadius: 4,
   },
   pressedItem: {

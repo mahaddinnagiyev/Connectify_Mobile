@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     color: color.inputTextColor,
   },
   cancelButton: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: color.secondaryColor,
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",

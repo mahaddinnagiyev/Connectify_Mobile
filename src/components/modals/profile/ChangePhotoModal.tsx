@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   optionPressed: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: color.replyBackground,
     borderRadius: 20,
   },
 });

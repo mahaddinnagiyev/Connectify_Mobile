@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 4,
   },
-  cancel: { backgroundColor: "#F5F5F5" },
+  cancel: { backgroundColor: color.secondaryColor },
   login: { backgroundColor: color.primaryColor },
   cancelText: { color: color.inputTextColor, fontWeight: "600" },
   loginText: { color: color.white, fontWeight: "600" },

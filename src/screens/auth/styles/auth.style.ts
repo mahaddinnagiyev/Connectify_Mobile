@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 25,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: color.replyBackground,
     borderRadius: 30,
     paddingVertical: 12,
     paddingHorizontal: 20,

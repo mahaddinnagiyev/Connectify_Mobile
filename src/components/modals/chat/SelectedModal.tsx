@@ -107,7 +107,7 @@ const SelectedModal = ({
             style={({ pressed }) => [
               styles.button,
               styles.uploadButton,
-              pressed && { backgroundColor: "#00cc00" },
+              pressed && { backgroundColor: color.darkColor },
             ]}
           >
             <MaterialIcons name="cloud-upload" size={24} color={color.white} />
