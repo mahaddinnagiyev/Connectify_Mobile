@@ -54,7 +54,7 @@ const SendMediaModal: React.FC<Props> = ({
               }}
             >
               <View
-                style={[styles.iconContainer, { backgroundColor: "#495057"2 }]}
+                style={[styles.iconContainer, { backgroundColor: color.grayText1 }]}
               >
                 <MaterialIcons name="photo-camera" size={32} color={color.primaryColor} />
               </View>

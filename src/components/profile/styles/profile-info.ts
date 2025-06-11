@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   },
   icon: {
     padding: 8,
-    backgroundColor: "#495057"2,
+    backgroundColor: color.grayText1,
     borderRadius: 8,
   },
   textContainer: {

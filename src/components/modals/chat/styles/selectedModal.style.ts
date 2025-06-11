@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   },
   filePreview: {
     padding: 20,
-    backgroundColor: color."#f0fff0",
+    backgroundColor: "#f0fff0",
     borderRadius: 50,
   },
   infoContainer: {

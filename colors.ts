@@ -46,8 +46,9 @@ export const color = {
   grayDark3: "#444",
   grayLight1: "#eee",
   grayLight2: "#ccc",
+  grayText1: "#495057",
   divider: "#e0e0e0",
-  grayText: "#212529",
+  grayText2: "#212529",
   backgroundAlt: "#f8f8f8",
   lightBlue: "#2196f3",
 };

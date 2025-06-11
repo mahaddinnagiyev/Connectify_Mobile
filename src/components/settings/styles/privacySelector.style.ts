@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#495057"2,
+    color: color.grayText1,
     marginBottom: 16,
     textAlign: "center",
   },
@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 16,
-    color: "#495057",
+    color: color.grayText1,
     fontWeight: "500",
   },
 });
