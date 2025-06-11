@@ -186,7 +186,7 @@ const DetailRow = ({
       case "pending":
         return "#FF9800";
       default:
-        return "#333";
+        return color.inputTextColor;
     }
   };
 

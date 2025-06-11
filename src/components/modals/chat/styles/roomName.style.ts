@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     marginLeft: 12,
-    color: "#333",
+    color: color.inputTextColor,
   },
   inputContainer: {
     marginBottom: 20,
@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     backgroundColor: "#f8f8f8",
-    color: "#333",
+    color: color.inputTextColor,
   },
   charCounterContainer: {
     flexDirection: "row",

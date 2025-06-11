@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 10,
   },
-  title: { fontSize: 20, fontWeight: "700", marginBottom: 8, color: "#333" },
+  title: { fontSize: 20, fontWeight: "700", marginBottom: 8, color: color.inputTextColor },
   subtitle: {
     fontSize: 14,
     color: "#666",
@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
   },
   cancel: { backgroundColor: "#F5F5F5" },
   login: { backgroundColor: color.primaryColor },
-  cancelText: { color: "#333", fontWeight: "600" },
+  cancelText: { color: color.inputTextColor, fontWeight: "600" },
   loginText: { color: color.white, fontWeight: "600" },
   errorText: { marginTop: 12, color: "red" },
   // Permission modal styles

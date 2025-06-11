@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
   optionText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#333",
+    color: color.inputTextColor,
   },
   cancelButton: {
     backgroundColor: "#f5f5f5",

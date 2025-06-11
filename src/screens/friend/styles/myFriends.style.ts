@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
-    color: "#333",
+    color: color.inputTextColor,
   },
 
   sectionHeader: {
@@ -98,7 +98,7 @@ export const styles = StyleSheet.create({
   noFriendsText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: color.inputTextColor,
     textAlign: "center",
     marginTop: 10,
   },

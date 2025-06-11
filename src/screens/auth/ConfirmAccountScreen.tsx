@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#333",
+    color: color.inputTextColor,
     marginBottom: 10,
     textAlign: "center",
   },

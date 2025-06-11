@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 16,
-    color: "#333",
+    color: color.inputTextColor,
     fontWeight: "600",
   },
   fileSize: {

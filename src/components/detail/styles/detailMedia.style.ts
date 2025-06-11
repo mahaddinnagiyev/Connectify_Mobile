@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   fileName: {
     marginLeft: 10,
     fontSize: 16,
-    color: "#333",
+    color: color.inputTextColor,
   },
   noMediaText: {
     textAlign: "center",

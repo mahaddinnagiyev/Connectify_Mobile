@@ -113,7 +113,7 @@ const ContextMenu: React.FC<Props> = ({
 
     const messagePreviewTextStyle = [
       styles.messagePreviewText,
-      message.sender_id === userId ? { color: color.white } : { color: "#333" },
+      message.sender_id === userId ? { color: color.white } : { color: color.inputTextColor },
     ];
 
     switch (message.message_type) {

@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   actionText: {
     fontSize: 16,
     marginLeft: 15,
-    color: "#333",
+    color: color.inputTextColor,
   },
   friendRequestBox: {
     margin: 15,

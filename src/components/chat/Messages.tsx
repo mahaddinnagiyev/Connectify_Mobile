@@ -459,7 +459,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
                     color={
                       item.status === MessageStatus.READ
                         ? color.primaryColor
-                        : "#333"
+                        : color.inputTextColor
                     }
                     style={{ marginTop: 2 }}
                   />

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 16,
-    color: "#333",
+    color: color.inputTextColor,
   },
   friendItem: {
     flexDirection: "row",

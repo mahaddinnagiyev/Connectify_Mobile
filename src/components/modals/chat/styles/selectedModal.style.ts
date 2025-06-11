@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   fileName: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333",
+    color: color.inputTextColor,
     marginBottom: 8,
   },
   metaContainer: {

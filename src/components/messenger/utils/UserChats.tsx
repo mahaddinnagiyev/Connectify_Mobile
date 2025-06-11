@@ -369,7 +369,7 @@ const UserChats = () => {
                                 color={
                                   chat.lastMessage.status === MessageStatus.READ
                                     ? color.primaryColor
-                                    : "#333"
+                                    : color.inputTextColor
                                 }
                                 style={{ marginTop: 2 }}
                               />
