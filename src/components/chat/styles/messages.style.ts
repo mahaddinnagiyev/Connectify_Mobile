@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   receivedText: {
-    color: "black",
+    color: color.black,
     fontSize: 14,
   },
   url: {

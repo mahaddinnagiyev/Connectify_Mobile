@@ -532,7 +532,7 @@ const Messages: React.FC<Props> = ({ setReplyMessage }) => {
         <MaterialIcons
           name="keyboard-arrow-down"
           size={24}
-          color="black"
+          color={color.black}
           style={styles.backToBottom}
           onPress={() =>
             listRef.current?.scrollToOffset({ offset: 0, animated: true })

@@ -145,7 +145,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                             <MaterialIcons
                               name="lock-person"
                               size={20}
-                              color="black"
+                              color={color.black}
                               style={styles.lockIcon}
                               onPress={() => setShowPrivacyModal(true)}
                             />
@@ -156,7 +156,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                             <MaterialIcons
                               name="public"
                               size={20}
-                              color="black"
+                              color={color.black}
                               style={styles.lockIcon}
                               onPress={() => setShowPrivacyModal(true)}
                             />
@@ -167,7 +167,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                             <MaterialIcons
                               name="people-alt"
                               size={20}
-                              color="black"
+                              color={color.black}
                               style={styles.lockIcon}
                               onPress={() => setShowPrivacyModal(true)}
                             />

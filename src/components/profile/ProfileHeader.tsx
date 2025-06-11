@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { setActiveIndex } from "@redux/profile/myProfileSlice";
+import { color } from "@/colors";
 
 const menuItems = ["My Profile", "My Friends", "Friend Requests", "Block List"];
 
@@ -50,7 +51,7 @@ const ProfileHeader = () => {
       <MaterialIcons
         name="chevron-left"
         size={25}
-        color="black"
+        color={color.black}
         style={{ position: "absolute", left: 0 }}
         onPress={handleScrollLeft}
       />
@@ -88,7 +89,7 @@ const ProfileHeader = () => {
       <MaterialIcons
         name="chevron-right"
         size={25}
-        color="black"
+        color={color.black}
         style={{ position: "absolute", right: 5 }}
         onPress={handleScrollRight}
       />

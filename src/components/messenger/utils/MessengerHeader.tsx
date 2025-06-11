@@ -130,14 +130,14 @@ const MessengerHeader: React.FC = () => {
         {/* Normal Header */}
         <Animated.View style={[styles.headerContent, headerStyle]}>
           <TouchableOpacity onPress={toggleSearch} style={styles.iconBtn}>
-            <Ionicons name="search" size={24} color={"black"} />
+            <Ionicons name="search" size={24} color={color.black} />
           </TouchableOpacity>
           <Text style={styles.title}>Messenger</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("MyFriends")}
             style={styles.iconBtn}
           >
-            <MaterialIcons name="person-search" size={28} color={"black"} />
+            <MaterialIcons name="person-search" size={28} color={color.black} />
           </TouchableOpacity>
         </Animated.View>
 

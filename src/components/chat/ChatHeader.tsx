@@ -335,14 +335,14 @@ const ChatHeader: React.FC<Props> = ({
                 <MaterialIcons
                   name="close"
                   size={24}
-                  color="black"
+                  color={color.black}
                   style={styles.backIconStyle}
                 />
               ) : (
                 <MaterialIcons
                   name="arrow-back"
                   size={24}
-                  color="black"
+                  color={color.black}
                   style={styles.backIconStyle}
                 />
               )}

@@ -120,7 +120,7 @@ const SocialLinks: React.FC<SocialLinkProps> = ({
                     <MaterialIcons
                       name={socialPrivacyIconName}
                       size={20}
-                      color="black"
+                      color={color.black}
                       style={styles.lockIcon}
                       onPress={() => setShowPrivacyModal(true)}
                     />

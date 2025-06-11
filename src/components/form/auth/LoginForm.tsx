@@ -133,7 +133,7 @@ const LoginForm = () => {
             name={isVisible ? "visibility" : "visibility-off"}
             onPress={() => setIsVisible(!isVisible)}
             size={24}
-            color="black"
+            color={color.black}
             style={styles.eyeIcon}
           />
         </View>

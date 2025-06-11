@@ -148,7 +148,7 @@ const PreviewScreen: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={24} color="black" />
+          <MaterialIcons name="arrow-back" size={24} color={color.black} />
         </Pressable>
         <View style={styles.userDetail}>
           <Image

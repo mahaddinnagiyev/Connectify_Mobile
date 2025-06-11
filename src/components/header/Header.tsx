@@ -148,7 +148,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               <MaterialIcons
                 name="chat-bubble-outline"
                 size={30}
-                color="black"
+                color={color.black}
               />
             )}
             {totalUnread > 0 && (
@@ -165,7 +165,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               {
                 fontSize: 12,
                 bottom: 0,
-                color: activeTab === "Messenger" ? color.primaryColor : "black",
+                color: activeTab === "Messenger" ? color.primaryColor : color.black,
               },
             ]}
           >
@@ -181,14 +181,14 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
           <MaterialCommunityIcons
             name="account-group-outline"
             size={30}
-            color="black"
+            color={color.black}
           />
           <Text
             style={[
               style.menuText,
               {
                 fontSize: 12,
-                color: activeTab === "Groups" ? color.primaryColor : "black",
+                color: activeTab === "Groups" ? color.primaryColor : color.black,
               },
             ]}
           >
@@ -209,7 +209,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
                 color={color.primaryColor}
               />
             ) : (
-              <MaterialIcons name="people-outline" size={31} color="black" />
+              <MaterialIcons name="people-outline" size={31} color={color.black} />
             )}
             {receivedFriendshipRequests.length > 0 && (
               <View style={style.badge}>
@@ -225,7 +225,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               {
                 fontSize: 12,
                 bottom: 0,
-                color: activeTab === "Users" ? color.primaryColor : "black",
+                color: activeTab === "Users" ? color.primaryColor : color.black,
               },
             ]}
           >
@@ -264,7 +264,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
               {
                 fontSize: 12,
                 bottom: 0,
-                color: activeTab === "MyProfile" ? color.primaryColor : "black",
+                color: activeTab === "MyProfile" ? color.primaryColor : color.black,
               },
             ]}
           >

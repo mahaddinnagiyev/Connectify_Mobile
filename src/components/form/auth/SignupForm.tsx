@@ -215,14 +215,14 @@ const SignupForm = () => {
             <MaterialCommunityIcons
               name="form-textbox-password"
               size={24}
-              color="black"
+              color={color.black}
               onPress={generatePassword}
             />
             <MaterialIcons
               name={isVisible ? "visibility" : "visibility-off"}
               onPress={() => setIsVisible(!isVisible)}
               size={24}
-              color="black"
+              color={color.black}
             />
           </View>
           <Text style={styles.passwordHint}>
@@ -245,7 +245,7 @@ const SignupForm = () => {
             name={isPasswordVisible ? "visibility" : "visibility-off"}
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
             size={24}
-            color="black"
+            color={color.black}
             style={styles.eyeIcon}
           />
         </View>
