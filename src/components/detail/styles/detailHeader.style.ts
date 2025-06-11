@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: color.borderLight,
     borderBottomWidth: 1,
   },
   backButton: {

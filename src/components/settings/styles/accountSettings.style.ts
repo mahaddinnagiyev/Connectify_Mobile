@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
     marginBottom: 12,
   },
   settingItem: {
@@ -26,11 +26,11 @@ export const styles = StyleSheet.create({
     minHeight: 56,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
   },
   settingText: {
     fontSize: 16,
-    color: "#2D3436",
+    color: color.headerTextColor,
     flex: 1,
     marginRight: 10,
   },

@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
   headerActions: {
     flexDirection: "row",
@@ -43,13 +43,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
     paddingBottom: 10,
   },
   platformText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
   actions: {
     flexDirection: "row",

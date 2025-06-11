@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: "row",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: color.borderLight,
     borderRadius: 10,
     padding: 5,
     position: "relative",
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   tabText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
   activeTabText: {
     color: color.primaryColor,

@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
   receivedText: { color: "#000", fontSize: 14 },
   dateSeparator: {
     alignSelf: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: color.borderLight,
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 12,

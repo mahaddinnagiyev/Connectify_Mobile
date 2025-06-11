@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   modalDivider: {
     height: 1,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: color.borderLight,
     marginHorizontal: 16,
   },
   optionPressed: {

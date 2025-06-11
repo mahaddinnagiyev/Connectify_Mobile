@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: color.borderLight,
   },
   label: {
     fontSize: 16,
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   contentContainer: {
     paddingBottom: 16,
     borderBottomWidth: 2,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: color.borderLight,
     marginBottom: 8,
   },
   contentText: {

@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
     marginBottom: 12,
   },
   privacyItem: {
@@ -30,13 +30,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
   },
   privacyQuestion: {
     flex: 1,
     fontSize: 15,
     lineHeight: 22,
-    color: "#2D3436",
+    color: color.headerTextColor,
     marginRight: 10,
   },
   saveButton: {

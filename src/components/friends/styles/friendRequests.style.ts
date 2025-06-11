@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 20,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
   },
   tabItem: {
     flex: 1,
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
   },
   userInfo: {
     flexDirection: "row",
@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
   username: {
     fontSize: 14,

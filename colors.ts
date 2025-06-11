@@ -6,19 +6,19 @@ export const color = {
   tertiaryColor: "#555755",
   boldColor: "#1D976C",
 
-  // <----- ----->
+  // Chat UI
   senderBgColor: "#00ff00",
   receiverBgColor: "#f5f5f5",
   chatRoomBgColor: "#00ff00",
   textColor: "#000000",
   borderColor: "#c1c1c1",
 
-  // <----- ----->
+  // Inputs
   inputBgColor: "#f7f7f7",
   inputBorderColor: "#ddd",
   inputTextColor: "#333",
 
-  // <----- ----->
+  // Theme
   primary: "#00ff00",
   primaryDark: "#27ae60",
   secondary: "#f1c40f",
@@ -34,4 +34,10 @@ export const color = {
   replyBackground: "#f8f9fa",
   recordingBg: "#ffe6e6",
   iconDark: "#34495e",
+
+  headerTextColor: "#2D3436",
+  borderLight: "#f0f0f0",
+  avatarBorder: "#ff4444",
+  usernameText: "#636E72",
+  emptyText: "#888",
 };

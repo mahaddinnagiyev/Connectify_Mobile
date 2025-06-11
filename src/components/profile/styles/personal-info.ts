@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
 
   profile_picture: {
@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
   presonalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
 
   infoGrid: {
@@ -136,7 +136,7 @@ export const styles = StyleSheet.create({
   infoValue: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
 
   infoLine: {

@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
   titleText: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
   infoGrid: {
     gap: 15,
@@ -60,12 +60,12 @@ export const styles = StyleSheet.create({
   value: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
     lineHeight: 22,
   },
   divider: {
     height: 1,
-    backgroundColor: "#F0F0F0",
+    backgroundColor: color.borderLight,
     marginTop: 12,
   },
   infoTextWithLock: {

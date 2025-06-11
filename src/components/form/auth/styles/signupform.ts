@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#2D3436",
+    color: color.headerTextColor,
     marginBottom: 8,
     fontWeight: "500",
   },

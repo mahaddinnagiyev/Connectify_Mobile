@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
   },
   defaultContainer: {
     alignSelf: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: color.borderLight,
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 15,
@@ -85,7 +85,7 @@ export const styles = StyleSheet.create({
   },
   dateSeparator: {
     alignSelf: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: color.borderLight,
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 15,

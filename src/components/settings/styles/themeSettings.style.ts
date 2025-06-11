@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
     marginBottom: 12,
   },
   themeButton: {

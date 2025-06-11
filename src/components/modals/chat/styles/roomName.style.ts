@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 25,
     borderBottomWidth: 2,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: color.borderLight,
     paddingBottom: 15,
   },
   title: {

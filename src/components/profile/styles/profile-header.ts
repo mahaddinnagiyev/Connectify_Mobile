@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     height: 60,
     marginTop: 50,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
   },
 
   scrollView: {

@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
     marginBottom: 20,
     margin: "auto",
   },
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: color.borderLight,
   },
   userInfo: {
     flexDirection: "row",
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 15,
     borderWidth: 2,
-    borderColor: "#ff4444",
+    borderColor: color.avatarBorder,
   },
   textContainer: {
     flex: 1,
@@ -150,11 +150,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2D3436",
+    color: color.headerTextColor,
   },
   username: {
     fontSize: 14,
-    color: "#636E72",
+    color: color.usernameText,
     marginTop: 2,
   },
   unblockButton: {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center",
-    color: "#888",
+    color: color.emptyText,
     marginTop: 20,
   },
 });

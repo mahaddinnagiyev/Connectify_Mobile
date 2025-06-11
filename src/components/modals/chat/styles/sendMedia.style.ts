@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
+import { color } from "@/colors";
 
 const { width } = Dimensions.get("window");
 
@@ -27,7 +28,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: color.borderLight,
     paddingBottom: 15,
     marginBottom: 20,
   },

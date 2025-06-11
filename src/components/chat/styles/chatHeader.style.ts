@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
   notificationText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#2d3436",
+    color: color.headerTextColor,
     marginRight: 10,
     flexShrink: 1,
   },
