@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   acceptButton: {
-    backgroundColor: color.lightBlue,
+    backgroundColor: color.primaryColor,
   },
   rejectButton: {
     backgroundColor: "#F44336",
