@@ -86,7 +86,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     <Animated.View
       style={[
         {
-          backgroundColor: color.backgroundAlt,
+          backgroundColor: color.divider,
           borderRadius: 4,
         },
         style,
@@ -128,6 +128,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     acceptAndRejectFrienship,
     isAccepting,
     isRejecting,
+    isBlocking,
   } = useFriendData();
 
   const handleBlockAndUnblockUser = async () => {
@@ -224,7 +225,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           setShowConfirmModal(true);
         }}
       >
-        <MaterialCommunityIcons name="block-helper" size={20} color={color.white} />
+        <MaterialCommunityIcons
+          name="block-helper"
+          size={20}
+          color={color.white}
+        />
         <Text style={styles.actionButtonText}>Block</Text>
       </TouchableOpacity>
     );
@@ -350,7 +355,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
                       style={styles.actionButton}
                       onPress={() => handleGoChat(userData.user.id)}
                     >
-                      <Ionicons name="chatbubble" size={20} color={color.white} />
+                      <Ionicons
+                        name="chatbubble"
+                        size={20}
+                        color={color.white}
+                      />
                       <Text style={styles.actionButtonText}>Message</Text>
                     </TouchableOpacity>
 
@@ -545,7 +554,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         }
         cancelText="Cancel"
         confirmColor="red"
-        isLoading={isFriendDataLoading}
+        isLoading={isBlocking}
         onConfirm={handleBlockAndUnblockUser}
         onCancel={() => setShowConfirmModal(false)}
       />

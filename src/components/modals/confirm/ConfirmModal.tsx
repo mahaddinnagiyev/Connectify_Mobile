@@ -46,7 +46,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <SafeAreaView style={styles.container}>
         <View style={styles.backdrop}>
           <View style={styles.modalCard}>
-            {isLoading && (
+            {/* {isLoading && (
               <View style={styles.loadingOverlay}>
                 <ActivityIndicator
                   size="large"
@@ -54,7 +54,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   style={styles.loadingIndicator}
                 />
               </View>
-            )}
+            )} */}
             <View style={styles.iconContainer}>
               <MaterialIcons
                 name="warning"
@@ -80,6 +80,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     borderColor: cancelColor,
                   },
                 ]}
+                disabled={isLoading}
               >
                 <Text style={[styles.buttonText, { color: cancelColor }]}>
                   {cancelText}
@@ -96,9 +97,18 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                       : confirmColor,
                   },
                 ]}
+                disabled={isLoading}
               >
                 <Text style={[styles.buttonText, styles.confirmText]}>
-                  {confirmText}
+                  {isLoading ? (
+                    <ActivityIndicator
+                      size="small"
+                      color={color.white}
+                      style={styles.loadingIndicator}
+                    />
+                  ) : (
+                    confirmText
+                  )}
                 </Text>
               </Pressable>
             </View>
