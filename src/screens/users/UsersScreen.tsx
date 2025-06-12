@@ -71,16 +71,26 @@ const UsersScreen: React.FC = () => {
     }
   };
 
+  const subtitle =
+    activeTab === "ALL_USERS"
+      ? "Browse and connect with users by name or username"
+      : activeTab === "MY_FRIENDS"
+      ? "Your trusted connections"
+      : "Pending friendship requests";
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Gradient Header */}
       <LinearGradient
-        colors={[color.primary, color.primaryDark]}
+        colors={[color.primaryColor, color.primaryDark]}
         start={[0, 0]}
         end={[1, 1]}
         style={styles.headerContainer}
       >
         <Text style={styles.headerTitle}>Explore Users</Text>
+        <View style={styles.subtitleWrapper}>
+          <Text style={styles.subtitleText}>{subtitle}</Text>
+        </View>
       </LinearGradient>
 
       {/* Tabs with Icons */}
@@ -145,7 +155,7 @@ const tabWidth = (width * 0.9) / TABS.length;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.background,
+    backgroundColor: color.white,
   },
   headerContainer: {
     width: "100%",
@@ -157,11 +167,23 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "800",
     color: color.white,
     letterSpacing: 1,
     marginTop: 20,
+  },
+  subtitleWrapper: {
+    marginTop: 8,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  subtitleText: {
+    fontSize: 14,
+    color: color.white,
+    fontWeight: "500",
   },
   tabContainer: {
     flexDirection: "row",
@@ -185,7 +207,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   tabButtonActive: {
-    backgroundColor: color.primary,
+    backgroundColor: color.primaryColor,
     marginHorizontal: 8,
   },
   tabLabel: {
